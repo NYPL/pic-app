@@ -1,0 +1,19 @@
+body{ margin:0; }
+
+#map {
+    margin: 0;
+    position: absolute;
+    width:100%;
+    top:0;
+    bottom: 0;
+}
+
+#categories {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #fff;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 5px;
+}

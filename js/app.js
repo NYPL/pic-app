@@ -1,39 +1,42 @@
 var baseUrl = "csv/";
 
-var attributionMapbox = 'Map via <a href="http://openstreetmap.org">OpenStreetMap</a>, <a href="http://mapbox.com">Mapbox</a>';
+// var attributionMapbox = 'Map via <a href="http://openstreetmap.org">OpenStreetMap</a>, <a href="http://mapbox.com">Mapbox</a>';
 
 // present
-var plain = L.tileLayer( 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png',{id: 'nypllabs.7f17c2d1',attribution: attributionMapbox});
+// var plain = L.tileLayer( 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png',{id: 'nypllabs.7f17c2d1',attribution: attributionMapbox});
 
 // create map with default tileset
-var map;
-var mapData;
-var constituents;
-var addresses;
+// var map;
+// var mapData;
+// var constituents;
+// var addresses;
+var latlons;
 
-var csvs = ["constituents.csv", "addresses.csv"];
+// var csvs = ["constituents.csv", "constituentaddresses.csv"];
 
-var facets = [];
-facets.push("Nationality");
-facets.push("Gender");
+// var facets = [];
+// facets.push("Nationality");
+// facets.push("Gender");
 
 function showMap() {
 
-    var i;
-    // console.log(mapdata);
-    var b = new L.LatLngBounds();
-    for (i=0;i<mapdata.length;i++) {
-        var geo = L.geoJson(mapdata[i], {
-            pointToLayer: function(f,l) {
-                return L.marker(l,{icon:markers[mapdata[i].properties.subcategory.replace(/\s/g, "_")]});
-            },
-            onEachFeature: showPopup});
-        geodata.push(geo);
-        geo.addTo(map);
-        map.setView(geo.getBounds().getCenter(), 12);
-        b.extend(geo.getBounds());
-    }
-    map.fitBounds(b);
+    // var i;
+    // // console.log(mapData);
+    // var b = new L.LatLngBounds();
+    // for (i=0;i<mapData.length;i++) {
+    //     var geo = L.geoJson(mapData[i], {
+    //         pointToLayer: function(f,l) {
+    //             return L.marker(l,{icon:markers[mapData[i].properties.subcategory.replace(/\s/g, "_")]});
+    //         },
+    //         onEachFeature: showPopup});
+    //     geodata.push(geo);
+    //     geo.addTo(map);
+    //     map.setView(geo.getBounds().getCenter(), 12);
+    //     b.extend(geo.getBounds());
+    // }
+    // map.fitBounds(b);
+    var geo = L.geoJson(mapData);//,{onEachFeature: showPopup});
+    geo.addTo(map);
 }
 
 function showPopup(feature, layer) {
@@ -68,20 +71,25 @@ function buildFacets() {
 
 function geoJSONify() {
     var i, j;
-    var result = [];
+    mapData = {};
+    mapData.type = "FeatureCollection";
+    mapData.features = [];
     var l = constituents.length;
     for (i=0;i<l;i++) {
         var item = constituents[i];
+        var address = findConstituentLocations(item["ConstituentID"]);
+        var lon = parseFloat(address["Longitude"]);
+        var lat = parseFloat(address["Latitude"]);
+        if (address==-1 || isNaN(lon) || isNaN(lat)) continue;
         feature = {};
         feature.type = "Feature";
         feature.properties = item;
         feature.geometry = {
             type: "Point",
-            coordinates: [item.geocode_longitude,item.geocode_latitude]
+            coordinates: [lon, lat]
         }
-        result.push(feature);
+        mapData.features.push(feature);
     }
-    return result;
 }
 
 function findConstituentLocations(id) {
@@ -97,8 +105,8 @@ function findConstituentLocations(id) {
 function filterCategory(type, name) {
     var i;
     var b = new L.LatLngBounds();
-    for (i=0;i<mapdata.length;i++) {
-        var item = mapdata[i];
+    for (i=0;i<mapData.length;i++) {
+        var item = mapData[i];
         var geo = geodata[i];
         if (name == "") {
             if (!map.hasLayer(geo)) map.addLayer(geo);
@@ -119,11 +127,11 @@ function filterCategory(type, name) {
 
 
 function init() {
-    var loadCount = 0;
+    // var loadCount = 0;
 
-    map = L.map('map', {layers:plain, maxZoom:21, minZoom:0});
+    // map = L.map('map', {layers:plain, maxZoom:21, minZoom:0});
 
-    map.setView([0,0], 2);
+    // map.setView([0,0], 2);
 
     // $("#categories").on( "change", function (event) {
     //     filterCategory("category", event.target.value);
@@ -132,27 +140,41 @@ function init() {
     //     filterCategory("subcategory", event.target.value);
     // });
 
-    $.get(baseUrl + csvs[0], function(data){
-        data = data.replace(/"/g, "'");
-        constituents = $.csv.toObjects(data);
-        loadCount++;
+    // $.get(baseUrl + csvs[0], function(data){
+    //     data = data.replace(/"/g, "'");
+    //     constituents = $.csv.toObjects(data);
+    //     console.log("parsed constituents");
+    //     loadCount++;
+    // });
+
+    // $.get(baseUrl + csvs[1], function(data){
+    //     data = data.replace(/"/g, "'");
+    //     addresses = $.csv.toObjects(data);
+    //     console.log("parsed addresses");
+    //     loadCount++;
+    // });
+
+    // var intervalId = setInterval(function () {
+    //     if (loadCount>=csvs.length) {
+    //         clearInterval(intervalId);
+    //         geoJSONify();
+    //         showMap();
+    //     }
+    // }, 500);
+
+    $.get(baseUrl + "latlons.csv", function(data){
+        latlons = $.csv.toArrays(data);
+        console.log("parsed latlons");
     });
 
-    $.get(baseUrl + "constituents.csv", function(data){
-        data = data.replace(/"/g, "'");
-        addresses = $.csv.toObjects(data);
-        loadCount++;
-    });
-
-    var intervalId = setInterval(function () {
-        if (loadCount>=csvs.length) {
-            clearInterval(intervalId);
-            geoJSONify();
-            showMap();
-        }
-    }, 200);
 }
 
 $(function () {
     init();
 });
+
+
+
+
+
+

@@ -1,4 +1,5 @@
-﻿0,(none assigned)
+﻿CountryID,Country
+0,(none assigned)
 315,Abkhazia
 87,Afghanistan
 127,Africa (general)
@@ -275,7 +276,7 @@
 86,Syria
 416,Syrian Kurdistan
 83,Tahiti
-7,Taiwan, ROC
+7,"Taiwan, ROC"
 417,Tajikistan
 95,Tanzania
 6,Thailand

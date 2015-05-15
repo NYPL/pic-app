@@ -1,5 +1,5 @@
-AddressTypeID	AddressType
-2	Studio or Business
-5	Birth
-6	Death
-7	Active in
+﻿AddressTypeID,AddressType
+2,Studio or Business
+5,Birth
+6,Death
+7,Active in

@@ -10,7 +10,9 @@ var baseUrl = "csv/";
 // var mapData;
 // var constituents;
 // var addresses;
-var latlons;
+
+var globe;
+var globe_data;
 
 // var csvs = ["constituents.csv", "constituentaddresses.csv"];
 
@@ -161,10 +163,16 @@ function init() {
     //         showMap();
     //     }
     // }, 500);
+    globe = DAT.Globe(document.getElementById('map'));
 
-    $.get(baseUrl + "latlons.csv", function(data){
-        latlons = $.csv.toArrays(data);
+    window.globe_data = globe_data;
+
+    $.get(baseUrl + "latlons.txt", function(data){
+        globe_data = JSON.parse(data);
         console.log("parsed latlons");
+        globe.addData(globe_data[0][1], {format: 'magnitude'});
+        // globe.createPoints();
+        globe.animate();
     });
 
 }

@@ -83,7 +83,7 @@ DAT.Globe = function(container, opts) {
     var png;
 
     if (iOS) {
-      png = 'world-dark-small.png';
+      png = 'world-line-thin.small.png';
     } else {
       png = 'world-dark.png';
     }

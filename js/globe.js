@@ -78,8 +78,17 @@ DAT.Globe = function(container, opts) {
 
     var geometry = new THREE.SphereGeometry(worldSize, 80, 60);
 
-    var terrainTexture = THREE.ImageUtils.loadTexture(imgDir+'world-dark.png');
-    var specularTexture = THREE.ImageUtils.loadTexture(imgDir+'world-specular.png');
+    var iOS = /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
+    
+    var png;
+
+    if (iOS) {
+      png = 'world-dark-small.png';
+    } else {
+      png = 'world-dark.png';
+    }
+    
+    var terrainTexture = THREE.ImageUtils.loadTexture(imgDir+png);
 
     var shader = Shaders['atmosphere'];
     var uniforms = THREE.UniformsUtils.clone(shader.uniforms);

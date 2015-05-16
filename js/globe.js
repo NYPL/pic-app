@@ -112,9 +112,6 @@ DAT.Globe = function(container, opts) {
         opacity: 1,
         // transparent: true,
         // depthTest: false,
-        specularMap: specularTexture,
-        specular: 0xffffff,
-        shininess: 100,
         map: terrainTexture
     });
 

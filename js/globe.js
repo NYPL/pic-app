@@ -78,7 +78,8 @@ DAT.Globe = function(container, opts) {
 
     var geometry = new THREE.SphereGeometry(worldSize, 80, 60);
 
-    var texture = THREE.ImageUtils.loadTexture(imgDir+'world-line-thin.small.png');
+    var terrainTexture = THREE.ImageUtils.loadTexture(imgDir+'world-dark.png');
+    var specularTexture = THREE.ImageUtils.loadTexture(imgDir+'world-specular.png');
 
     var shader = Shaders['atmosphere'];
     var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -96,44 +97,34 @@ DAT.Globe = function(container, opts) {
     mesh.scale.set( 1.1, 1.1, 1.1 );
     scene.add(mesh);
 
-    var brightMaterial = new THREE.MeshLambertMaterial({
-        color: 0x00ffff,
+    var terrainMaterial = new THREE.MeshPhongMaterial({
+        // color: 0xffffff,
         side: THREE.FrontSide,
         opacity: 1,
-        transparent: true,
-        depthTest: false,
-        alphaMap: texture,
-        map: texture
+        // transparent: true,
+        // depthTest: false,
+        specularMap: specularTexture,
+        specular: 0xffffff,
+        shininess: 100,
+        map: terrainTexture
     });
 
-    var darkMaterial = new THREE.MeshLambertMaterial({
-        color: 0x004444,
-        side: THREE.BackSide,
-        opacity: 1,
-        transparent: false,
-        depthTest: true,
-        alphaMap: texture,
-        map: texture
-    });
-
-    mesh = new THREE.Mesh(geometry, darkMaterial);
+    mesh = new THREE.Mesh(geometry, terrainMaterial);
     mesh.rotation.y = Math.PI;
 
     scene.add(mesh);
 
-    mesh = new THREE.Mesh(geometry, brightMaterial);
-    mesh.rotation.y = Math.PI;
-
-    scene.add(mesh);
-
-    var ambientLight = new THREE.AmbientLight(0x00ffff);
+    var ambientLight = new THREE.AmbientLight(0xffffff);
     scene.add(ambientLight);
+
+    // var light = new THREE.HemisphereLight( 0x004488, 0x000000, 0.5 );
+    // scene.add( light );
 
     geometry = new THREE.SphereGeometry(1, 10, 10);
 
-    var basicMaterial = new THREE.MeshBasicMaterial({});
+    // var basicMaterial = new THREE.MeshBasicMaterial({});
 
-    point = new THREE.Mesh(geometry, basicMaterial);
+    // point = new THREE.Mesh(geometry, basicMaterial);
 
     renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
 
@@ -165,11 +156,13 @@ DAT.Globe = function(container, opts) {
     dot = THREE.ImageUtils.loadTexture( imgDir + "dot.png" );
 
     dotMaterial = new THREE.PointCloudMaterial({
-          color: 0xff00ff,
+          color: 0xff1100,
           map: dot,
+          // depthTest: false,
+          depthWrite:false,
           blending: THREE.AdditiveBlending,
           transparent: true,
-          size: 2
+          size: 1
         });
 
     // create the particle variables
@@ -396,7 +389,7 @@ DAT.Globe = function(container, opts) {
   function zoom(delta) {
     distanceTarget -= delta;
     distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
-    distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
+    distanceTarget = distanceTarget < 300 ? 300 : distanceTarget;
   }
 
   function animate() {

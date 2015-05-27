@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Hello World!</title>
+  <script src="js/lib/Cesium/Cesium.js"></script>
+  <style>
+      @import url(js/lib/Cesium/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider : new Cesium.OpenStreetMapImageryProvider({
+        url : 'https://a.tiles.mapbox.com/v4/nypllabs.f56b1404/', // nypllabs.7f17c2d1
+        fileExtension : 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ'
+      })
+      ,baseLayerPicker : false
+      ,homeButton : false
+      ,infoBox : false
+      ,timeline : false
+      ,animation : false
+    });
+
+    // var layers = viewer.imageryLayers;
+    // var layer859 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
+    //     url : 'http://maptiles.nypl.org/859/',
+    //     fileExtension : 'png'
+    // }));
+
+    // var layer860 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
+    //     url : 'http://maptiles.nypl.org/860/',
+    //     fileExtension : 'png'
+    // }));
+
+    var scene = viewer.scene;
+
+    var points = scene.primitives.add(new Cesium.PointPrimitiveCollection());
+
+    // points.add({
+    //   position : new Cesium.Cartesian3.fromDegrees(-74.005941, 40.712784),
+    //   color : Cesium.Color.YELLOW
+    // });
+
+var r = new XMLHttpRequest();
+
+var globe_data;
+
+r.open("GET", "latlons.txt", true);
+
+r.onreadystatechange = function () {
+  if (r.readyState != 4 || r.status != 200) return;
+  globe_data = JSON.parse(r.responseText)[0][1];
+  var i, l=globe_data.length;
+  for (var i=0; i<l; i=i+3) {
+    points.add({
+      position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
+      color : Cesium.Color.YELLOW,
+      pixelSize : 2
+    });
+  }
+};
+r.send(null);
+
+  </script>
+</body>
+</html>

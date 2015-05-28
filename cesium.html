@@ -45,6 +45,13 @@
     var scene = viewer.scene;
 
     var points = scene.primitives.add(new Cesium.PointPrimitiveCollection());
+    points._rs = scene.context.createRenderState({
+      depthTest : {
+        enabled : false
+      },
+      blending : Cesium.BlendingState.ADDITIVE_BLEND
+    });
+
 
     // points.add({
     //   position : new Cesium.Cartesian3.fromDegrees(-74.005941, 40.712784),
@@ -64,7 +71,7 @@ r.onreadystatechange = function () {
   for (var i=0; i<l; i=i+3) {
     points.add({
       position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
-      color : Cesium.Color.YELLOW,
+      color : new Cesium.Color(1, 0.01, 0.01, 1),
       pixelSize : 2
     });
   }

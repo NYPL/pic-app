@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-  <title>Hello World!</title>
+  <title>PIC - Cesium</title>
   <script src="js/lib/Cesium/Cesium.js"></script>
   <style>
       @import url(js/lib/Cesium/Widgets/widgets.css);
@@ -47,8 +47,9 @@
     var points = scene.primitives.add(new Cesium.PointPrimitiveCollection());
     points._rs = scene.context.createRenderState({
       depthTest : {
-        enabled : false
+        enabled : true
       },
+      depthMask : false,
       blending : Cesium.BlendingState.ADDITIVE_BLEND
     });
 
@@ -72,7 +73,7 @@ r.onreadystatechange = function () {
     points.add({
       position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
       color : new Cesium.Color(1, 0.01, 0.01, 1),
-      pixelSize : 2
+      pixelSize : 1.5
     });
   }
 };

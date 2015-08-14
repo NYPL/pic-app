@@ -85,7 +85,7 @@ DAT.Globe = function(container, opts) {
     if (iOS) {
       png = 'world-dark-small.png';
     } else {
-      png = 'world-dark.png';
+      png = 'world-line.png';
     }
     
     var terrainTexture = THREE.ImageUtils.loadTexture(imgDir+png);
@@ -168,7 +168,7 @@ DAT.Globe = function(container, opts) {
           depthWrite:false,
           blending: THREE.AdditiveBlending,
           transparent: true,
-          size: 1
+          size: 20
         });
 
     // create the particle variables
@@ -207,9 +207,9 @@ DAT.Globe = function(container, opts) {
 
     var point = p.vertices[index];
 
-    point.x = worldSize * Math.sin(phi) * Math.cos(theta);
-    point.y = worldSize * Math.cos(phi);
-    point.z = worldSize * Math.sin(phi) * Math.sin(theta);
+    point.x = (worldSize+10) * Math.sin(phi) * Math.cos(theta);
+    point.y = (worldSize+10) * Math.cos(phi);
+    point.z = (worldSize+10) * Math.sin(phi) * Math.sin(theta);
 
     return point;
   };

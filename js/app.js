@@ -167,7 +167,7 @@ function init() {
 
     window.globe_data = globe_data;
 
-    $.get(baseUrl + "latlons.txt", function(data){
+    $.get("mga.txt", function(data){
         globe_data = JSON.parse(data);
         console.log("parsed latlons");
         globe.addData(globe_data[0][1], {format: 'magnitude'});

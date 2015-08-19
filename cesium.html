@@ -59,26 +59,7 @@
     //   color : Cesium.Color.YELLOW
     // });
 
-var r = new XMLHttpRequest();
-
-var globe_data;
-
-r.open("GET", "latlons.txt", true);
-
-r.onreadystatechange = function () {
-  if (r.readyState != 4 || r.status != 200) return;
-  globe_data = JSON.parse(r.responseText)[0][1];
-  var i, l=globe_data.length;
-  for (var i=0; i<l; i=i+3) {
-    points.add({
-      position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
-      color : new Cesium.Color(1, 0.01, 0.01, 1),
-      pixelSize : 1.5
-    });
-  }
-};
-r.send(null);
-
   </script>
+  <script src="js/elastic.js"></script>
 </body>
 </html>

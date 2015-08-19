@@ -1,10 +1,10 @@
-ï»¿CountryID,Country
+CountryID,Country
 0,(none assigned)
 315,Abkhazia
 87,Afghanistan
 127,Africa (general)
 316,Akrotiri and Dhekelia
-317,Ã…land
+317,Åland
 318,Albania
 319,Alderney
 38,Algeria
@@ -77,7 +77,7 @@
 141,Crimea
 77,Croatia
 23,Cuba
-350,CuraÃ§ao
+350,Curaçao
 164,Cyprus
 351,Cyrenaica
 36,Czech Republic
@@ -233,7 +233,7 @@
 27,Russia
 187,Rwanda
 399,Sahrawi Arab Democratic Republic
-400,Saint BarthÃ©lemy
+400,Saint Barthélemy
 188,Saint Helena
 189,Saint Kitts and Nevis
 401,Saint Lucia
@@ -242,7 +242,7 @@
 190,Saint Vincent and the Grenadines
 191,Samoa
 404,San Marino
-405,SÃ£o TomÃ© and PrÃ­ncipe
+405,São Tomé and Príncipe
 406,Sark
 117,Saudi Arabia
 26,Scotland

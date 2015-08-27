@@ -1,8 +1,7 @@
-ConstituentID,Process
+ï»¿ConstituentID,Term
 1188,Albumen Silver Print
 1655,Albumen Silver Print
 1663,Albumen Silver Print
-1664,Albumen Silver Print
 1664,Albumen Silver Print
 1666,Albumen Silver Print
 1670,Albumen Silver Print
@@ -10,12 +9,10 @@ ConstituentID,Process
 1674,Albumen Silver Print
 1686,Albumen Silver Print
 1703,Albumen Silver Print
-1703,Albumen Silver Print
 1707,Albumen Silver Print
 1708,Albumen Silver Print
 1709,Albumen Silver Print
 1711,Albumen Silver Print
-1717,Albumen Silver Print
 1724,Albumen Silver Print
 1727,Albumen Silver Print
 1732,Albumen Silver Print
@@ -44,7 +41,6 @@ ConstituentID,Process
 1867,Albumen Silver Print
 1871,Albumen Silver Print
 1872,Albumen Silver Print
-1872,Albumen Silver Print
 1873,Albumen Silver Print
 1877,Albumen Silver Print
 1885,Albumen Silver Print
@@ -61,7 +57,6 @@ ConstituentID,Process
 1953,Albumen Silver Print
 1961,Albumen Silver Print
 2115,Albumen Silver Print
-2115,Albumen Silver Print
 2130,Albumen Silver Print
 2163,Albumen Silver Print
 2167,Albumen Silver Print
@@ -72,7 +67,6 @@ ConstituentID,Process
 2221,Albumen Silver Print
 2222,Albumen Silver Print
 2223,Albumen Silver Print
-2223,Albumen Silver Print
 2224,Albumen Silver Print
 2225,Albumen Silver Print
 2226,Albumen Silver Print
@@ -82,7 +76,6 @@ ConstituentID,Process
 2237,Albumen Silver Print
 2264,Albumen Silver Print
 2271,Albumen Silver Print
-2275,Albumen Silver Print
 2275,Albumen Silver Print
 2282,Albumen Silver Print
 2283,Albumen Silver Print
@@ -98,8 +91,6 @@ ConstituentID,Process
 2331,Albumen Silver Print
 2334,Albumen Silver Print
 2335,Albumen Silver Print
-2335,Albumen Silver Print
-2342,Albumen Silver Print
 2343,Albumen Silver Print
 2368,Albumen Silver Print
 2386,Albumen Silver Print
@@ -151,7 +142,6 @@ ConstituentID,Process
 2644,Albumen Silver Print
 2646,Albumen Silver Print
 2648,Albumen Silver Print
-2649,Albumen Silver Print
 2650,Albumen Silver Print
 2651,Albumen Silver Print
 2652,Albumen Silver Print
@@ -227,7 +217,6 @@ ConstituentID,Process
 2782,Albumen Silver Print
 2785,Albumen Silver Print
 2787,Albumen Silver Print
-2799,Albumen Silver Print
 2800,Albumen Silver Print
 2805,Albumen Silver Print
 3014,Albumen Silver Print
@@ -245,7 +234,6 @@ ConstituentID,Process
 3360,Albumen Silver Print
 3361,Albumen Silver Print
 3363,Albumen Silver Print
-3363,Albumen Silver Print
 3432,Albumen Silver Print
 3454,Albumen Silver Print
 3479,Albumen Silver Print
@@ -254,11 +242,9 @@ ConstituentID,Process
 3604,Albumen Silver Print
 3635,Albumen Silver Print
 3683,Albumen Silver Print
-3683,Albumen Silver Print
 3689,Albumen Silver Print
 3716,Albumen Silver Print
 3731,Albumen Silver Print
-3732,Albumen Silver Print
 3733,Albumen Silver Print
 3750,Albumen Silver Print
 3753,Albumen Silver Print
@@ -336,7 +322,6 @@ ConstituentID,Process
 4300,Albumen Silver Print
 4301,Albumen Silver Print
 4302,Albumen Silver Print
-4302,Albumen Silver Print
 4303,Albumen Silver Print
 4304,Albumen Silver Print
 4306,Albumen Silver Print
@@ -399,7 +384,6 @@ ConstituentID,Process
 4399,Albumen Silver Print
 4402,Albumen Silver Print
 4403,Albumen Silver Print
-4403,Albumen Silver Print
 4405,Albumen Silver Print
 4407,Albumen Silver Print
 4409,Albumen Silver Print
@@ -433,7 +417,6 @@ ConstituentID,Process
 4502,Albumen Silver Print
 4504,Albumen Silver Print
 4505,Albumen Silver Print
-4505,Albumen Silver Print
 4506,Albumen Silver Print
 4507,Albumen Silver Print
 4509,Albumen Silver Print
@@ -459,7 +442,6 @@ ConstituentID,Process
 4541,Albumen Silver Print
 4542,Albumen Silver Print
 4545,Albumen Silver Print
-4547,Albumen Silver Print
 4547,Albumen Silver Print
 4548,Albumen Silver Print
 4550,Albumen Silver Print
@@ -508,9 +490,7 @@ ConstituentID,Process
 4612,Albumen Silver Print
 4613,Albumen Silver Print
 4614,Albumen Silver Print
-4614,Albumen Silver Print
 4616,Albumen Silver Print
-4617,Albumen Silver Print
 4617,Albumen Silver Print
 4618,Albumen Silver Print
 4619,Albumen Silver Print
@@ -518,7 +498,6 @@ ConstituentID,Process
 4621,Albumen Silver Print
 4624,Albumen Silver Print
 4625,Albumen Silver Print
-4626,Albumen Silver Print
 4626,Albumen Silver Print
 4627,Albumen Silver Print
 4628,Albumen Silver Print
@@ -564,7 +543,6 @@ ConstituentID,Process
 7148,Albumen Silver Print
 7166,Albumen Silver Print
 7174,Albumen Silver Print
-7174,Albumen Silver Print
 7180,Albumen Silver Print
 7181,Albumen Silver Print
 7187,Albumen Silver Print
@@ -577,7 +555,6 @@ ConstituentID,Process
 7233,Albumen Silver Print
 7249,Albumen Silver Print
 7265,Albumen Silver Print
-7270,Albumen Silver Print
 7270,Albumen Silver Print
 7308,Albumen Silver Print
 7334,Albumen Silver Print
@@ -593,14 +570,12 @@ ConstituentID,Process
 7384,Albumen Silver Print
 7387,Albumen Silver Print
 7388,Albumen Silver Print
-7388,Albumen Silver Print
 7392,Albumen Silver Print
 7400,Albumen Silver Print
 7452,Albumen Silver Print
 7454,Albumen Silver Print
 7455,Albumen Silver Print
 7456,Albumen Silver Print
-7457,Albumen Silver Print
 7458,Albumen Silver Print
 7459,Albumen Silver Print
 7465,Albumen Silver Print
@@ -672,7 +647,6 @@ ConstituentID,Process
 8021,Albumen Silver Print
 8035,Albumen Silver Print
 8036,Albumen Silver Print
-8038,Albumen Silver Print
 8038,Albumen Silver Print
 8061,Albumen Silver Print
 8069,Albumen Silver Print
@@ -759,13 +733,11 @@ ConstituentID,Process
 8560,Albumen Silver Print
 8592,Albumen Silver Print
 8625,Albumen Silver Print
-8625,Albumen Silver Print
 8629,Albumen Silver Print
 8630,Albumen Silver Print
 8638,Albumen Silver Print
 8639,Albumen Silver Print
 8679,Albumen Silver Print
-8683,Albumen Silver Print
 8683,Albumen Silver Print
 8689,Albumen Silver Print
 8697,Albumen Silver Print
@@ -785,7 +757,6 @@ ConstituentID,Process
 8860,Albumen Silver Print
 8861,Albumen Silver Print
 8864,Albumen Silver Print
-8874,Albumen Silver Print
 8874,Albumen Silver Print
 8879,Albumen Silver Print
 8880,Albumen Silver Print
@@ -861,7 +832,6 @@ ConstituentID,Process
 15414,Albumen Silver Print
 15418,Albumen Silver Print
 15419,Albumen Silver Print
-15419,Albumen Silver Print
 15462,Albumen Silver Print
 15468,Albumen Silver Print
 15470,Albumen Silver Print
@@ -874,7 +844,6 @@ ConstituentID,Process
 15505,Albumen Silver Print
 15506,Albumen Silver Print
 15507,Albumen Silver Print
-15508,Albumen Silver Print
 15508,Albumen Silver Print
 15509,Albumen Silver Print
 15512,Albumen Silver Print
@@ -913,7 +882,6 @@ ConstituentID,Process
 16357,Albumen Silver Print
 17397,Albumen Silver Print
 17456,Albumen Silver Print
-17456,Albumen Silver Print
 17475,Albumen Silver Print
 17595,Albumen Silver Print
 17630,Albumen Silver Print
@@ -923,18 +891,15 @@ ConstituentID,Process
 17740,Albumen Silver Print
 17741,Albumen Silver Print
 17743,Albumen Silver Print
-17743,Albumen Silver Print
 17759,Albumen Silver Print
 17766,Albumen Silver Print
 17768,Albumen Silver Print
 17844,Albumen Silver Print
 17845,Albumen Silver Print
 17850,Albumen Silver Print
-17850,Albumen Silver Print
 17851,Albumen Silver Print
 17861,Albumen Silver Print
 17879,Albumen Silver Print
-17962,Albumen Silver Print
 17962,Albumen Silver Print
 18001,Albumen Silver Print
 18072,Albumen Silver Print
@@ -952,7 +917,6 @@ ConstituentID,Process
 18782,Albumen Silver Print
 18783,Albumen Silver Print
 18785,Albumen Silver Print
-18791,Albumen Silver Print
 18794,Albumen Silver Print
 18801,Albumen Silver Print
 18802,Albumen Silver Print
@@ -963,13 +927,11 @@ ConstituentID,Process
 18812,Albumen Silver Print
 18822,Albumen Silver Print
 18823,Albumen Silver Print
-18823,Albumen Silver Print
 18824,Albumen Silver Print
 18825,Albumen Silver Print
 18854,Albumen Silver Print
 18861,Albumen Silver Print
 18863,Albumen Silver Print
-18864,Albumen Silver Print
 18864,Albumen Silver Print
 18865,Albumen Silver Print
 18866,Albumen Silver Print
@@ -977,10 +939,8 @@ ConstituentID,Process
 18868,Albumen Silver Print
 18869,Albumen Silver Print
 18870,Albumen Silver Print
-18870,Albumen Silver Print
 18871,Albumen Silver Print
 18872,Albumen Silver Print
-18873,Albumen Silver Print
 18874,Albumen Silver Print
 18876,Albumen Silver Print
 18877,Albumen Silver Print
@@ -1093,7 +1053,6 @@ ConstituentID,Process
 19303,Albumen Silver Print
 19304,Albumen Silver Print
 19305,Albumen Silver Print
-19305,Albumen Silver Print
 19306,Albumen Silver Print
 19307,Albumen Silver Print
 19310,Albumen Silver Print
@@ -1124,7 +1083,6 @@ ConstituentID,Process
 19375,Albumen Silver Print
 19376,Albumen Silver Print
 19377,Albumen Silver Print
-19377,Albumen Silver Print
 19378,Albumen Silver Print
 19380,Albumen Silver Print
 19381,Albumen Silver Print
@@ -1154,7 +1112,6 @@ ConstituentID,Process
 19553,Albumen Silver Print
 19555,Albumen Silver Print
 19556,Albumen Silver Print
-19587,Albumen Silver Print
 19587,Albumen Silver Print
 19588,Albumen Silver Print
 19589,Albumen Silver Print
@@ -1201,14 +1158,10 @@ ConstituentID,Process
 19837,Albumen Silver Print
 19839,Albumen Silver Print
 19840,Albumen Silver Print
-19840,Albumen Silver Print
 19842,Albumen Silver Print
-19842,Albumen Silver Print
-19843,Albumen Silver Print
 19843,Albumen Silver Print
 19847,Albumen Silver Print
 19848,Albumen Silver Print
-19851,Albumen Silver Print
 19851,Albumen Silver Print
 19852,Albumen Silver Print
 19854,Albumen Silver Print
@@ -1334,7 +1287,6 @@ ConstituentID,Process
 4422,Ambrotype
 4427,Ambrotype
 4547,Ambrotype
-4547,Ambrotype
 4594,Ambrotype
 4626,Ambrotype
 4870,Ambrotype
@@ -1384,7 +1336,6 @@ ConstituentID,Process
 9044,Ambrotype
 9061,Ambrotype
 13972,Ambrotype
-15508,Ambrotype
 15508,Ambrotype
 15525,Ambrotype
 15584,Ambrotype
@@ -1504,7 +1455,6 @@ ConstituentID,Process
 292069,Ambrotype
 292743,Ambrotype
 293497,Ambrotype
-293518,Ambrotype
 293538,Ambrotype
 293552,Ambrotype
 293558,Ambrotype
@@ -3435,7 +3385,6 @@ ConstituentID,Process
 3227,Chromogenic Print
 3290,Chromogenic Print
 3298,Chromogenic Print
-3298,Chromogenic Print
 3300,Chromogenic Print
 3301,Chromogenic Print
 3323,Chromogenic Print
@@ -3536,15 +3485,15 @@ ConstituentID,Process
 312051,Chromogenic Print
 323797,Chromogenic Print
 357831,Chromogenic Print
-834,Cliché verre
-990,Cliché verre
-2856,Cliché verre
-11071,Cliché verre
-13188,Cliché verre
-13509,Cliché verre
-13707,Cliché verre
-31359,Cliché verre
-274539,Cliché verre
+834,ClichÃ© verre
+990,ClichÃ© verre
+2856,ClichÃ© verre
+11071,ClichÃ© verre
+13188,ClichÃ© verre
+13509,ClichÃ© verre
+13707,ClichÃ© verre
+31359,ClichÃ© verre
+274539,ClichÃ© verre
 175,Cyanotype
 1978,Cyanotype
 2334,Cyanotype
@@ -3563,12 +3512,10 @@ ConstituentID,Process
 316124,Cyanotype
 316767,Cyanotype
 1707,Daguerreotype
-1717,Daguerreotype
 1724,Daguerreotype
 1844,Daguerreotype
 1849,Daguerreotype
 1959,Daguerreotype
-2115,Daguerreotype
 2115,Daguerreotype
 2237,Daguerreotype
 2253,Daguerreotype
@@ -3576,11 +3523,8 @@ ConstituentID,Process
 2313,Daguerreotype
 2316,Daguerreotype
 2331,Daguerreotype
-2331,Daguerreotype
-2342,Daguerreotype
 2342,Daguerreotype
 2426,Daguerreotype
-2663,Daguerreotype
 2663,Daguerreotype
 2678,Daguerreotype
 2706,Daguerreotype
@@ -3604,10 +3548,8 @@ ConstituentID,Process
 4433,Daguerreotype
 4525,Daguerreotype
 4547,Daguerreotype
-4547,Daguerreotype
 4560,Daguerreotype
 4594,Daguerreotype
-4607,Daguerreotype
 4607,Daguerreotype
 4624,Daguerreotype
 4626,Daguerreotype
@@ -3615,12 +3557,10 @@ ConstituentID,Process
 4632,Daguerreotype
 4838,Daguerreotype
 4870,Daguerreotype
-5068,Daguerreotype
 5282,Daguerreotype
 5283,Daguerreotype
 5316,Daguerreotype
 5409,Daguerreotype
-5442,Daguerreotype
 5442,Daguerreotype
 6653,Daguerreotype
 6948,Daguerreotype
@@ -3697,7 +3637,6 @@ ConstituentID,Process
 8875,Daguerreotype
 8966,Daguerreotype
 8967,Daguerreotype
-8967,Daguerreotype
 8969,Daguerreotype
 8970,Daguerreotype
 8991,Daguerreotype
@@ -3716,9 +3655,7 @@ ConstituentID,Process
 14153,Daguerreotype
 15408,Daguerreotype
 15419,Daguerreotype
-15419,Daguerreotype
 15506,Daguerreotype
-15508,Daguerreotype
 15508,Daguerreotype
 15516,Daguerreotype
 15525,Daguerreotype
@@ -3735,10 +3672,8 @@ ConstituentID,Process
 17845,Daguerreotype
 17847,Daguerreotype
 17850,Daguerreotype
-17850,Daguerreotype
 18775,Daguerreotype
 18794,Daguerreotype
-18823,Daguerreotype
 18823,Daguerreotype
 18825,Daguerreotype
 18833,Daguerreotype
@@ -3753,7 +3688,6 @@ ConstituentID,Process
 19271,Daguerreotype
 19284,Daguerreotype
 19304,Daguerreotype
-19305,Daguerreotype
 19305,Daguerreotype
 19377,Daguerreotype
 19452,Daguerreotype
@@ -4202,7 +4136,6 @@ ConstituentID,Process
 303573,Daguerreotype
 303765,Daguerreotype
 303824,Daguerreotype
-303996,Daguerreotype
 304045,Daguerreotype
 304120,Daguerreotype
 304268,Daguerreotype
@@ -5275,8 +5208,6 @@ ConstituentID,Process
 363934,Daguerreotype
 363935,Daguerreotype
 363936,Daguerreotype
-363937,Daguerreotype
-363939,Daguerreotype
 363940,Daguerreotype
 363941,Daguerreotype
 363943,Daguerreotype
@@ -5296,7 +5227,6 @@ ConstituentID,Process
 363964,Daguerreotype
 363967,Daguerreotype
 363968,Daguerreotype
-363972,Daguerreotype
 363972,Daguerreotype
 363979,Daguerreotype
 363980,Daguerreotype
@@ -5417,7 +5347,6 @@ ConstituentID,Process
 364596,Daguerreotype
 364597,Daguerreotype
 364598,Daguerreotype
-364598,Daguerreotype
 364599,Daguerreotype
 364600,Daguerreotype
 364601,Daguerreotype
@@ -5466,7 +5395,6 @@ ConstituentID,Process
 364646,Daguerreotype
 364647,Daguerreotype
 364648,Daguerreotype
-364649,Daguerreotype
 364650,Daguerreotype
 364651,Daguerreotype
 364652,Daguerreotype
@@ -5483,10 +5411,8 @@ ConstituentID,Process
 364663,Daguerreotype
 364664,Daguerreotype
 364665,Daguerreotype
-364666,Daguerreotype
 364667,Daguerreotype
 364668,Daguerreotype
-364669,Daguerreotype
 364670,Daguerreotype
 364671,Daguerreotype
 364672,Daguerreotype
@@ -5519,7 +5445,6 @@ ConstituentID,Process
 364702,Daguerreotype
 364703,Daguerreotype
 364704,Daguerreotype
-364705,Daguerreotype
 364706,Daguerreotype
 364707,Daguerreotype
 364708,Daguerreotype
@@ -5557,7 +5482,6 @@ ConstituentID,Process
 364740,Daguerreotype
 364741,Daguerreotype
 364742,Daguerreotype
-364743,Daguerreotype
 364744,Daguerreotype
 364745,Daguerreotype
 364746,Daguerreotype
@@ -5592,7 +5516,6 @@ ConstituentID,Process
 364776,Daguerreotype
 364777,Daguerreotype
 364778,Daguerreotype
-364779,Daguerreotype
 364780,Daguerreotype
 364781,Daguerreotype
 364782,Daguerreotype
@@ -5634,7 +5557,6 @@ ConstituentID,Process
 364820,Daguerreotype
 364821,Daguerreotype
 364822,Daguerreotype
-364822,Daguerreotype
 364823,Daguerreotype
 364824,Daguerreotype
 364825,Daguerreotype
@@ -5657,7 +5579,6 @@ ConstituentID,Process
 364843,Daguerreotype
 364844,Daguerreotype
 364845,Daguerreotype
-364846,Daguerreotype
 364847,Daguerreotype
 364849,Daguerreotype
 364850,Daguerreotype
@@ -5670,7 +5591,6 @@ ConstituentID,Process
 364858,Daguerreotype
 364859,Daguerreotype
 364860,Daguerreotype
-364861,Daguerreotype
 364862,Daguerreotype
 364863,Daguerreotype
 364864,Daguerreotype
@@ -5689,7 +5609,6 @@ ConstituentID,Process
 364878,Daguerreotype
 364879,Daguerreotype
 364880,Daguerreotype
-364881,Daguerreotype
 364882,Daguerreotype
 364884,Daguerreotype
 364885,Daguerreotype
@@ -5699,7 +5618,6 @@ ConstituentID,Process
 364889,Daguerreotype
 364890,Daguerreotype
 364891,Daguerreotype
-364892,Daguerreotype
 364893,Daguerreotype
 364894,Daguerreotype
 364895,Daguerreotype
@@ -5708,7 +5626,6 @@ ConstituentID,Process
 364899,Daguerreotype
 364900,Daguerreotype
 364901,Daguerreotype
-364902,Daguerreotype
 364903,Daguerreotype
 364904,Daguerreotype
 364905,Daguerreotype
@@ -5731,14 +5648,12 @@ ConstituentID,Process
 364923,Daguerreotype
 364924,Daguerreotype
 364925,Daguerreotype
-364926,Daguerreotype
 364927,Daguerreotype
 364928,Daguerreotype
 364929,Daguerreotype
 364930,Daguerreotype
 364931,Daguerreotype
 364932,Daguerreotype
-364933,Daguerreotype
 364934,Daguerreotype
 364935,Daguerreotype
 364936,Daguerreotype
@@ -5801,7 +5716,6 @@ ConstituentID,Process
 364997,Daguerreotype
 364998,Daguerreotype
 364999,Daguerreotype
-365000,Daguerreotype
 365001,Daguerreotype
 365002,Daguerreotype
 365003,Daguerreotype
@@ -10637,7 +10551,6 @@ ConstituentID,Process
 2051,Gelatin Silver Print
 2052,Gelatin Silver Print
 2053,Gelatin Silver Print
-2053,Gelatin Silver Print
 2054,Gelatin Silver Print
 2055,Gelatin Silver Print
 2056,Gelatin Silver Print
@@ -10910,7 +10823,6 @@ ConstituentID,Process
 2659,Gelatin Silver Print
 2660,Gelatin Silver Print
 2663,Gelatin Silver Print
-2663,Gelatin Silver Print
 2664,Gelatin Silver Print
 2668,Gelatin Silver Print
 2672,Gelatin Silver Print
@@ -10928,7 +10840,6 @@ ConstituentID,Process
 2724,Gelatin Silver Print
 2735,Gelatin Silver Print
 2737,Gelatin Silver Print
-2743,Gelatin Silver Print
 2746,Gelatin Silver Print
 2752,Gelatin Silver Print
 2755,Gelatin Silver Print
@@ -11419,7 +11330,6 @@ ConstituentID,Process
 3526,Gelatin Silver Print
 3527,Gelatin Silver Print
 3528,Gelatin Silver Print
-3528,Gelatin Silver Print
 3529,Gelatin Silver Print
 3530,Gelatin Silver Print
 3531,Gelatin Silver Print
@@ -11456,7 +11366,6 @@ ConstituentID,Process
 3575,Gelatin Silver Print
 3576,Gelatin Silver Print
 3578,Gelatin Silver Print
-3578,Gelatin Silver Print
 3579,Gelatin Silver Print
 3580,Gelatin Silver Print
 3581,Gelatin Silver Print
@@ -11464,7 +11373,6 @@ ConstituentID,Process
 3583,Gelatin Silver Print
 3584,Gelatin Silver Print
 3585,Gelatin Silver Print
-3586,Gelatin Silver Print
 3586,Gelatin Silver Print
 3587,Gelatin Silver Print
 3588,Gelatin Silver Print
@@ -11842,17 +11750,14 @@ ConstituentID,Process
 4292,Gelatin Silver Print
 4296,Gelatin Silver Print
 4306,Gelatin Silver Print
-4308,Gelatin Silver Print
 4310,Gelatin Silver Print
 4311,Gelatin Silver Print
-4314,Gelatin Silver Print
 4314,Gelatin Silver Print
 4320,Gelatin Silver Print
 4321,Gelatin Silver Print
 4322,Gelatin Silver Print
 4323,Gelatin Silver Print
 4328,Gelatin Silver Print
-4329,Gelatin Silver Print
 4333,Gelatin Silver Print
 4335,Gelatin Silver Print
 4337,Gelatin Silver Print
@@ -11866,12 +11771,10 @@ ConstituentID,Process
 4360,Gelatin Silver Print
 4361,Gelatin Silver Print
 4362,Gelatin Silver Print
-4362,Gelatin Silver Print
 4363,Gelatin Silver Print
 4366,Gelatin Silver Print
 4370,Gelatin Silver Print
 4376,Gelatin Silver Print
-4379,Gelatin Silver Print
 4379,Gelatin Silver Print
 4380,Gelatin Silver Print
 4381,Gelatin Silver Print
@@ -11971,7 +11874,6 @@ ConstituentID,Process
 4683,Gelatin Silver Print
 4688,Gelatin Silver Print
 4689,Gelatin Silver Print
-4690,Gelatin Silver Print
 4690,Gelatin Silver Print
 4691,Gelatin Silver Print
 4692,Gelatin Silver Print
@@ -12231,7 +12133,6 @@ ConstituentID,Process
 9128,Gelatin Silver Print
 9129,Gelatin Silver Print
 9130,Gelatin Silver Print
-9130,Gelatin Silver Print
 9133,Gelatin Silver Print
 9139,Gelatin Silver Print
 9141,Gelatin Silver Print
@@ -12245,7 +12146,6 @@ ConstituentID,Process
 9168,Gelatin Silver Print
 9174,Gelatin Silver Print
 9176,Gelatin Silver Print
-9178,Gelatin Silver Print
 9178,Gelatin Silver Print
 9180,Gelatin Silver Print
 9184,Gelatin Silver Print
@@ -12706,7 +12606,6 @@ ConstituentID,Process
 21180,Gelatin Silver Print
 21262,Gelatin Silver Print
 21265,Gelatin Silver Print
-21265,Gelatin Silver Print
 21272,Gelatin Silver Print
 21359,Gelatin Silver Print
 21591,Gelatin Silver Print
@@ -12714,7 +12613,6 @@ ConstituentID,Process
 21622,Gelatin Silver Print
 21640,Gelatin Silver Print
 21680,Gelatin Silver Print
-21705,Gelatin Silver Print
 21705,Gelatin Silver Print
 21738,Gelatin Silver Print
 21750,Gelatin Silver Print
@@ -13319,9 +13217,6 @@ ConstituentID,Process
 377977,Gelatin Silver Print
 378008,Gelatin Silver Print
 378009,Gelatin Silver Print
-1890,Photographer
-2081,Photographer
-2479,Photographer
 5961,Photogravure
 9290,Photogravure
 20914,Photogravure
@@ -13355,10 +13250,6 @@ ConstituentID,Process
 285630,Salted Paper Print
 365850,Salted Paper Print
 375871,Salted Paper Print
-8527,Stereoscopic Photograph
-11367,Stereoscopic Photograph
-17718,Stereoscopic Photograph
-5068,Tintype
 7194,Tintype
 7627,Tintype
 7943,Tintype
@@ -13370,7 +13261,6 @@ ConstituentID,Process
 18890,Tintype
 18939,Tintype
 19452,Tintype
-273961,Tintype
 274724,Tintype
 274766,Tintype
 279478,Tintype
@@ -13452,7 +13342,6 @@ ConstituentID,Process
 376918,Tintype
 378085,Tintype
 1748,Woodburytype
-4525,Woodburytype
 20318,Woodburytype
 20320,Woodburytype
 21252,Woodburytype

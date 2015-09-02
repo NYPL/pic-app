@@ -1,8 +1,7 @@
-﻿ID,Term
-1,Cabinet Card
-1,CDV
-1,Lantern Slides
-1,Panoramic Photographs
-1,Photographic Postcards
-1,Photographic Publisher
-1,Stereoscopic Photograph
+﻿TermID,Term
+2028050,CDV
+2028051,Cabinet Card
+2028052,Stereoscopic Photograph
+2028099,Lantern Slides
+2028159,Panoramic Photographs
+2028188,Photographic Postcards

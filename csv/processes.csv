@@ -1,19 +1,18 @@
-﻿ID,Term
-1,Albumen Silver Print
-1,Ambrotype
-1,Autochrome
-1,Calotype
-1,Carbon Print
-1,Chromogenic Print
-1,Cliché verre
-1,Cyanotype
-1,Daguerreotype
-1,Dye Diffusion Transfer Print
-1,Gelatin Silver Print
-1,Photogravure
-1,Photolithograph
-1,Platinum Print
-1,Salted Paper Print
-1,Stereoscopic Photograph
-1,Tintype
-1,Woodburytype
+﻿TermID,Term
+2028046,Daguerreotype
+2028047,Gelatin Silver Print
+2028048,Albumen Silver Print
+2028049,Salted Paper Print
+2028053,Ambrotype
+2028055,Tintype
+2028091,Autochrome
+2028145,Chromogenic Print
+2028146,Dye Diffusion Transfer Print
+2028155,Calotype
+2028162,Woodburytype
+2028164,Photolithograph
+2028166,Cyanotype
+2028172,Carbon Print
+2028179,Platinum Print
+2028209,Cliché verre
+2028234,Photogravure

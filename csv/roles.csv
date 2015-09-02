@@ -1,22 +1,22 @@
-﻿ID,Term
-1,"Academic, Curator, or Historian"
-1,CDV
-1,Clerk
-1,Collector or Dealer
-1,Dealer of Photographic Supplies
-1,Distributor
-1,Draftsman
-1,Film or Video artist
-1,Installation artist
-1,Inventor
-1,Itenerant Photographer
-1,Manufacturer
-1,Painter
-1,Photoengraver
-1,Photographer
-1,Photographic Colorist or Finisher
-1,Photographic Instructor
-1,Photographic Printer
-1,Photographic Publisher
-1,Printmaker
-1,Sculptor
+﻿TermID,Term
+2028040,Photographer
+2028041,Itenerant Photographer
+2028042,Photographic Colorist or Finisher
+2028050,CDV
+2028054,Manufacturer
+2028057,Photographic Publisher
+2028122,Dealer of Photographic Supplies
+2028148,Inventor
+2028160,Collector or Dealer
+2028161,Distributor
+2028168,Photographic Instructor
+2028176,Photographic Printer
+2028178,Photoengraver
+2028197,Clerk
+2028217,"Academic, Curator, or Historian"
+2028221,Painter
+2028222,Printmaker
+2028223,Draftsman
+2028224,Sculptor
+2028225,Film or Video artist
+2028235,Installation artist

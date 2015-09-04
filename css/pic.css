@@ -1,0 +1,16 @@
+html, body, #cesiumContainer {
+    width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+}
+
+#tooltip {
+    font-family: Verdana;
+    background-color: #ccc;
+    position: absolute;
+    width: 300px;
+    left: 0;
+    top: 0;
+}
+
+#tooltip p {
+    margin: 10px;
+}

@@ -20,12 +20,6 @@ function initMouseHandler(handler) {
         canvas.focus();
     };
 
-    // var tooltip = viewer.entities.add({
-    //     label : {
-    //         show : false
-    //     }
-    // });
-
     var ellipsoid = scene.globe.ellipsoid;
 
     handler.setInputAction(function(movement) {
@@ -51,15 +45,10 @@ function initMouseHandler(handler) {
                 var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
                 var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
 
-                // tooltip.position = cartesian;
-                // tooltip.label.show = true;
-                // tooltip.label.text = '(' + longitudeString + ', ' + latitudeString + ')';
-                // tooltip.label.text = pickedObject.id;
-
-                tooltip.innerHTML = "<p>ID:" + pickedObject.id + "</p>";
+                showConstituent(pickedObject.id);
             }
         } else {
-            tooltip.innerHTML = "";
+            updateTooltip("");
         }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -70,6 +59,15 @@ function initMouseHandler(handler) {
 }
 
 initMouseHandler(handler);
+
+function showConstituent(id) {
+    var realID = id.substr(2);
+    getData("constituents", "ConstituentID", realID);
+}
+
+function updateTooltip(string) {
+    tooltip.innerHTML = string;
+}
 
 var globe_data;
 
@@ -82,7 +80,6 @@ r.onreadystatechange = function () {
   for (var i=0; i<l; i=i+3) {
       var p = points.add({
           id: "P_"+globe_data[i+2],
-          name: "ConstituentID: " + globe_data[i+2],
           position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
           color: new Cesium.Color(1, 0.01, 0.01, 1),
           pixelSize : 2,
@@ -93,6 +90,29 @@ r.onreadystatechange = function () {
 r.send(null);
 
 var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
+
+function getData(facet, key, value) {
+    console.log(facet, key, value);
+
+    var r = new XMLHttpRequest();
+
+    var params = "size=100&q=" + key + ":" + value;
+
+    r.open("GET", baseUrl+"/"+facet+"/_search?"+params, true);
+
+    r.onreadystatechange = function () {
+        if (r.readyState != 4 || r.status != 200) return;
+        var data = JSON.parse(r.responseText);
+        var string = "";
+        var p = data.hits.hits[0]._source;
+        string += "<p>ID:" + p.ConstituentID + "</p>";
+        string += "<p>" + p.DisplayName + "</p>";
+        string += "<p>" + p.DisplayDate + "</p>";
+        updateTooltip(string);
+    }
+
+    r.send();
+}
 
 var facets = [["Countries","CountryID"]];
 

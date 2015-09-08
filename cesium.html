@@ -16,19 +16,9 @@
 </head>
 <body>
   <div id="cesiumContainer"></div>
-  <div id="tooltip"></div>
+  <div id="tooltip" class="floater"></div>
+  <div id="facets" class="floater"></div>
   <script>
-    var viewer = new Cesium.Viewer('cesiumContainer', {
-      imageryProvider : new Cesium.OpenStreetMapImageryProvider({
-        url : 'https://a.tiles.mapbox.com/v4/nypllabs.f56b1404/', // nypllabs.7f17c2d1
-        fileExtension : 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ'
-      })
-      ,baseLayerPicker : false
-      ,homeButton : false
-      ,infoBox : false
-      ,timeline : false
-      ,animation : false
-    });
 
     // var layers = viewer.imageryLayers;
     // var layer859 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
@@ -41,17 +31,6 @@
     //     fileExtension : 'png'
     // }));
 
-    var scene = viewer.scene;
-    var canvas = viewer.canvas;
-
-    var points = scene.primitives.add(new Cesium.PointPrimitiveCollection());
-    points._rs = new Cesium.RenderState({
-      depthTest : {
-        enabled : true
-      },
-      depthMask : false,
-      blending : Cesium.BlendingState.ADDITIVE_BLEND
-    });
 
 
     // points.add({
@@ -60,6 +39,7 @@
     // });
 
   </script>
+  <script src="js/lib/csvToArray.v2.1.js"></script>
   <script src="js/elastic.js"></script>
 </body>
 </html>

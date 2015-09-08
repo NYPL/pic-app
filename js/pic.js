@@ -227,6 +227,7 @@
 
     onFacetChanged = function (e) {
         var el = e.target;
+        console.log(el);
     }
 
     addListenersToFacet = function (facet) {

@@ -1,0 +1,27 @@
+html, body, #cesiumContainer {
+    width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    font-family: Verdana;
+}
+
+.floater {
+    background-color: #ccc;
+    position: absolute;
+    width: 300px;
+    top: 0;
+}
+
+#facets {
+    left: 0;
+}
+
+#tooltip {
+    left: 300px;
+}
+
+.floater p {
+    margin: 10px;
+}
+
+.floater label, .floater select {
+    display: block;
+}

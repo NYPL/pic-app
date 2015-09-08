@@ -7,7 +7,7 @@
 
     var tooltipElement = document.getElementById("tooltip");
 
-    var facetsElement = document.getElementById("facets");
+    var facetsElement = $("#facets");
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType"],
@@ -16,8 +16,6 @@
         ["processes", "Process", "TermID", "Term"],
         ["formats", "Format", "TermID", "Term"]
     ];
-
-    window._pic = this;
 
     init = function () {
         initWorld();
@@ -173,13 +171,17 @@
     }
 
     getFacets = function () {
-        for (var i=0; i<facets.length; i++) {
-            getFacet(facets[i]);
+        for (var i=0;i<facets.length;++i) {
+            getFacet(i);
         }
     }
 
-    getFacet = function (facet) {
-        // console.log(facet);
+    getFacet = function (index) {
+        var facet = facets[index];
+
+        createFacet(facet);
+        addListenersToFacet(facet);
+
         var r = new XMLHttpRequest();
 
         r.open("GET", "csv/"+facet[0]+".csv", true);
@@ -187,27 +189,49 @@
         r.onreadystatechange = function (event) {
             var r = event.target;
             if (r.readyState != 4 || r.status != 200) return;
-            createFacet(r, facet);
+            updateFacet(r, facet);
         }
 
         r.send();
     }
 
-    createFacet = function (r, facet) {
+    filterForFacet = function (facet, value) {
+        var idColumn = data[0].indexOf(facet[2])
+        var valueColumn = data[0].indexOf(facet[3])
+        // get all IDs for the given facet
+        // get the latlons for the list of IDs
+    }
+
+    createFacet = function (facet) {
         // console.log(r, facet);
-        var data = r.responseText.csvToArray();
-        if (data.length <=1) return;
         var string = '<label for="'+facet[0]+'">'+facet[1]+'</label>';
-        string += '<select id="'+facet[0]+'">';
+        string += '<select id="'+facet[0]+'" name="'+facet[0]+'">';
         string += '<option value="">Select…</option>';
+        string += '</select>';
+        facetsElement.append(string);
+    }
+
+    updateFacet = function (r, facet) {
+        var data = r.responseText.csvToArray();
+        if (data.length <= 1) return;
+        var el = $("#"+facet[0]);
         var idColumn = data[0].indexOf(facet[2])
         var valueColumn = data[0].indexOf(facet[3])
         var i, l=data.length;
+        var string = "";
         for (i=1; i<l; i++) {
             string += '<option value="'+data[i][idColumn]+'">'+data[i][valueColumn]+'</option>';
         }
-        string += '</select>';
-        facetsElement.innerHTML += string;
+        el.append(string);
+    }
+
+    onFacetChanged = function (e) {
+        var el = e.target;
+    }
+
+    addListenersToFacet = function (facet) {
+        var el = document.getElementById(facet[0]);
+        el.addEventListener("change", onFacetChanged, false);
     }
 
     init();

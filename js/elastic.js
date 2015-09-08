@@ -10,11 +10,11 @@
     var facetsElement = document.getElementById("facets");
 
     var facets = [
-        ["addresstypes", "Address Types", "AddressTypeID"],
-        // ["nationalities", "Nationality", "Nationality"],
-        ["genders", "Gender", "Gender"],
-        ["processes", "Process", "TermID"],
-        ["formats", "Format", "TermID"]
+        ["addresstypes", "Address Types", "AddressTypeID", "AddressType"],
+        ["nationalities", "Nationality", "Nationality", "Nationality"],
+        ["genders", "Gender", "TermID", "Term"],
+        ["processes", "Process", "TermID", "Term"],
+        ["formats", "Format", "TermID", "Term"]
     ];
 
     window._pic = this;
@@ -200,9 +200,11 @@
         var string = '<label for="'+facet[0]+'">'+facet[1]+'</label>';
         string += '<select id="'+facet[0]+'">';
         string += '<option value="">Select…</option>';
+        var idColumn = data[0].indexOf(facet[2])
+        var valueColumn = data[0].indexOf(facet[3])
         var i, l=data.length;
         for (i=1; i<l; i++) {
-            string += '<option value="'+data[i][0]+'">'+data[i][1]+'</option>';
+            string += '<option value="'+data[i][idColumn]+'">'+data[i][valueColumn]+'</option>';
         }
         string += '</select>';
         facetsElement.innerHTML += string;

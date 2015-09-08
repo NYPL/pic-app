@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <title>PIC</title>
-    <link rel="stylesheet" href="css/style.css">
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version (or Chrome Frame if pre-IE11). -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>PIC - Cesium</title>
+  <script src="js/lib/Cesium/Cesium.js"></script>
+  <style>
+      @import url(js/lib/Cesium/Widgets/widgets.css);
+      @import url(css/pic.css);
+  </style>
 </head>
 <body>
-    <div id="map"></div>
-<!-- 
-    <div id="categories">
-        <select name="facet" class="facet"><option value="">All categories</option></select>
-    </div>
- -->
-    <script src="js/lib/jquery.min.js" type="text/javascript" ></script>
-    <script src="js/lib/Detector.js" type="text/javascript" ></script>
-    <script src="js/lib/three.min.js" type="text/javascript" ></script>
-    <script src="js/lib/jquery.csv-0.71.min.js" type="text/javascript" ></script>
-    <script src="js/globe.js" type="text/javascript" ></script>
-    <script src="js/app.js" type="text/javascript" ></script>
+  <div id="cesiumContainer"></div>
+  <div id="tooltip" class="floater"></div>
+  <div id="facets" class="floater"></div>
+  <script>
+
+    // var layers = viewer.imageryLayers;
+    // var layer859 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
+    //     url : 'http://maptiles.nypl.org/859/',
+    //     fileExtension : 'png'
+    // }));
+
+    // var layer860 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
+    //     url : 'http://maptiles.nypl.org/860/',
+    //     fileExtension : 'png'
+    // }));
+
+
+
+    // points.add({
+    //   position : new Cesium.Cartesian3.fromDegrees(-74.005941, 40.712784),
+    //   color : Cesium.Color.YELLOW
+    // });
+
+  </script>
+  <script src="js/lib/csvToArray.v2.1.js"></script>
+  <script src="js/elastic.js"></script>
 </body>
 </html>

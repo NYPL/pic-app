@@ -10,13 +10,16 @@
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
     // the way we knoe in elastic if a constituent has latlon-looking data
-    var latlonQuery = "(Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
+    var latlonQuery = "Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
+    var elasticSize = 300;
 
     var pickedEntity = undefined;
 
     var tooltipElement = $("#tooltip");
 
     var facetsElement = $("#facets");
+
+    var elasticResults = {};
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType"],
@@ -149,7 +152,7 @@
 
         var r = new XMLHttpRequest();
 
-        var params = "size=300&q=" + query;
+        var params = query;
 
         r.open("POST", baseUrl+"/"+facet+"/_search?"+params, true);
 
@@ -215,12 +218,13 @@
         var idColumn = facet[2];
         var valueColumn = facet[3];
         var addresses = [];
+        var query = "size=300&q=";
         console.log(facetName, idColumn, valueColumn, value);
-        points.removeAll();
         // addresstypes just need to ping constituents directly (no "join")
         if (facetName != "addresstypes") {
             // get all IDs for the given facet
-            getData(facet[1].toLowerCase(), idColumn + ":" + value, function (r) {
+            query += idColumn + ":" + value;
+            getData(facet[1].toLowerCase(), query, function (r) {
                 // get the latlons for the list of IDs
                 // TODO: serve more than 1000 results
                 var results = JSON.parse(r);
@@ -229,11 +233,13 @@
                 for (var i=0; i<results.hits.hits.length;++i) {
                     idList.push(results.hits.hits[i]._source.ConstituentID);
                 }
-                var query = latlonQuery + " AND ConstituentID:("+idList.join(" OR ")+"))";
+                query = "size=300&q=" + "(" + latlonQuery + " AND ConstituentID:("+idList.join(" OR ")+"))";
+                console.log(query);
                 getData("constituentaddresses", query, addressesToPoints);
             });
         } else {
-            var query = latlonQuery + " AND (" + facet[2] + ":" + value + "))";
+            console.log(query);
+            query = "size=300&q=" + "(" + latlonQuery + " AND (" + facet[2] + ":" + value + "))";
             getData("constituentaddresses", query, addressesToPoints);
         }
     }
@@ -247,6 +253,7 @@
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;
             var remarks = item.Remarks.split(",");
+            if (remarks.length !== 2) continue;
             var lat = parseFloat(remarks[0]);
             var lon = parseFloat(remarks[1]);
             var id = item.ConstituentID;

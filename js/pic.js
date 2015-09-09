@@ -1,11 +1,17 @@
 (function () {
-    var viewer, scene, canvas, points, handler;
+    window._pic = this;
+
+    this.viewer = undefined;
+    this.scene = undefined;
+    this.canvas = undefined;
+    this.points = undefined;
+    this.handler = undefined;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
-    var pickedEntities = [];
+    var pickedEntity = undefined;
 
-    var tooltipElement = document.getElementById("tooltip");
+    var tooltipElement = $("#tooltip");
 
     var facetsElement = $("#facets");
 
@@ -36,7 +42,7 @@
                   position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
                   color: new Cesium.Color(1, 0.01, 0.01, 1),
                   pixelSize : 2,
-                  scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 8.0e5, 1)
+                  scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 9.0e5, 1)
               });
           }
         };
@@ -73,12 +79,11 @@
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
 
-    clearPicked = function () {
-        var entity;
-        while (pickedEntities.length>0) {
-            entity = pickedEntities.splice(0, 1)[0];
-            entity.primitive.color = new Cesium.Color(1, 0.01, 0.01, 1);
+    clearPicked = function (picked) {
+        if (pickedEntity != undefined) {
+            pickedEntity.primitive.color = new Cesium.Color(1, 0.01, 0.01, 1);
         }
+        pickedEntity = picked;
     }
 
     initMouseHandler = function (handler) {
@@ -96,14 +101,15 @@
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         handler.setInputAction(function(movement) {
-            clearPicked();
             // pick
             var pickedObject = scene.pick(movement.endPosition);
             if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
-                pickedEntities.push(pickedObject);
+                if (pickedObject !== pickedEntity) {
+                    clearPicked(pickedObject);
+                    pickedObject.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
+                }
                 // console.log("thing:", pickedObject.primitive);
                 // console.log("first:", pickedObject.color);
-                pickedObject.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
                 var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
@@ -115,7 +121,7 @@
                     showConstituent(pickedObject.id);
                 }
             } else {
-                updateTooltip("");
+                removeTooltip();
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -127,31 +133,35 @@
 
     showConstituent = function (id) {
         var realID = id.substr(2);
-        getData("constituents", "ConstituentID", realID);
+        getData("constituents", "ConstituentID:" + realID, updateTooltip);
     }
 
-    updateTooltip = function (string) {
-        tooltipElement.innerHTML = string;
+    removeTooltip = function () {
+        tooltipElement.html("");
     }
 
-    getData = function (facet, key, value) {
+    updateTooltip = function (responseText) {
+        var data = JSON.parse(responseText);
+        var string = "";
+        var p = data.hits.hits[0]._source;
+        string += "<p>ID:" + p.ConstituentID + "</p>";
+        string += "<p>" + p.DisplayName + "</p>";
+        string += "<p>" + p.DisplayDate + "</p>";
+        tooltipElement.html(string);
+    }
+
+    getData = function (facet, query, callback) {
         // console.log(facet, key, value);
 
         var r = new XMLHttpRequest();
 
-        var params = "size=100&q=" + key + ":" + value;
+        var params = "size=100&q=" + query;
 
         r.open("GET", baseUrl+"/"+facet+"/_search?"+params, true);
 
         r.onreadystatechange = function () {
             if (r.readyState != 4 || r.status != 200) return;
-            var data = JSON.parse(r.responseText);
-            var string = "";
-            var p = data.hits.hits[0]._source;
-            string += "<p>ID:" + p.ConstituentID + "</p>";
-            string += "<p>" + p.DisplayName + "</p>";
-            string += "<p>" + p.DisplayDate + "</p>";
-            updateTooltip(string);
+            callback(r.responseText);
         }
 
         r.send();
@@ -168,6 +178,13 @@
                 pixelSize : 1.5,
             });
         }
+    }
+
+    facetWithName = function (name) {
+        for (var i=0;i<facets.length;++i) {
+            if (facets[i][0]==name) return facets[i];
+        }
+        return -1;
     }
 
     getFacets = function () {
@@ -195,11 +212,36 @@
         r.send();
     }
 
-    filterForFacet = function (facet, value) {
-        var idColumn = data[0].indexOf(facet[2])
-        var valueColumn = data[0].indexOf(facet[3])
-        // get all IDs for the given facet
-        // get the latlons for the list of IDs
+    filterForFacet = function (facetName, value) {
+        // TODO: clean map of dots somewhere
+        var facet = facetWithName(facetName);
+        if (facet === -1) return;
+        var idColumn = facet[2]
+        var valueColumn = facet[3]
+        console.log(facetName, idColumn, valueColumn, value);
+        // addresstypes just need to ping constituents directly (no "join")
+        if (facetName != "addresstypes") {
+            // get all IDs for the given facet
+            getData(facet[1].toLowerCase(), idColumn + ":" + value, function (r) {
+                // get the latlons for the list of IDs
+                // TODO: serve more than 1000 results
+                var results = JSON.parse(r);
+                console.log(results);
+                if (results.hits.total === 0) return;
+                var idList = [];
+                for (var i=0; i<results.hits.hits.length;++i) {
+                    idList.push(results.hits.hits[i]._source.ConstituentID);
+                }
+                var query = "ConstituentID:("+idList.join(" OR ")+")";
+                getData("constituentaddresses", query, function (re) {
+                    var addresses = JSON.parse(re);
+                    console.log(addresses);
+                });
+            });
+        }
+    }
+
+    processFacetData = function (responseText) {
     }
 
     createFacet = function (facet) {
@@ -227,7 +269,9 @@
 
     onFacetChanged = function (e) {
         var el = e.target;
-        console.log(el);
+        var index = el.selectedIndex;
+        var value = el.value
+        filterForFacet(el.id, value);
     }
 
     addListenersToFacet = function (facet) {

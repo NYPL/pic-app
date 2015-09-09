@@ -9,6 +9,9 @@
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
+    // the way we knoe in elastic if a constituent has latlon-looking data
+    var latlonQuery = "(Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
+
     var pickedEntity = undefined;
 
     var tooltipElement = $("#tooltip");
@@ -35,16 +38,7 @@
         r.onreadystatechange = function () {
           if (r.readyState != 4 || r.status != 200) return;
           globe_data = JSON.parse(r.responseText)[1];
-          var i, l=globe_data.length;
-          for (i=0; i<l; i=i+3) {
-              var p = points.add({
-                  id: "P_"+globe_data[i+2],
-                  position : new Cesium.Cartesian3.fromDegrees(globe_data[i+1], globe_data[i]),
-                  color: new Cesium.Color(1, 0.01, 0.01, 1),
-                  pixelSize : 2,
-                  scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 9.0e5, 1)
-              });
-          }
+          updatePoints(globe_data);
         };
         r.send(null);
         initMouseHandler(handler);
@@ -155,9 +149,9 @@
 
         var r = new XMLHttpRequest();
 
-        var params = "size=100&q=" + query;
+        var params = "size=300&q=" + query;
 
-        r.open("GET", baseUrl+"/"+facet+"/_search?"+params, true);
+        r.open("POST", baseUrl+"/"+facet+"/_search?"+params, true);
 
         r.onreadystatechange = function () {
             if (r.readyState != 4 || r.status != 200) return;
@@ -169,15 +163,18 @@
 
     updatePoints = function (newPoints) {
         points.removeAll();
+        if (newPoints.length === 0) return;
         var i, l=newPoints.length;
-        for (i=0; i<l; i++) {
-            var point = points[i];
+        for (i=0; i<l; i=i+3) {
             points.add({
-                position : new Cesium.Cartesian3.fromDegrees(point[0], point[1]),
-                color : new Cesium.Color(1, 0.01, 0.01, 1),
-                pixelSize : 1.5,
+                id: "P_"+newPoints[i+2],
+                position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
+                color: new Cesium.Color(1, 0.01, 0.01, 1),
+                pixelSize : 2,
+                scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 9.0e5, 1)
             });
         }
+        viewer.flyTo(points);
     }
 
     facetWithName = function (name) {
@@ -213,12 +210,13 @@
     }
 
     filterForFacet = function (facetName, value) {
-        // TODO: clean map of dots somewhere
         var facet = facetWithName(facetName);
         if (facet === -1) return;
-        var idColumn = facet[2]
-        var valueColumn = facet[3]
+        var idColumn = facet[2];
+        var valueColumn = facet[3];
+        var addresses = [];
         console.log(facetName, idColumn, valueColumn, value);
+        points.removeAll();
         // addresstypes just need to ping constituents directly (no "join")
         if (facetName != "addresstypes") {
             // get all IDs for the given facet
@@ -226,22 +224,35 @@
                 // get the latlons for the list of IDs
                 // TODO: serve more than 1000 results
                 var results = JSON.parse(r);
-                console.log(results);
                 if (results.hits.total === 0) return;
                 var idList = [];
                 for (var i=0; i<results.hits.hits.length;++i) {
                     idList.push(results.hits.hits[i]._source.ConstituentID);
                 }
-                var query = "ConstituentID:("+idList.join(" OR ")+")";
-                getData("constituentaddresses", query, function (re) {
-                    var addresses = JSON.parse(re);
-                    console.log(addresses);
-                });
+                var query = latlonQuery + " AND ConstituentID:("+idList.join(" OR ")+"))";
+                getData("constituentaddresses", query, addressesToPoints);
             });
+        } else {
+            var query = latlonQuery + " AND (" + facet[2] + ":" + value + "))";
+            getData("constituentaddresses", query, addressesToPoints);
         }
     }
 
-    processFacetData = function (responseText) {
+    addressesToPoints = function (re) {
+        var addresses = [];
+        var results = JSON.parse(re);
+        console.log(results);
+        var hits = results.hits.hits;
+        var i, l = hits.length;
+        for (i=0; i<l; ++i) {
+            var item = hits[i]._source;
+            var remarks = item.Remarks.split(",");
+            var lat = parseFloat(remarks[0]);
+            var lon = parseFloat(remarks[1]);
+            var id = item.ConstituentID;
+            addresses.push(lat, lon, id);
+        }
+        updatePoints(addresses);
     }
 
     createFacet = function (facet) {
@@ -257,8 +268,8 @@
         var data = r.responseText.csvToArray();
         if (data.length <= 1) return;
         var el = $("#"+facet[0]);
-        var idColumn = data[0].indexOf(facet[2])
-        var valueColumn = data[0].indexOf(facet[3])
+        var idColumn = data[0].indexOf(facet[2]);
+        var valueColumn = data[0].indexOf(facet[3]);
         var i, l=data.length;
         var string = "";
         for (i=1; i<l; i++) {

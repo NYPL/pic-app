@@ -7,15 +7,19 @@ html, body, #cesiumContainer {
     background-color: #ccc;
     position: absolute;
     width: 300px;
+    height: 300px;
     top: 0;
+    left: 0;
+    overflow-y: scroll;
 }
 
 #facets {
-    left: 0;
+    height: 200px;
 }
 
 #tooltip {
-    left: 300px;
+    top: 202px;
+    font-size: 14px;
 }
 
 .floater p {

@@ -29,6 +29,8 @@
         ["formats", "Format", "TermID", "Term", "format"]
     ];
 
+    var facetValues = [];
+
     var filters = {};
 
     init = function () {
@@ -124,7 +126,7 @@
                     showConstituent(pickedObject.id);
                 }
             } else {
-                removeTooltip();
+                // removeTooltip();
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -147,9 +149,34 @@
         var data = JSON.parse(responseText);
         var string = "";
         var p = data.hits.hits[0]._source;
+        string += "<p><strong>" + p.DisplayName + "</strong></p>";
         string += "<p>ID:" + p.ConstituentID + "</p>";
-        string += "<p>" + p.DisplayName + "</p>";
         string += "<p>" + p.DisplayDate + "</p>";
+        string += "<p>" + p.Nationality + "</p>";
+        if (p.gender) string += "<p>" + p.gender[0].TermID + "</p>";
+        if (p.role) {
+            string += "<p><strong>Roles:</strong></p>";
+            string += "<p>";
+            var roles = [];
+            for (var i in p.role) {
+                roles.push(p.role[i].TermID);
+            }
+            string += roles.join(",");
+            string += "</p>";
+        }
+        if (p.address) {
+            string += "<p><strong>Addresses:</strong></p>";
+            for (var i in p.address) {
+                var add = p.address[i];
+                string += "<p>";
+                string += add.City;
+                string += ", ";
+                string += add.State;
+                string += "<br />";
+                string += add.DisplayName2;
+                string += "</p>";
+            }
+        }
         tooltipElement.html(string);
     }
 
@@ -180,7 +207,7 @@
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
                 color: new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : 2,
-                scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 8.0e5, 1)
+                scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
         }
         viewer.flyTo(points);
@@ -220,10 +247,12 @@
 
     disableFacets = function () {
         $("#facets").hide();
+        $("#tooltip").html("").hide();
     }
 
     enableFacets = function () {
         $("#facets").show();
+        $("#tooltip").show();
     }
 
     applyFilters = function () {
@@ -241,6 +270,7 @@
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
         query = "size=" + elasticSize + "&" + query;
         // console.log(facetName, idColumn, valueColumn, value);
+        // reset elastic results to prepare for the new set
         elasticResults = {};
         elasticResults.query = query;
         elasticResults.from = 0;
@@ -267,16 +297,18 @@
     addressesToPoints = function (re) {
         var addresses = [];
         var hits = elasticResults.hits;
-        var i, l = hits.length;
+        var i, j, l = hits.length;
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;
             if (item.address === undefined) continue;
-            var remarks = item.address[0].Remarks.split(",");
-            if (remarks.length !== 2) continue;
-            var lat = parseFloat(remarks[0]);
-            var lon = parseFloat(remarks[1]);
-            var id = item.ConstituentID;
-            addresses.push(lat, lon, id);
+            for (j=0; j<item.address.length; ++j) {
+                var remarks = item.address[j].Remarks.split(",");
+                if (remarks.length !== 2) continue;
+                var lat = parseFloat(remarks[0]);
+                var lon = parseFloat(remarks[1]);
+                var id = item.ConstituentID;
+                addresses.push(lat, lon, id);
+            }
         }
         updatePoints(addresses);
     }

@@ -33,7 +33,12 @@
 
     init = function () {
         initWorld();
+        loadBaseData();
+        initMouseHandler(handler);
+        getFacets();
+    }
 
+    loadBaseData = function () {
         var globe_data;
 
         var r = new XMLHttpRequest();
@@ -44,10 +49,9 @@
           if (r.readyState != 4 || r.status != 200) return;
           globe_data = JSON.parse(r.responseText)[1];
           updatePoints(globe_data);
+          enableFacets();
         };
         r.send(null);
-        initMouseHandler(handler);
-        getFacets();
     }
 
     initWorld = function () {
@@ -224,9 +228,14 @@
 
     applyFilters = function () {
         disableFacets();
+        points.removeAll();
         var facetList = [];
         for (var k in filters) {
             if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
+        }
+        if (facetList.length === 0) {
+            loadBaseData();
+            return;
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";

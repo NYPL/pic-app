@@ -10,7 +10,7 @@
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
     // the way we knoe in elastic if a constituent has latlon-looking data
-    var latlonQuery = "constituentaddresses.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
+    var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
     var elasticSize = 300;
 
     var pickedEntity = undefined;
@@ -22,7 +22,7 @@
     var elasticResults = {};
 
     var facets = [
-        ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "constituentaddresses"],
+        ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
         ["genders", "Gender", "TermID", "Term", "gender"],
         ["processes", "Process", "TermID", "Term", "process"],
@@ -235,8 +235,8 @@
         var i, l = hits.length;
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;
-            if (item.constituentaddresses === undefined) continue;
-            var remarks = item.constituentaddresses[0].Remarks.split(",");
+            if (item.address === undefined) continue;
+            var remarks = item.address[0].Remarks.split(",");
             if (remarks.length !== 2) continue;
             var lat = parseFloat(remarks[0]);
             var lon = parseFloat(remarks[1]);

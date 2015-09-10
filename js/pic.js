@@ -10,7 +10,7 @@
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
     // the way we knoe in elastic if a constituent has latlon-looking data
-    var latlonQuery = "Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
+    var latlonQuery = "constituentaddresses.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
     var elasticSize = 300;
 
     var pickedEntity = undefined;
@@ -22,12 +22,14 @@
     var elasticResults = {};
 
     var facets = [
-        ["addresstypes", "Address Types", "AddressTypeID", "AddressType"],
-        ["nationalities", "Nationality", "Nationality", "Nationality"],
-        ["genders", "Gender", "TermID", "Term"],
-        ["processes", "Process", "TermID", "Term"],
-        ["formats", "Format", "TermID", "Term"]
+        ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "constituentaddresses"],
+        ["nationalities", "Nationality", "Nationality", "Nationality", ""],
+        ["genders", "Gender", "TermID", "Term", "gender"],
+        ["processes", "Process", "TermID", "Term", "process"],
+        ["formats", "Format", "TermID", "Term", "format"]
     ];
+
+    var filters = {};
 
     init = function () {
         initWorld();
@@ -130,7 +132,7 @@
 
     showConstituent = function (id) {
         var realID = id.substr(2);
-        getData("constituents", "ConstituentID:" + realID, updateTooltip);
+        getData("constituent", "q=ConstituentID:" + realID, updateTooltip);
     }
 
     removeTooltip = function () {
@@ -212,36 +214,17 @@
         r.send();
     }
 
-    filterForFacet = function (facetName, value) {
-        var facet = facetWithName(facetName);
-        if (facet === -1) return;
-        var idColumn = facet[2];
-        var valueColumn = facet[3];
-        var addresses = [];
-        var query = "size=300&q=";
-        console.log(facetName, idColumn, valueColumn, value);
-        // addresstypes just need to ping constituents directly (no "join")
-        if (facetName != "addresstypes") {
-            // get all IDs for the given facet
-            query += idColumn + ":" + value;
-            getData(facet[1].toLowerCase(), query, function (r) {
-                // get the latlons for the list of IDs
-                // TODO: serve more than 1000 results
-                var results = JSON.parse(r);
-                if (results.hits.total === 0) return;
-                var idList = [];
-                for (var i=0; i<results.hits.hits.length;++i) {
-                    idList.push(results.hits.hits[i]._source.ConstituentID);
-                }
-                query = "size=300&q=" + "(" + latlonQuery + " AND ConstituentID:("+idList.join(" OR ")+"))";
-                console.log(query);
-                getData("constituentaddresses", query, addressesToPoints);
-            });
-        } else {
-            console.log(query);
-            query = "size=300&q=" + "(" + latlonQuery + " AND (" + facet[2] + ":" + value + "))";
-            getData("constituentaddresses", query, addressesToPoints);
+    applyFilters = function () {
+        var facetList = [];
+        for (var k in filters) {
+            if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
         }
+        var addresses = [];
+        var str = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
+        var query = "size=300&" + str;
+        // console.log(facetName, idColumn, valueColumn, value);
+        console.log(query);
+        getData("constituent", query, addressesToPoints);
     }
 
     addressesToPoints = function (re) {
@@ -252,7 +235,8 @@
         var i, l = hits.length;
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;
-            var remarks = item.Remarks.split(",");
+            if (item.constituentaddresses === undefined) continue;
+            var remarks = item.constituentaddresses[0].Remarks.split(",");
             if (remarks.length !== 2) continue;
             var lat = parseFloat(remarks[0]);
             var lon = parseFloat(remarks[1]);
@@ -266,9 +250,10 @@
         // console.log(r, facet);
         var string = '<label for="'+facet[0]+'">'+facet[1]+'</label>';
         string += '<select id="'+facet[0]+'" name="'+facet[0]+'">';
-        string += '<option value="">Select…</option>';
+        string += '<option value="*">Any</option>';
         string += '</select>';
         facetsElement.append(string);
+        updateFilter(facet[0], "*");
     }
 
     updateFacet = function (r, facet) {
@@ -285,11 +270,21 @@
         el.append(string);
     }
 
+    updateFilter = function (facetName, value) {
+        var facet = facetWithName(facetName);
+        if (facet[4] != "") {
+            filters[facet[4]+"."+facet[2]] = value;
+        } else {
+            filters[facet[2]] = value;
+        }
+    }
+
     onFacetChanged = function (e) {
         var el = e.target;
         var index = el.selectedIndex;
-        var value = el.value
-        filterForFacet(el.id, value);
+        var value = el.value;
+        updateFilter(el.id, value);
+        applyFilters();
     }
 
     addListenersToFacet = function (facet) {

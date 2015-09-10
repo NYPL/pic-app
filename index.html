@@ -8,7 +8,7 @@
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>PIC - Cesium</title>
-  <script src="js/lib/jquery.min.js"></script>
+  <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="js/lib/Cesium/Cesium.js"></script>
   <style>
       @import url(js/lib/Cesium/Widgets/widgets.css);
@@ -18,28 +18,10 @@
 <body>
   <div id="cesiumContainer"></div>
   <div id="tooltip" class="floater"></div>
-  <div id="facets" class="floater"></div>
-  <script>
-
-    // var layers = viewer.imageryLayers;
-    // var layer859 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
-    //     url : 'http://maptiles.nypl.org/859/',
-    //     fileExtension : 'png'
-    // }));
-
-    // var layer860 = layers.addImageryProvider(new Cesium.OpenStreetMapImageryProvider({
-    //     url : 'http://maptiles.nypl.org/860/',
-    //     fileExtension : 'png'
-    // }));
-
-
-
-    // points.add({
-    //   position : new Cesium.Cartesian3.fromDegrees(-74.005941, 40.712784),
-    //   color : Cesium.Color.YELLOW
-    // });
-
-  </script>
+  <div id="facets" class="floater">
+      <p id="totalPoints"></p>
+      <div id="facetList"></div>
+  </div>
   <script src="js/lib/csvToArray.v2.1.js"></script>
   <script src="js/pic.js"></script>
 </body>

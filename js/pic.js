@@ -199,6 +199,7 @@
 
     updatePoints = function (newPoints) {
         points.removeAll();
+        $("#totalPoints").text((newPoints.length/3) + " total points");
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
         for (i=0; i<l; i=i+3) {
@@ -319,7 +320,7 @@
         string += '<select id="'+facet[0]+'" name="'+facet[0]+'">';
         string += '<option value="*">Any</option>';
         string += '</select>';
-        facetsElement.append(string);
+        $("#facetList").append(string);
         updateFilter(facet[0], "*");
     }
 

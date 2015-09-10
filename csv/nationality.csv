@@ -1615,7 +1615,7 @@
 3440,Norwegian
 3441,American
 3442,Dutch
-3443,Morroccan
+3443,Moroccan
 3444,Mexican
 3446,American
 3447,American
@@ -1948,7 +1948,7 @@
 3810,American
 3811,American
 3812,American
-3813,Filipino
+3813,Philippine
 3814,American
 3815,Australian
 3816,American
@@ -2446,7 +2446,7 @@
 4389,American
 4390,American
 4391,German
-4393,Filipino
+4393,Philippine
 4394,American
 4395,American
 4396,American
@@ -7366,7 +7366,7 @@
 28119,German
 28121,American
 28149,Czechoslovakian
-28173,Filipino
+28173,Philippine
 28183,American
 28209,American
 28222,American
@@ -8397,7 +8397,7 @@
 266312,NULL
 266313,American
 266314,American
-266315,NULL
+266315,German
 266316,American
 266317,Dutch
 266318,Italian
@@ -8446,7 +8446,7 @@
 266361,American
 266362,French
 266363,Dutch
-266364,Filipino
+266364,Philippine
 266365,American
 266366,American
 266367,French
@@ -8578,7 +8578,7 @@
 266502,French
 266503,French
 266504,NULL
-266505,NULL
+266505,American
 266506,NULL
 266507,NULL
 266508,NULL
@@ -9270,7 +9270,7 @@
 267255,American
 267256,NULL
 267257,NULL
-267258,NULL
+267258,American
 267260,NULL
 267261,NULL
 267262,NULL
@@ -9399,7 +9399,7 @@
 267396,German
 267397,German
 267398,American
-267399,Icelandic
+267399,Icelander
 267400,American
 267403,American
 267404,German
@@ -10596,7 +10596,7 @@
 268723,NULL
 268724,NULL
 268725,NULL
-268726,NULL
+268726,Belgian
 268727,NULL
 268728,French
 268729,NULL
@@ -12344,7 +12344,7 @@
 270675,American
 270676,American
 270677,American
-270678,Icelandic
+270678,Icelander
 270679,American
 270680,Austrian
 270681,Dutch
@@ -12737,7 +12737,7 @@
 271098,NULL
 271099,NULL
 271100,NULL
-271101,NULL
+271101,American
 271102,American
 271103,NULL
 271104,NULL
@@ -12777,7 +12777,7 @@
 271141,Chinese
 271142,NULL
 271143,NULL
-271144,NULL
+271144,Swiss
 271145,NULL
 271146,Swiss
 271147,Swiss
@@ -12941,7 +12941,7 @@
 271317,American
 271318,Hungarian
 271319,American
-271320,Argentinean
+271320,Argentine
 271321,American
 271322,American
 271323,American
@@ -13396,7 +13396,7 @@
 271831,American
 271832,NULL
 271833,NULL
-271834,Ireland
+271834,Irish
 271835,NULL
 271836,NULL
 271837,NULL
@@ -15100,7 +15100,7 @@
 273679,Mexican
 273680,Spanish
 273681,American
-273682,Ecuadoran
+273682,Ecuadorian
 273683,Peruvian
 273684,Dominican
 273685,Spanish
@@ -15390,7 +15390,7 @@
 274002,Soviet
 274004,American
 274005,American
-274006,Ecuadoran
+274006,Ecuadorian
 274007,American
 274008,American
 274009,American
@@ -15970,7 +15970,7 @@
 274619,French
 274620,Italian
 274622,French
-274624,Icelandic
+274624,Icelander
 274626,German
 274627,American
 274628,Australian
@@ -16037,7 +16037,6 @@
 274699,English
 274700,NULL
 274703,NULL
-274704,NULL
 274705,NULL
 274707,American
 274708,American
@@ -16103,7 +16102,7 @@
 274773,NULL
 274774,NULL
 274775,Spanish
-274776,Argentinean
+274776,Argentine
 274777,Spanish
 274778,American
 274779,NULL
@@ -16117,7 +16116,7 @@
 274787,NULL
 274788,NULL
 274789,NULL
-274790,Columbian
+274790,Colombian
 274791,NULL
 274792,English
 274793,English
@@ -16738,7 +16737,6 @@
 275454,NULL
 275455,NULL
 275456,English
-275457,English
 275458,NULL
 275459,NULL
 275460,NULL
@@ -18861,7 +18859,7 @@
 277771,NULL
 277772,English
 277773,NULL
-277775,NULL
+277775,American
 277776,NULL
 277777,NULL
 277778,NULL
@@ -18959,7 +18957,6 @@
 277874,NULL
 277875,NULL
 277876,NULL
-277877,American
 277878,NULL
 277879,NULL
 277880,NULL
@@ -20388,7 +20385,7 @@
 279407,French
 279408,NULL
 279409,NULL
-279410,NULL
+279410,American
 279411,American
 279412,NULL
 279413,NULL
@@ -21173,7 +21170,7 @@
 280250,NULL
 280251,NULL
 280252,NULL
-280253,IItalian
+280253,Italian
 280254,Austrian
 280255,Austrian
 280256,Spanish
@@ -22419,7 +22416,7 @@
 281612,NULL
 281614,American
 281615,Canadian
-281616,NULL
+281616,American
 281617,NULL
 281618,English
 281619,English
@@ -23098,7 +23095,7 @@
 282346,Belgian
 282347,American
 282348,NULL
-282349,Filipino
+282349,Philippine
 282350,American
 282351,NULL
 282352,American
@@ -23757,7 +23754,7 @@
 283088,NULL
 283089,NULL
 283090,NULL
-283091,NULL
+283091,American
 283092,American
 283093,English
 283094,English
@@ -24049,7 +24046,7 @@
 283407,English
 283408,Australian
 283409,American
-283410,Filipino
+283410,Philippine
 283411,American
 283412,English
 283413,English
@@ -25534,7 +25531,7 @@
 285027,NULL
 285028,American
 285029,NULL
-285030,NULL
+285030,American
 285031,NULL
 285032,American
 285033,Javanese
@@ -25652,7 +25649,7 @@
 285156,Lithuanian
 285157,Scottish
 285158,American
-285159,Icelandic
+285159,Icelander
 285161,French
 285162,American
 285163,French
@@ -26170,7 +26167,7 @@
 285719,NULL
 285720,NULL
 285721,NULL
-285722,NULL
+285722,American
 285723,NULL
 285724,American
 285726,NULL
@@ -27902,7 +27899,7 @@
 287600,German
 287601,NULL
 287602,Italian
-287603,Filipino
+287603,Philippine
 287604,English
 287605,English
 287607,NULL
@@ -27988,7 +27985,7 @@
 287691,NULL
 287692,NULL
 287693,NULL
-287694,NULL
+287694,American
 287695,Belgian
 287696,NULL
 287697,French
@@ -28467,7 +28464,7 @@
 288213,NULL
 288214,German
 288215,German
-288216,NULL
+288216,French
 288217,NULL
 288218,South African
 288219,NULL
@@ -29019,7 +29016,7 @@
 288817,NULL
 288818,NULL
 288819,American
-288820,NULL
+288820,American
 288821,NULL
 288822,NULL
 288823,American
@@ -29561,7 +29558,7 @@
 289399,NULL
 289400,NULL
 289401,NULL
-289402,NULL
+289402,American
 289403,NULL
 289404,NULL
 289405,NULL
@@ -29583,7 +29580,7 @@
 289424,German
 289425,German
 289426,NULL
-289427,NULL
+289427,American
 289428,American
 289430,NULL
 289431,NULL
@@ -30519,7 +30516,7 @@
 290439,American
 290440,American
 290441,American
-290442,Bermudan
+290442,Bermudian
 290443,English
 290444,NULL
 290445,American
@@ -31333,7 +31330,7 @@
 291351,American
 291352,American
 291353,American
-291354,NULL
+291354,American
 291355,NULL
 291356,French
 291357,Italian
@@ -32317,7 +32314,7 @@
 292424,American
 292425,American
 292426,Russian
-292427,Ecuadoran
+292427,Ecuadorian
 292428,French
 292429,French
 292431,American
@@ -32876,7 +32873,7 @@
 293018,American
 293019,Polish
 293020,French
-293021,Ecuadoran
+293021,Ecuadorian
 293022,American
 293023,Italian
 293024,American
@@ -33957,7 +33954,7 @@
 294178,American
 294179,American
 294181,French
-294182,Filipino
+294182,Philippine
 294183,Swiss
 294184,English
 294185,American
@@ -35042,7 +35039,7 @@
 295342,American
 295343,New Zealander
 295344,American
-295345,Bermudan
+295345,Bermudian
 295346,French
 295347,French
 295348,Belgian
@@ -38283,7 +38280,7 @@
 298830,American
 298831,American
 298832,American
-298833,Filipino
+298833,Philippine
 298834,American
 298835,Japanese
 298836,Japanese
@@ -41579,7 +41576,7 @@
 302383,Austrian
 302384,NULL
 302385,NULL
-302386,Filipino
+302386,Philippine
 302387,Spanish
 302388,British
 302389,Spanish
@@ -42164,7 +42161,7 @@
 303006,Japanese
 303007,Japanese
 303008,Dutch
-303009,Icelandic
+303009,Icelander
 303010,Spanish
 303011,American
 303012,Mexican
@@ -42963,7 +42960,7 @@
 303890,Australian
 303891,German
 303893,American
-303894,Bermudan
+303894,Bermudian
 303895,American
 303896,American
 303897,English
@@ -44504,7 +44501,6 @@
 305557,American
 305558,English
 305560,American
-305561,English
 305562,British
 305563,French
 305564,English
@@ -45723,7 +45719,7 @@
 306862,English
 306863,Greek
 306864,Canadian
-306865,Filipino
+306865,Philippine
 306866,American
 306867,French
 306868,English
@@ -48079,7 +48075,7 @@
 309465,American
 309466,American
 309467,American
-309468,Bermudan
+309468,Bermudian
 309469,NULL
 309470,German
 309471,NULL
@@ -48774,7 +48770,7 @@
 310207,American
 310208,American
 310209,American
-310210,Ukranian
+310210,Ukrainian
 310211,American
 310212,American
 310213,American
@@ -51616,7 +51612,7 @@
 313311,American
 313312,American
 313313,English
-313314,Bermudan
+313314,Bermudian
 313315,American
 313317,American
 313318,British
@@ -52050,7 +52046,7 @@
 313773,American
 313774,NULL
 313775,Scottish
-313776,NULL
+313776,New Zealander
 313777,NULL
 313778,American
 313779,American
@@ -52289,7 +52285,7 @@
 314038,English
 314039,Japanese
 314040,Italian
-314041,Ghanian
+314041,Ghanaian
 314042,Spanish
 314043,English
 314044,French
@@ -54002,7 +53998,7 @@
 315875,American
 315876,English
 315877,English
-315878,NULL
+315878,Canadian
 315880,American
 315881,NULL
 315882,NULL
@@ -55364,7 +55360,7 @@
 317366,American
 317367,German
 317368,American
-317369,Icelandic
+317369,Icelander
 317370,French
 317371,Spanish
 317372,Spanish
@@ -55514,7 +55510,7 @@
 317529,NULL
 317530,NULL
 317531,Austrian
-317532,NULL
+317532,American
 317533,NULL
 317534,NULL
 317535,NULL
@@ -56289,7 +56285,7 @@
 318375,Norwegian
 318376,NULL
 318377,NULL
-318378,NULL
+318378,American
 318379,NULL
 318380,NULL
 318381,NULL
@@ -56341,7 +56337,7 @@
 318433,Argentine
 318434,German
 318435,American
-318436,Icelandic
+318436,Icelander
 318437,English
 318439,American
 318440,Scottish
@@ -56917,7 +56913,7 @@
 319080,German
 319081,NULL
 319082,NULL
-319083,NULL
+319083,American
 319084,NULL
 319085,NULL
 319086,American
@@ -60649,7 +60645,6 @@
 323104,German
 323105,Swiss
 323106,American
-323107,NULL
 323108,American
 323109,NULL
 323110,American
@@ -60981,7 +60976,6 @@
 323460,Norwegian
 323461,English
 323462,American
-323463,American
 323464,German
 323465,American
 323466,German
@@ -69591,7 +69585,7 @@
 332930,French
 332931,Hungarian
 332932,Polish
-332933,Filipino
+332933,Philippine
 332934,American
 332935,Austrian
 332936,English
@@ -69776,7 +69770,7 @@
 333126,Czechoslovakian
 333127,Belgian
 333128,French
-333129,Filipino
+333129,Philippine
 333130,Austrian
 333131,German
 333132,Italian
@@ -70253,7 +70247,7 @@
 333636,Belgian
 333637,French
 333638,English
-333639,Slovakian
+333639,Slovak
 333640,American
 333641,French
 333642,Italian
@@ -70794,7 +70788,7 @@
 334210,Chinese
 334211,NULL
 334212,NULL
-334213,Filipino
+334213,Philippine
 334214,NULL
 334215,Russian
 334216,Chinese
@@ -71170,7 +71164,7 @@
 334605,Belgian
 334606,American
 334607,American
-334608,Icelandic
+334608,Icelander
 334609,Swiss
 334610,Polish
 334611,Scottish
@@ -73485,7 +73479,7 @@
 337065,Hungarian
 337066,French
 337067,Czech
-337068,Filipino
+337068,Philippine
 337069,American
 337070,Scottish
 337071,American
@@ -73521,7 +73515,7 @@
 337104,French
 337105,Italian
 337106,German
-337107,NULL
+337107,American
 337108,American
 337109,Indian
 337110,Indian
@@ -73657,7 +73651,7 @@
 337251,NULL
 337252,NULL
 337253,American
-337254,NULL
+337254,American
 337255,American
 337256,Canadian
 337257,American
@@ -73960,7 +73954,7 @@
 337567,Soviet
 337568,English
 337569,English
-337570,NULL
+337570,American
 337571,American
 337572,Italian
 337573,Danish
@@ -74335,7 +74329,7 @@
 337971,French
 337972,Norwegian
 337973,American
-337974,Icelandic
+337974,Icelander
 337975,Czechoslovakian
 337976,Hungarian
 337978,NULL
@@ -74569,7 +74563,7 @@
 338214,NULL
 338215,Indian
 338216,English
-338218,Icelandic
+338218,Icelander
 338219,English
 338220,English
 338221,Italian
@@ -74814,7 +74808,7 @@
 338471,Russian
 338472,Belgian
 338473,Italian
-338474,Icelandic
+338474,Icelander
 338475,Swiss
 338476,Japanese
 338477,American
@@ -75634,7 +75628,7 @@
 339637,American
 339638,American
 339641,American
-339642,Bermudan
+339642,Bermudian
 339646,American
 339648,Swiss
 339649,American
@@ -76917,7 +76911,7 @@
 341516,American
 341522,Mexican
 341543,American
-341546,Icelandic
+341546,Icelander
 341554,NULL
 341555,NULL
 341556,NULL
@@ -88821,7 +88815,7 @@
 357640,American
 357641,American
 357642,American
-357643,Columbian
+357643,Colombian
 357644,American
 357645,American
 357646,American
@@ -89007,7 +89001,7 @@
 357829,American
 357830,American
 357831,American
-357832,Filipino
+357832,Philippine
 357833,American
 357834,American
 357835,American
@@ -91552,7 +91546,7 @@
 360390,American
 360391,American
 360392,American
-360393,Filipino
+360393,Philippine
 360394,American
 360395,American
 360396,American
@@ -102445,7 +102439,7 @@
 372363,English
 372364,English
 372365,Austrian
-372366,Switss
+372366,Swiss
 372367,English
 372368,English
 372369,English
@@ -106116,7 +106110,7 @@
 376332,Australian
 376333,South African
 376334,Malaysian
-376335,Scotish
+376335,Scottish
 376336,British
 376337,Honduran
 376338,Trinidadian
@@ -107288,6 +107282,7 @@
 377705,Dutch
 377711,German
 377713,American
+377722,Japanese
 377724,Japanese
 377734,American
 377810,American

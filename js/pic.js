@@ -19,7 +19,7 @@
 
     var facetsElement = $("#facets");
 
-    var elasticResults = {};
+    this.elasticResults = {};
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
@@ -176,7 +176,7 @@
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
                 color: new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : 2,
-                scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 9.0e5, 1)
+                scaleByDistance : new Cesium.NearFarScalar(2.0e2, 5, 8.0e5, 1)
             });
         }
         viewer.flyTo(points);
@@ -214,24 +214,50 @@
         r.send();
     }
 
+    disableFacets = function () {
+        $("#facets").hide();
+    }
+
+    enableFacets = function () {
+        $("#facets").show();
+    }
+
     applyFilters = function () {
+        disableFacets();
         var facetList = [];
         for (var k in filters) {
             if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
         }
         var addresses = [];
-        var str = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        var query = "size=300&" + str;
+        var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
+        query = "size=" + elasticSize + "&" + query;
         // console.log(facetName, idColumn, valueColumn, value);
-        console.log(query);
-        getData("constituent", query, addressesToPoints);
+        elasticResults = {};
+        elasticResults.query = query;
+        elasticResults.from = 0;
+        elasticResults.hits = [];
+        getData("constituent", query, getNextSet);
+    }
+
+    getNextSet = function (re) {
+        var results = JSON.parse(re);
+        // console.log(results);
+        elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
+        if (results.hits.total > elasticResults.from + elasticSize) {
+            // keep going
+            var query = elasticResults.query;
+            elasticResults.from += elasticSize;
+            query = "from=" + elasticResults.from + "&" + query;
+            getData("constituent", query, getNextSet);
+        } else {
+            addressesToPoints();
+            enableFacets();
+        }
     }
 
     addressesToPoints = function (re) {
         var addresses = [];
-        var results = JSON.parse(re);
-        console.log(results);
-        var hits = results.hits.hits;
+        var hits = elasticResults.hits;
         var i, l = hits.length;
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;

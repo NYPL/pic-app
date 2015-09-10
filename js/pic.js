@@ -161,7 +161,7 @@
             for (var i in p.role) {
                 roles.push(p.role[i].TermID);
             }
-            string += roles.join(",");
+            string += roles.join(", ");
             string += "</p>";
         }
         if (p.address) {

@@ -11,7 +11,7 @@
 
     // the way we knoe in elastic if a constituent has latlon-looking data
     var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
-    var elasticSize = 300;
+    var elasticSize = 500;
 
     var pickedEntity = undefined;
 
@@ -50,7 +50,8 @@
         r.onreadystatechange = function () {
           if (r.readyState != 4 || r.status != 200) return;
           globe_data = JSON.parse(r.responseText)[1];
-          updatePoints(globe_data);
+          addPoints(globe_data);
+          updateTotals(globe_data.length/3);
           enableFacets();
         };
         r.send(null);
@@ -197,9 +198,8 @@
         r.send();
     }
 
-    updatePoints = function (newPoints) {
-        points.removeAll();
-        $("#totalPoints").text((newPoints.length/3) + " total points");
+    addPoints = function (newPoints) {
+        // points.removeAll();
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
         for (i=0; i<l; i=i+3) {
@@ -247,12 +247,12 @@
     }
 
     disableFacets = function () {
-        $("#facets").hide();
+        $("#facets select").prop('disabled', 'disabled');
         $("#tooltip").html("").hide();
     }
 
     enableFacets = function () {
-        $("#facets").show();
+        $("#facets select").prop('disabled', '');
         $("#tooltip").show();
     }
 
@@ -269,35 +269,44 @@
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "size=" + elasticSize + "&" + query;
-        // console.log(facetName, idColumn, valueColumn, value);
+        query = "_source=ConstituentID,address&size=" + elasticSize + "&" + query;
+        console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};
         elasticResults.query = query;
         elasticResults.from = 0;
         elasticResults.hits = [];
+        elasticResults.total = 0;
         getData("constituent", query, getNextSet);
     }
 
     getNextSet = function (re) {
         var results = JSON.parse(re);
         // console.log(results);
-        elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
+        elasticResults.total += results.hits.hits.length;
+        // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
         if (results.hits.total > elasticResults.from + elasticSize) {
+            addressesToPoints(results.hits.hits);
             // keep going
             var query = elasticResults.query;
             elasticResults.from += elasticSize;
             query = "from=" + elasticResults.from + "&" + query;
             getData("constituent", query, getNextSet);
         } else {
-            addressesToPoints();
             enableFacets();
         }
+        updateTotals();
     }
 
-    addressesToPoints = function (re) {
+    updateTotals = function (total) {
+        if (total === undefined) total = elasticResults.total;
+        $("#totalPoints").text(total + " total locations");
+    }
+
+    addressesToPoints = function (hits) {
         var addresses = [];
-        var hits = elasticResults.hits;
+        // var hits = elasticResults.hits;
+        // console.log(elasticResults);
         var i, j, l = hits.length;
         for (i=0; i<l; ++i) {
             var item = hits[i]._source;
@@ -311,7 +320,7 @@
                 addresses.push(lat, lon, id);
             }
         }
-        updatePoints(addresses);
+        addPoints(addresses);
     }
 
     createFacet = function (facet) {

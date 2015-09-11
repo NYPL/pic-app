@@ -19,11 +19,12 @@ html, body, #cesiumContainer {
 }
 
 #facets {
-    height: 220px;
+    height: 250px;
 }
 
 #tooltip {
-    top: 222px;
+    top: 250px;
+    border-top: 2px solid black;
 }
 
 .floater p, .floater div {

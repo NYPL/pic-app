@@ -21,6 +21,8 @@
 
     this.elasticResults = {};
 
+    var pixelSize = 2;
+
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
@@ -94,10 +96,20 @@
     }
 
     clearPicked = function (picked) {
-        if (pickedEntity != undefined) {
-            pickedEntity.primitive.color = new Cesium.Color(1, 0.01, 0.01, 1);
+        if (picked !== pickedEntity) {
+            if (pickedEntity != undefined) {
+                // revert properties
+                pickedEntity.entity.primitive.color = pickedEntity.color;
+                pickedEntity.entity.primitive.pixelSize = pixelSize;
+            }
+            pickedEntity = {
+                color: Cesium.clone(picked.primitive.color),
+                entity: picked
+            };
+            // apply new properties
+            picked.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
+            pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
         }
-        pickedEntity = picked;
     }
 
     initMouseHandler = function (handler) {
@@ -118,10 +130,7 @@
             // pick
             var pickedObject = scene.pick(movement.endPosition);
             if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
-                if (pickedObject !== pickedEntity) {
-                    clearPicked(pickedObject);
-                    pickedObject.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
-                }
+                clearPicked(pickedObject);
                 // console.log("thing:", pickedObject.primitive);
                 // console.log("first:", pickedObject.color);
                 // console.log("then:", pickedObject.color);
@@ -215,7 +224,7 @@
                 id: "P_"+newPoints[i+2],
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
                 color: addressTypePalette[newPoints[i+3]],//new Cesium.Color(1, 0.01, 0.01, 1),
-                pixelSize : 2,
+                pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
         }
@@ -291,7 +300,6 @@
     getNextSet = function (re) {
         var results = JSON.parse(re);
         // console.log(results);
-        elasticResults.total += results.hits.hits.length;
         // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
         if (results.hits.total > elasticResults.from + elasticSize) {
             addressesToPoints(results.hits.hits);
@@ -326,6 +334,7 @@
                 var lon = parseFloat(remarks[1]);
                 var id = item.ConstituentID;
                 var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
+                elasticResults.total++;
                 addresses.push(lat, lon, id, tid);
             }
         }

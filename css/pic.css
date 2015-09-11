@@ -14,6 +14,10 @@ html, body, #cesiumContainer {
     overflow-y: scroll;
 }
 
+.legend {
+    font-size: 10px;
+}
+
 #facets {
     height: 220px;
 }

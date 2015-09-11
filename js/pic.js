@@ -29,6 +29,14 @@
         ["formats", "Format", "TermID", "Term", "format"]
     ];
 
+    var addressTypePalette = {
+        "2": new Cesium.Color(0.01, 1, 1, 1), // biz
+        "5": new Cesium.Color(0.01, 1, 0.01, 1), // birth
+        "6": new Cesium.Color(0.01, 0.01, 1, 1), // death
+        "7": new Cesium.Color(1, 0.01, 0.01, 1), // active
+        "1": new Cesium.Color(1, 0.01, 1, 1), // active
+    };
+
     var facetValues = [];
 
     var filters = {};
@@ -51,7 +59,7 @@
           if (r.readyState != 4 || r.status != 200) return;
           globe_data = JSON.parse(r.responseText)[1];
           addPoints(globe_data);
-          updateTotals(globe_data.length/3);
+          updateTotals(globe_data.length/4);
           enableFacets();
         };
         r.send(null);
@@ -202,11 +210,11 @@
         // points.removeAll();
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
-        for (i=0; i<l; i=i+3) {
+        for (i=0; i<l; i=i+4) {
             points.add({
                 id: "P_"+newPoints[i+2],
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
-                color: new Cesium.Color(1, 0.01, 0.01, 1),
+                color: addressTypePalette[newPoints[i+3]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : 2,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
@@ -317,7 +325,8 @@
                 var lat = parseFloat(remarks[0]);
                 var lon = parseFloat(remarks[1]);
                 var id = item.ConstituentID;
-                addresses.push(lat, lon, id);
+                var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
+                addresses.push(lat, lon, id, tid);
             }
         }
         addPoints(addresses);

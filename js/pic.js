@@ -141,7 +141,7 @@
                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
 
-                    showConstituent(pickedObject.id);
+                    showConstituent(pickedObject.name);
                 }
             } else {
                 // removeTooltip();
@@ -219,11 +219,12 @@
         // points.removeAll();
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
-        for (i=0; i<l; i=i+4) {
+        for (i=0; i<l; i=i+5) {
             points.add({
-                id: "P_"+newPoints[i+2],
+                id: "P_"+newPoints[i+3],
+                name: newPoints[i+2],
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
-                color: addressTypePalette[newPoints[i+3]],//new Cesium.Color(1, 0.01, 0.01, 1),
+                color: addressTypePalette[newPoints[i+4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });

@@ -61,7 +61,7 @@
           if (r.readyState != 4 || r.status != 200) return;
           globe_data = JSON.parse(r.responseText)[1];
           addPoints(globe_data);
-          updateTotals(globe_data.length/4);
+          updateTotals(globe_data.length/5);
           enableFacets();
         };
         r.send(null);
@@ -334,9 +334,10 @@
                 var lat = parseFloat(remarks[0]);
                 var lon = parseFloat(remarks[1]);
                 var id = item.ConstituentID;
+                var cid = item.address[j].ConAddressID;
                 var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
                 elasticResults.total++;
-                addresses.push(lat, lon, id, tid);
+                addresses.push(lat, lon, id, cid, tid);
             }
         }
         addPoints(addresses);

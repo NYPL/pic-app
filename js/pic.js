@@ -20,12 +20,9 @@
     var facetsElement = $("#facets");
 
     this.elasticResults = {};
+    this.pointIndices = [];
 
     var pixelSize = 2;
-
-    var firstLoad = true;
-
-    this.pointIndices = [];
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
@@ -55,13 +52,6 @@
     }
 
     loadBaseData = function () {
-        if (!firstLoad) {
-            showAllPoints(true);
-            return;
-        }
-
-        firstLoad = false;
-
         var globe_data;
 
         var r = new XMLHttpRequest();
@@ -227,7 +217,7 @@
     }
 
     addPoints = function (newPoints) {
-        // hideAllPoints();
+        // points.removeAll();
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
         for (i=0; i<l; i=i+5) {
@@ -285,28 +275,14 @@
         $("#tooltip").show();
     }
 
-    showPoints = function (ids) {
-        console.log(ids);
-        var i, l = ids.length;
-        for (i=0; i<l; i++) {
-            var index = pointIndices.indexOf(parseInt(ids[i]));
-            var p = points.get(index);
-            if (!p) continue;
-            p.show = true;
-        }
-    }
-
-    showAllPoints = function (visible) {
-        var i, l = points.length;
-        for (i=0; i<l; ++i) {
-            var p = points.get(i);
-            p.show = visible;
-        }
+    removePoints = function () {
+        points.removeAll();
+        pointIndices = [];
     }
 
     applyFilters = function () {
         disableFacets();
-        showAllPoints(false);
+        removePoints();
         var facetList = [];
         for (var k in filters) {
             if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
@@ -317,7 +293,7 @@
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "_source=address.ConAddressID&size=" + elasticSize + "&" + query;
+        query = "_source=ConstituentID,address&size=" + elasticSize + "&" + query;
         console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};
@@ -330,10 +306,9 @@
 
     getNextSet = function (re) {
         var results = JSON.parse(re);
-        // console.log(results);
+        console.log(results);
         // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
         if (results.hits.total > elasticResults.from + elasticSize) {
-            addressesToPoints(results.hits.hits);
             // keep going
             var query = elasticResults.query;
             elasticResults.from += elasticSize;
@@ -342,6 +317,7 @@
         } else {
             enableFacets();
         }
+        addressesToPoints(results.hits.hits);
         updateTotals();
     }
 
@@ -352,6 +328,7 @@
 
     addressesToPoints = function (hits) {
         var addresses = [];
+        var addressType = $("#"+facets[0][0]).val();
         // var hits = elasticResults.hits;
         // console.log(elasticResults);
         var i, j, l = hits.length;
@@ -359,18 +336,21 @@
             var item = hits[i]._source;
             if (item.address === undefined) continue;
             for (j=0; j<item.address.length; ++j) {
-                // var remarks = item.address[j].Remarks.split(",");
-                // if (remarks.length !== 2) continue;
-                // var lat = parseFloat(remarks[0]);
-                // var lon = parseFloat(remarks[1]);
-                // var id = item.ConstituentID;
+                var remarks = item.address[j].Remarks.split(",");
+                if (remarks.length !== 2) continue;
+                // hack, because elastic returns all addresses of a given id
+                var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
+                if (addressType != "*" && tid != addressType) continue;
+                // end hack
+                var lat = parseFloat(remarks[0]);
+                var lon = parseFloat(remarks[1]);
+                var id = item.ConstituentID;
                 var cid = item.address[j].ConAddressID;
-                // var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
                 elasticResults.total++;
-                addresses.push(cid);
+                addresses.push(lat, lon, id, cid, tid);
             }
         }
-        showPoints(addresses);
+        addPoints(addresses);
     }
 
     createFacet = function (facet) {

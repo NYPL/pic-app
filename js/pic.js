@@ -23,6 +23,10 @@
 
     var pixelSize = 2;
 
+    var firstLoad = true;
+
+    this.pointIndices = [];
+
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
@@ -51,6 +55,13 @@
     }
 
     loadBaseData = function () {
+        if (!firstLoad) {
+            showAllPoints(true);
+            return;
+        }
+
+        firstLoad = false;
+
         var globe_data;
 
         var r = new XMLHttpRequest();
@@ -141,7 +152,7 @@
                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
 
-                    showConstituent(pickedObject.name);
+                    showConstituent(pickedObject.id);
                 }
             } else {
                 // removeTooltip();
@@ -216,18 +227,18 @@
     }
 
     addPoints = function (newPoints) {
-        // points.removeAll();
+        // hideAllPoints();
         if (newPoints.length === 0) return;
         var i, l=newPoints.length;
         for (i=0; i<l; i=i+5) {
             points.add({
-                id: "P_"+newPoints[i+3],
-                name: newPoints[i+2],
+                id: "P_"+newPoints[i+2],
                 position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
                 color: addressTypePalette[newPoints[i+4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
+            pointIndices.push(newPoints[i+3]);
         }
         viewer.flyTo(points);
     }
@@ -274,9 +285,28 @@
         $("#tooltip").show();
     }
 
+    showPoints = function (ids) {
+        console.log(ids);
+        var i, l = ids.length;
+        for (i=0; i<l; i++) {
+            var index = pointIndices.indexOf(parseInt(ids[i]));
+            var p = points.get(index);
+            if (!p) continue;
+            p.show = true;
+        }
+    }
+
+    showAllPoints = function (visible) {
+        var i, l = points.length;
+        for (i=0; i<l; ++i) {
+            var p = points.get(i);
+            p.show = visible;
+        }
+    }
+
     applyFilters = function () {
         disableFacets();
-        points.removeAll();
+        showAllPoints(false);
         var facetList = [];
         for (var k in filters) {
             if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
@@ -287,7 +317,7 @@
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "_source=ConstituentID,address&size=" + elasticSize + "&" + query;
+        query = "_source=address.ConAddressID&size=" + elasticSize + "&" + query;
         console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};
@@ -329,18 +359,18 @@
             var item = hits[i]._source;
             if (item.address === undefined) continue;
             for (j=0; j<item.address.length; ++j) {
-                var remarks = item.address[j].Remarks.split(",");
-                if (remarks.length !== 2) continue;
-                var lat = parseFloat(remarks[0]);
-                var lon = parseFloat(remarks[1]);
-                var id = item.ConstituentID;
+                // var remarks = item.address[j].Remarks.split(",");
+                // if (remarks.length !== 2) continue;
+                // var lat = parseFloat(remarks[0]);
+                // var lon = parseFloat(remarks[1]);
+                // var id = item.ConstituentID;
                 var cid = item.address[j].ConAddressID;
-                var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
+                // var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
                 elasticResults.total++;
-                addresses.push(lat, lon, id, cid, tid);
+                addresses.push(cid);
             }
         }
-        addPoints(addresses);
+        showPoints(addresses);
     }
 
     createFacet = function (facet) {

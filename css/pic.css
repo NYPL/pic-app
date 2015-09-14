@@ -4,14 +4,13 @@ html, body, #cesiumContainer {
     font-size: 14px;
 }
 
-.floater {
+
+#overlays {
     background-color: #ccc;
     position: absolute;
     width: 300px;
-    height: 300px;
     top: 0;
     left: 0;
-    overflow-y: scroll;
 }
 
 .legend {
@@ -19,18 +18,16 @@ html, body, #cesiumContainer {
 }
 
 #facets {
-    height: 250px;
 }
 
 #tooltip {
-    top: 250px;
     border-top: 2px solid black;
 }
 
-.floater p, .floater div {
+#totalPoints, #facets, #tooltip {
     margin: 5px;
 }
 
-.floater label, .floater select {
+#overlays label, #overlays select {
     display: block;
 }

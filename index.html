@@ -16,14 +16,17 @@
   </style>
 </head>
 <body>
-  <div id="cesiumContainer"></div>
-  <div id="tooltip" class="floater"></div>
-  <div id="facets" class="floater">
-      <p id="totalPoints"></p>
-      <div id="facetList">
-          <p class="legend">(Cyan=Business, Green=Born, Blue=Died, Red=Active in)</p>
-      </div>
-  </div>
+    <div id="credits"></div>
+    <div id="cesiumContainer"></div>
+    <div id="overlays">
+        <p id="totalPoints"></p>
+        <div id="facets">
+            <div id="facetList">
+                <p class="legend">(Cyan=Business, Green=Born, Blue=Died, Red=Active in)</p>
+            </div>
+        </div>
+        <div id="tooltip"></div>
+    </div>
   <script src="js/lib/csvToArray.v2.1.js"></script>
   <script src="js/pic.js"></script>
 </body>

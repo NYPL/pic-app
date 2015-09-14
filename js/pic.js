@@ -30,8 +30,11 @@
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
         ["genders", "Gender", "TermID", "Term", "gender"],
         ["processes", "Process", "TermID", "Term", "process"],
+        ["roles", "Role", "TermID", "Term", "role"],
         ["formats", "Format", "TermID", "Term", "format"]
     ];
+
+    var facetValues = {};
 
     var addressTypePalette = {
         "2": new Cesium.Color(0.01, 1, 1, 1), // biz
@@ -40,8 +43,6 @@
         "7": new Cesium.Color(1, 0.01, 0.01, 1), // active
         "1": new Cesium.Color(1, 0.01, 1, 1), // active
     };
-
-    var facetValues = [];
 
     var filters = {};
 
@@ -99,6 +100,11 @@
           ,infoBox : false
           ,timeline : false
           ,animation : false
+          ,navigationHelpButton : false
+          ,navigationInstructionsInitiallyVisible : false
+          ,mapProjection : new Cesium.WebMercatorProjection()
+          ,creditContainer : "credits"
+          ,sceneMode : Cesium.SceneMode.SCENE2D
         });
 
         scene = viewer.scene;
@@ -192,13 +198,13 @@
         string += "<p>ID:" + p.ConstituentID + "</p>";
         string += "<p>" + p.DisplayDate + "</p>";
         string += "<p>" + p.Nationality + "</p>";
-        if (p.gender) string += "<p>" + p.gender[0].TermID + "</p>";
+        if (p.gender) string += "<p>" + facetValues.genders[p.gender[0].TermID] + "</p>";
         if (p.role) {
             string += "<p><strong>Roles:</strong></p>";
             string += "<p>";
             var roles = [];
             for (var i in p.role) {
-                roles.push(p.role[i].TermID);
+                roles.push(facetValues.roles[p.role[i].TermID]);
             }
             string += roles.join(", ");
             string += "</p>";
@@ -249,6 +255,7 @@
             var tid = p[4];
             if (addressType != "*" && tid != addressType) continue;
             // end hack
+            elasticResults.total++;
             points.add({
                 id: "P_"+p[2],
                 position : new Cesium.Cartesian3.fromDegrees(p[1], p[0]),
@@ -257,6 +264,7 @@
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
         }
+        updateTotals();
     }
 
     facetWithName = function (name) {
@@ -343,7 +351,6 @@
             enableFacets();
         }
         addressesToPoints(results.hits.hits);
-        updateTotals();
     }
 
     addressesToPoints = function (hits) {
@@ -365,7 +372,6 @@
                 // var lon = parseFloat(remarks[1]);
                 // var id = item.ConstituentID;
                 // var cid = item.address[j].ConAddressID;
-                elasticResults.total++;
                 addresses.push(item.address[j].ConAddressID);
             }
         }
@@ -379,12 +385,14 @@
 
     createFacet = function (facet) {
         // console.log(r, facet);
-        var string = '<label for="'+facet[0]+'">'+facet[1]+'</label>';
-        string += '<select id="'+facet[0]+'" name="'+facet[0]+'">';
+        var f = facet[0];
+        var string = '<label for="'+f+'">'+facet[1]+'</label>';
+        string += '<select id="'+f+'" name="'+f+'">';
         string += '<option value="*">Any</option>';
         string += '</select>';
         $("#facetList").append(string);
-        updateFilter(facet[0], "*");
+        facetValues[f] = {};
+        updateFilter(f, "*");
     }
 
     updateFacet = function (r, facet) {
@@ -393,10 +401,12 @@
         var el = $("#"+facet[0]);
         var idColumn = data[0].indexOf(facet[2]);
         var valueColumn = data[0].indexOf(facet[3]);
+        facetValues[facet[0]] = {};
         var i, l=data.length;
         var string = "";
         for (i=1; i<l; i++) {
             string += '<option value="'+data[i][idColumn]+'">'+data[i][valueColumn]+'</option>';
+            facetValues[facet[0]][data[i][idColumn]] = data[i][valueColumn];
         }
         el.append(string);
     }

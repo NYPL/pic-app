@@ -11,7 +11,7 @@
 
     // the way we knoe in elastic if a constituent has latlon-looking data
     var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
-    var elasticSize = 500;
+    var elasticSize = 1000;
 
     var pickedEntity = undefined;
 
@@ -20,7 +20,8 @@
     var facetsElement = $("#facets");
 
     this.elasticResults = {};
-    this.pointIndices = [];
+    this.pointHash = {};
+    this.allIDs = [];
 
     var pixelSize = 2;
 
@@ -52,20 +53,39 @@
     }
 
     loadBaseData = function () {
-        var globe_data;
-
         var r = new XMLHttpRequest();
 
         r.open("GET", "csv/latlons.txt", true);
 
         r.onreadystatechange = function () {
           if (r.readyState != 4 || r.status != 200) return;
-          globe_data = JSON.parse(r.responseText)[1];
-          addPoints(globe_data);
-          updateTotals(globe_data.length/5);
-          enableFacets();
+          var baseData = JSON.parse(r.responseText)[1];
+          parseBaseData(baseData);
+          displayBaseData();
         };
         r.send(null);
+    }
+
+    parseBaseData = function (baseData) {
+        var i, l = baseData.length;
+        pointHash = {};
+        for (i=0; i<l; i=i+5) {
+            var cid = baseData[i+3];
+            pointHash[cid] = [
+                baseData[i],
+                baseData[i+1],
+                baseData[i+2],
+                cid,
+                baseData[i+4]
+            ];
+            allIDs.push(cid);
+        }
+    }
+
+    displayBaseData = function () {
+        addPoints(allIDs);
+        updateTotals(allIDs.length);
+        enableFacets();
     }
 
     initWorld = function () {
@@ -218,19 +238,25 @@
 
     addPoints = function (newPoints) {
         // points.removeAll();
-        if (newPoints.length === 0) return;
-        var i, l=newPoints.length;
-        for (i=0; i<l; i=i+5) {
+        // if (newPoints.length === 0) return;
+        // console.log(newPoints);
+        var addressType = $("#"+facets[0][0]).val();
+        var i, l = newPoints.length;
+        for (i=0; i<l; i++) {
+            var p = pointHash[newPoints[i]];
+            if (!p) continue;
+            // hack, because elastic returns all addresses of a given id
+            var tid = p[4];
+            if (addressType != "*" && tid != addressType) continue;
+            // end hack
             points.add({
-                id: "P_"+newPoints[i+2],
-                position : new Cesium.Cartesian3.fromDegrees(newPoints[i+1], newPoints[i]),
-                color: addressTypePalette[newPoints[i+4]],//new Cesium.Color(1, 0.01, 0.01, 1),
+                id: "P_"+p[2],
+                position : new Cesium.Cartesian3.fromDegrees(p[1], p[0]),
+                color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
-            pointIndices.push(newPoints[i+3]);
         }
-        viewer.flyTo(points);
     }
 
     facetWithName = function (name) {
@@ -277,7 +303,6 @@
 
     removePoints = function () {
         points.removeAll();
-        pointIndices = [];
     }
 
     applyFilters = function () {
@@ -288,12 +313,12 @@
             if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
         }
         if (facetList.length === 0) {
-            loadBaseData();
+            displayBaseData();
             return;
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "_source=ConstituentID,address.ConAddressID,address.AddressTypeID,address.Remarks&size=" + elasticSize + "&" + query;
+        query = "_source=address.ConAddressID&size=" + elasticSize + "&" + query;
         console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};
@@ -321,14 +346,8 @@
         updateTotals();
     }
 
-    updateTotals = function (total) {
-        if (total === undefined) total = elasticResults.total;
-        $("#totalPoints").text(total + " total locations");
-    }
-
     addressesToPoints = function (hits) {
         var addresses = [];
-        var addressType = $("#"+facets[0][0]).val();
         // var hits = elasticResults.hits;
         // console.log(elasticResults);
         var i, j, l = hits.length;
@@ -336,21 +355,26 @@
             var item = hits[i]._source;
             if (item.address === undefined) continue;
             for (j=0; j<item.address.length; ++j) {
-                var remarks = item.address[j].Remarks.split(",");
-                if (remarks.length !== 2) continue;
+                // var remarks = item.address[j].Remarks.split(",");
+                // if (remarks.length !== 2) continue;
                 // hack, because elastic returns all addresses of a given id
-                var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
-                if (addressType != "*" && tid != addressType) continue;
+                // var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
+                // if (addressType != "*" && tid != addressType) continue;
                 // end hack
-                var lat = parseFloat(remarks[0]);
-                var lon = parseFloat(remarks[1]);
-                var id = item.ConstituentID;
-                var cid = item.address[j].ConAddressID;
+                // var lat = parseFloat(remarks[0]);
+                // var lon = parseFloat(remarks[1]);
+                // var id = item.ConstituentID;
+                // var cid = item.address[j].ConAddressID;
                 elasticResults.total++;
-                addresses.push(lat, lon, id, cid, tid);
+                addresses.push(item.address[j].ConAddressID);
             }
         }
         addPoints(addresses);
+    }
+
+    updateTotals = function (total) {
+        if (total === undefined) total = elasticResults.total;
+        $("#totalPoints").text(total + " total locations");
     }
 
     createFacet = function (facet) {

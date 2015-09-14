@@ -293,7 +293,7 @@
         }
         var addresses = [];
         var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "_source=ConstituentID,address&size=" + elasticSize + "&" + query;
+        query = "_source=ConstituentID,address.ConAddressID,address.AddressTypeID,address.Remarks&size=" + elasticSize + "&" + query;
         console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};
@@ -306,7 +306,7 @@
 
     getNextSet = function (re) {
         var results = JSON.parse(re);
-        console.log(results);
+        // console.log(results);
         // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
         if (results.hits.total > elasticResults.from + elasticSize) {
             // keep going

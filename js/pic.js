@@ -23,6 +23,8 @@
     this.pointHash = {};
     this.allIDs = [];
 
+    var bounds = [-180, -90, 180, 90];
+
     var pixelSize = 2;
 
     var facets = [
@@ -256,6 +258,10 @@
             if (addressType != "*" && tid != addressType) continue;
             // end hack
             elasticResults.total++;
+            if (p[1] > bounds[0]) bounds[0] = p[1];
+            if (p[0] > bounds[1]) bounds[1] = p[0];
+            if (p[1] < bounds[2]) bounds[2] = p[1];
+            if (p[0] < bounds[3]) bounds[3] = p[0];
             points.add({
                 id: "P_"+p[2],
                 position : new Cesium.Cartesian3.fromDegrees(p[1], p[0]),
@@ -310,6 +316,7 @@
     }
 
     removePoints = function () {
+        bounds = [-180, -90, 180, 90];
         points.removeAll();
     }
 
@@ -351,6 +358,16 @@
             enableFacets();
         }
         addressesToPoints(results.hits.hits);
+        if (results.hits.total < elasticResults.from + elasticSize) {
+            console.log(bounds);
+            var west = bounds[2];
+            var south = bounds[3];
+            var east = bounds[0];
+            var north = bounds[1];
+            viewer.camera.flyTo({
+                destination : Cesium.Rectangle.fromDegrees(west, south, east, north)
+            });
+        }
     }
 
     addressesToPoints = function (hits) {

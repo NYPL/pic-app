@@ -77,16 +77,16 @@
         var i, l = baseData.length;
         pointHash = {};
         for (i=0; i<l; i=i+6) {
-            var cid = baseData[i+3];
-            pointHash[cid] = [
+            var id = baseData[i+3];
+            pointHash[id] = [
                 baseData[i],
                 baseData[i+1],
                 baseData[i+2],
-                cid,
+                id,
                 baseData[i+4],
                 baseData[i+5]
             ];
-            allIDs.push(cid);
+            allIDs.push(id);
         }
     }
 
@@ -130,8 +130,8 @@
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
 
-    clearPicked = function (picked) {
-        if (picked !== pickedEntity) {
+    refreshPicked = function (picked) {
+        if (pickedEntity === undefined || picked !== pickedEntity.entity) {
             if (pickedEntity != undefined) {
                 // revert properties
                 pickedEntity.entity.primitive.color = pickedEntity.color;
@@ -144,6 +144,7 @@
             // apply new properties
             picked.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
             pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
+            showConstituent(picked);
         }
     }
 
@@ -165,20 +166,17 @@
             // pick
             var pickedObject = scene.pick(movement.endPosition);
             if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
-                clearPicked(pickedObject);
+                refreshPicked(pickedObject);
                 // console.log("first:", pickedObject.color);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
-                var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
-                if (cartesian) {
-                    var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
-                    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
-
-                    showConstituent(pickedObject);
-                }
-            } else {
-                // removeTooltip();
+                // var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
+                // if (cartesian) {
+                //     var cartographic = ellipsoid.cartesianToCartographic(cartesian);
+                //     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
+                //     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
+                //     console.log(latitudeString, longitudeString);
+                // }
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -189,11 +187,12 @@
     }
 
     showConstituent = function (point) {
+        if (point == pickedEntity) return;
         var id = point.id;
         var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
         var query = "q=(ConstituentID:" + realID + " OR address.Remarks:'" + originalLatlon + "')";
-        // console.log(query);
+        console.log(query);
         getData("constituent", query, updateTooltip);
     }
 

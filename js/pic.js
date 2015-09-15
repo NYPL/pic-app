@@ -100,7 +100,7 @@
     initWorld = function () {
         viewer = new Cesium.Viewer('cesiumContainer', {
           imageryProvider : new Cesium.OpenStreetMapImageryProvider({
-            url : 'https://a.tiles.mapbox.com/v4/nypllabs.f56b1404/', // nypllabs.7f17c2d1
+            url : 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/', // nypllabs.7f17c2d1
             fileExtension : 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ'
           })
           ,baseLayerPicker : false

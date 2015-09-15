@@ -41,3 +41,7 @@ html, body {
 #overlays label, #overlays select {
     display: block;
 }
+
+#overlays select {
+    width: 270px;
+}

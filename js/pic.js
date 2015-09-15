@@ -30,6 +30,7 @@
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
+        ["countries", "Address Country", "CountryID", "Country", "address"],
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
         ["genders", "Gender", "TermID", "Term", "gender"],
         ["processes", "Process", "TermID", "Term", "process"],
@@ -75,14 +76,15 @@
     parseBaseData = function (baseData) {
         var i, l = baseData.length;
         pointHash = {};
-        for (i=0; i<l; i=i+5) {
+        for (i=0; i<l; i=i+6) {
             var cid = baseData[i+3];
             pointHash[cid] = [
                 baseData[i],
                 baseData[i+1],
                 baseData[i+2],
                 cid,
-                baseData[i+4]
+                baseData[i+4],
+                baseData[i+5]
             ];
             allIDs.push(cid);
         }
@@ -92,6 +94,7 @@
         addPoints(allIDs);
         updateTotals(allIDs.length);
         enableFacets();
+        updateBounds();
     }
 
     initWorld = function () {
@@ -254,13 +257,16 @@
         // if (newPoints.length === 0) return;
         // console.log(newPoints);
         var addressType = $("#"+facets[0][0]).val();
+        var country = $("#"+facets[1][0]).val();
         var i, l = newPoints.length;
         for (i=0; i<l; i++) {
             var p = pointHash[newPoints[i]];
             if (!p) continue;
             // hack, because elastic returns all addresses of a given id
             var tid = p[4];
+            var cid = p[5];
             if (addressType != "*" && tid != addressType) continue;
+            if (country != "*" && cid != country) continue;
             // end hack
             elasticResults.total++;
             if (p[1] > bounds[0]) bounds[0] = p[1] + padding;
@@ -368,16 +374,21 @@
             enableFacets();
         }
         addressesToPoints(results.hits.hits);
-        if (results.hits.total < elasticResults.from + elasticSize) {
-            // console.log(bounds);
-            var west = bounds[2];
-            var south = bounds[3];
-            var east = bounds[0];
-            var north = bounds[1];
-            viewer.camera.flyTo({
-                destination : Cesium.Rectangle.fromDegrees(west, south, east, north)
-            });
+        if (results.hits.total <= elasticResults.from + elasticSize) {
+            updateBounds();
         }
+    }
+
+    updateBounds = function () {
+        // console.log(bounds);
+        var west = bounds[2];
+        var south = bounds[3];
+        var east = bounds[0];
+        var north = bounds[1];
+        viewer.camera.flyTo({
+            destination : Cesium.Rectangle.fromDegrees(west, south, east, north),
+            duration : 1
+        });
     }
 
     addressesToPoints = function (hits) {
@@ -389,16 +400,6 @@
             var item = hits[i]._source;
             if (item.address === undefined) continue;
             for (j=0; j<item.address.length; ++j) {
-                // var remarks = item.address[j].Remarks.split(",");
-                // if (remarks.length !== 2) continue;
-                // hack, because elastic returns all addresses of a given id
-                // var tid = item.address[j].AddressTypeID == "NULL" ? 1 : item.address[j].AddressTypeID;
-                // if (addressType != "*" && tid != addressType) continue;
-                // end hack
-                // var lat = parseFloat(remarks[0]);
-                // var lon = parseFloat(remarks[1]);
-                // var id = item.ConstituentID;
-                // var cid = item.address[j].ConAddressID;
                 addresses.push(item.address[j].ConAddressID);
             }
         }
@@ -423,7 +424,7 @@
     }
 
     updateFacet = function (r, facet) {
-        var data = r.responseText.csvToArray();
+        var data = r.responseText.csvToArray({trim:true, rSep: '\n'});
         if (data.length <= 1) return;
         var el = $("#"+facet[0]);
         var idColumn = data[0].indexOf(facet[2]);

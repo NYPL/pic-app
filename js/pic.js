@@ -171,7 +171,6 @@
             var pickedObject = scene.pick(movement.endPosition);
             if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
                 refreshPicked(pickedObject);
-                // console.log("first:", pickedObject.color);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
                 // var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
@@ -337,6 +336,7 @@
 
     applyFilters = function () {
         start = new Date().getTime();
+        pickedEntity = undefined;
         disableFacets();
         removePoints();
         var facetList = [];

@@ -28,6 +28,8 @@
 
     var pixelSize = 2;
 
+    var nameQueryElement = "nameQuery";
+
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
         ["countries", "Address Country", "CountryID", "Country", "address"],
@@ -35,7 +37,8 @@
         ["genders", "Gender", "TermID", "Term", "gender"],
         ["processes", "Process", "TermID", "Term", "process"],
         ["roles", "Role", "TermID", "Term", "role"],
-        ["formats", "Format", "TermID", "Term", "format"]
+        ["formats", "Format", "TermID", "Term", "format"],
+        [nameQueryElement, "", "DisplayName", "", ""]
     ];
 
     var facetValues = {};
@@ -56,6 +59,7 @@
         initWorld();
         loadBaseData();
         initMouseHandler(handler);
+        initNameQuery();
         getFacets();
     }
 
@@ -255,8 +259,8 @@
         // points.removeAll();
         // if (newPoints.length === 0) return;
         // console.log(newPoints);
-        var addressType = $("#"+facets[0][0]).val();
-        var country = $("#"+facets[1][0]).val();
+        var addressType = $("#"+facetWithName("addresstypes")[0]).val();
+        var country = $("#"+facetWithName("countries")[0]).val();
         var i, l = newPoints.length;
         for (i=0; i<l; i++) {
             var p = pointHash[newPoints[i]];
@@ -293,7 +297,7 @@
 
     getFacets = function () {
         for (var i=0;i<facets.length;++i) {
-            getFacet(i);
+            if (facets[i][1] != "") getFacet(i);
         }
     }
 
@@ -317,12 +321,12 @@
     }
 
     disableFacets = function () {
-        $("#facets select").prop('disabled', 'disabled');
+        $("#facets .facet").prop('disabled', 'disabled');
         $("#tooltip").html("").hide();
     }
 
     enableFacets = function () {
-        $("#facets select").prop('disabled', '');
+        $("#facets .facet").prop('disabled', '');
         $("#tooltip").show();
     }
 
@@ -414,7 +418,7 @@
         // console.log(r, facet);
         var f = facet[0];
         var string = '<label for="'+f+'">'+facet[1]+'</label>';
-        string += '<select id="'+f+'" name="'+f+'">';
+        string += '<select id="'+f+'" class="facet" name="'+f+'">';
         string += '<option value="*">Any</option>';
         string += '</select>';
         $("#facetList").append(string);
@@ -455,9 +459,25 @@
         applyFilters();
     }
 
+    onKeyUp = function (e) {
+        var el = e.target;
+        if (e.keyCode === 13) {
+            var value = el.value.trim() != "" ? '"' + el.value.trim() + '"' : "*"
+            updateFilter(el.id, value);
+            applyFilters();
+        }
+    }
+
     addListenersToFacet = function (facet) {
         var el = document.getElementById(facet[0]);
         el.addEventListener("change", onFacetChanged, false);
+    }
+
+    initNameQuery = function () {
+        $("#" + nameQueryElement).val("");
+        updateFilter(nameQueryElement, "*");
+        var el = document.getElementById(nameQueryElement);
+        el.addEventListener("keyup", onKeyUp, false);
     }
 
     init();

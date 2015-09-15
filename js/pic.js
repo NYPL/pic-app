@@ -11,7 +11,7 @@
 
     // the way we knoe in elastic if a constituent has latlon-looking data
     var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
-    var elasticSize = 1000;
+    this.elasticSize = 1500;
 
     var pickedEntity = undefined;
 
@@ -24,6 +24,7 @@
     this.allIDs = [];
 
     var bounds = [-180, -90, 180, 90];
+    var padding = 0.1; // to extend the boundary a bit
 
     var pixelSize = 2;
 
@@ -38,12 +39,14 @@
 
     var facetValues = {};
 
+    var start;
+
     var addressTypePalette = {
         "2": new Cesium.Color(0.01, 1, 1, 1), // biz
         "5": new Cesium.Color(0.01, 1, 0.01, 1), // birth
         "6": new Cesium.Color(0.01, 0.01, 1, 1), // death
         "7": new Cesium.Color(1, 0.01, 0.01, 1), // active
-        "1": new Cesium.Color(1, 0.01, 1, 1), // active
+        "1": new Cesium.Color(1, 0.01, 1, 1), // unknown
     };
 
     var filters = {};
@@ -160,7 +163,6 @@
             var pickedObject = scene.pick(movement.endPosition);
             if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
                 clearPicked(pickedObject);
-                // console.log("thing:", pickedObject.primitive);
                 // console.log("first:", pickedObject.color);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
@@ -170,7 +172,7 @@
                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
 
-                    showConstituent(pickedObject.id);
+                    showConstituent(pickedObject);
                 }
             } else {
                 // removeTooltip();
@@ -183,9 +185,13 @@
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
 
-    showConstituent = function (id) {
+    showConstituent = function (point) {
+        var id = point.id;
+        var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
-        getData("constituent", "q=ConstituentID:" + realID, updateTooltip);
+        var query = "q=(ConstituentID:" + realID + " OR address.Remarks:'" + originalLatlon + "')";
+        // console.log(query);
+        getData("constituent", query, updateTooltip);
     }
 
     removeTooltip = function () {
@@ -199,7 +205,6 @@
         string += "<p><strong>" + p.DisplayName + "</strong></p>";
         string += "<p>ID:" + p.ConstituentID + "</p>";
         string += "<p>" + p.DisplayDate + "</p>";
-        string += "<p>" + p.Nationality + "</p>";
         if (p.gender) string += "<p>" + facetValues.genders[p.gender[0].TermID] + "</p>";
         if (p.role) {
             string += "<p><strong>Roles:</strong></p>";
@@ -258,17 +263,18 @@
             if (addressType != "*" && tid != addressType) continue;
             // end hack
             elasticResults.total++;
-            if (p[1] > bounds[0]) bounds[0] = p[1];
-            if (p[0] > bounds[1]) bounds[1] = p[0];
-            if (p[1] < bounds[2]) bounds[2] = p[1];
-            if (p[0] < bounds[3]) bounds[3] = p[0];
-            points.add({
+            if (p[1] > bounds[0]) bounds[0] = p[1] + padding;
+            if (p[0] > bounds[1]) bounds[1] = p[0] + padding;
+            if (p[1] < bounds[2]) bounds[2] = p[1] - padding;
+            if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
+            var pt = points.add({
                 id: "P_"+p[2],
                 position : new Cesium.Cartesian3.fromDegrees(p[1], p[0]),
                 color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
             });
+            pt.originalLatlon = p[0] + "," + p[1];
         }
         updateTotals();
     }
@@ -321,6 +327,7 @@
     }
 
     applyFilters = function () {
+        start = new Date().getTime();
         disableFacets();
         removePoints();
         var facetList = [];
@@ -355,11 +362,14 @@
             query = "from=" + elasticResults.from + "&" + query;
             getData("constituent", query, getNextSet);
         } else {
+            var end = new Date().getTime();
+            var time = end - start;
+            console.log("took:", time, "ms");
             enableFacets();
         }
         addressesToPoints(results.hits.hits);
         if (results.hits.total < elasticResults.from + elasticSize) {
-            console.log(bounds);
+            // console.log(bounds);
             var west = bounds[2];
             var south = bounds[3];
             var east = bounds[0];

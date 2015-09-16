@@ -224,14 +224,20 @@
         }
         if (p.address) {
             string += "<p><strong>Addresses:</strong></p>";
-            for (var i in p.address) {
+            for (var i=0; i<p.address.length; i++) {
                 var add = p.address[i];
                 string += "<p>";
+                string += "ID:" + add.ConAddressID + "<br />";
+                string += facetValues.addresstypes[add.AddressTypeID] + "<br />";
+                string += add.DisplayName2 + "<br />";
+                string += add.StreetLine1 + "<br />";
+                string += add.StreetLine2 + "<br />";
+                string += add.StreetLine3 + "<br />";
                 string += add.City;
                 string += ", ";
                 string += add.State;
                 string += "<br />";
-                string += add.DisplayName2;
+                string += facetValues.countries[add.CountryID] + "<br />";
                 string += "</p>";
             }
         }

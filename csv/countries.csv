@@ -1,212 +1,213 @@
 ﻿CountryID,Country
+1,USA
+2,Austria
+3,Germany
+4,Italy
 5,Japan
 6,Thailand
 7,"Taiwan, ROC"
 8,Switzerland
+9,France
+10,Canada
+11,Mexico
+12,England
 13,Poland
 14,Spain
 15,Sri Lanka
 16,Belgium
+17,Portugal
+18,Brazil
+19,South Africa
+20,Denmark
 21,India
 22,Norway
 23,Cuba
 24,Ireland
 25,Hungary
+26,Scotland
+27,Russia
+28,Philippines
+29,Peru
 30,Turkey
 31,Sweden
 32,North Ireland
 33,Java
+34,Ukraine
+35,Granada
+36,Czech Republic
+37,Australia
 38,Algeria
 39,Netherlands
 40,Wales
 41,Costa Rica
+42,Finland
+43,Argentina
+44,Colombia
+45,Jamaica
 46,New Zealand
 47,Malta
 48,Morocco
 49,Israel
 50,Egypt
-55,Zimbabwe
-56,Haiti
-57,Greece
-58,Kenya
-63,Uruguay
-64,Lebanon
-65,Chile
-66,French Polynesia
-72,Myanmar
-73,Monaco
-74,Greenland
-80,Liberia
-81,Romania
-82,Turkmenistan
-83,Tahiti
-88,Belize
-89,Ecuador
-90,Martinique
-91,Palestine
-97,Austria-Hungary
-98,Belgian Congo
-99,Bohemia
-100,Bolivia
-105,Iceland
-106,Iran
-107,Iraq
-108,Laos
-113,Nigeria
-114,Pakistan
-115,Puerto Rico
-116,El Salvador
-122,South Korea
-123,Uzbekistan
-124,Vietnam
-125,Yugoslavia
-130,South America (general)
-131,Asia (general)
-132,Arctic regions
-133,Middle East (general)
-138,Kosovo
-139,Gibraltar
-140,West Indies
-141,Crimea
-142,Tibet
-147,Isle of Man
-148,Jersey
-149,Barbados
-150,Bahamas
-155,Bangladesh
-156,Botswana
-157,Brunei
-158,Burkina Faso
-163,Democratic Republic of the Congo (Congo-Kinshasa)
-164,Cyprus
-165,Dominica
-166,Equatorial Guinea
-167,Eritrea
-172,Grenada
-173,Guyana
-174,Holy See
-175,Honduras
-180,Mauritius
-181,Montserrat
-182,Mozambique
-183,Namibia
-189,Saint Kitts and Nevis
-190,Saint Vincent and the Grenadines
-191,Samoa
-192,Sierra Leone
-197,Tonga
-198,Vanuatu
-199,Yemen
-200,Zambia
-322,Angola
-324,Aruba
-332,Belarus
-348,Cook Islands
-422,U.S. Virgin Islands
-426,Borneo
-1,USA
-2,Austria
-3,Germany
-4,Italy
-9,France
-10,Canada
-11,Mexico
-12,England
-17,Portugal
-18,Brazil
-19,South Africa
-20,Denmark
-26,Scotland
-27,Russia
-28,Philippines
-29,Peru
-34,Ukraine
-35,Granada
-36,Czech Republic
-37,Australia
-42,Finland
-43,Argentina
-44,Colombia
-45,Jamaica
 51,Czechoslovakia
 52,Georgia
 53,China
 54,Indonesia
+55,Zimbabwe
+56,Haiti
+57,Greece
+58,Kenya
 59,Libya
 60,Panama
 61,Lithuania
 62,Venezuela
+63,Uruguay
+64,Lebanon
+65,Chile
+66,French Polynesia
 67,Great Britain
 68,Ethiopia
 69,Jordan
 70,Tunisia
 71,Republic of Croatia
+72,Myanmar
+73,Monaco
+74,Greenland
 76,Singapore
 77,Croatia
 78,Guatemala
 79,Estonia
+80,Liberia
+81,Romania
+82,Turkmenistan
+83,Tahiti
 84,Malaysia
 86,Syria
 87,Afghanistan
+88,Belize
+89,Ecuador
+90,Martinique
+91,Palestine
 92,Zanzibar
 93,British Guiana
 94,Bermuda
 95,Tanzania
 96,Armenia
+97,Austria-Hungary
+98,Belgian Congo
+99,Bohemia
+100,Bolivia
 101,Bosnia
 102,Bulgaria
 104,Fiji
+105,Iceland
+106,Iran
+107,Iraq
+108,Laos
 109,Latvia
 110,Liechtenstein
 111,Luxembourg
 112,Nicaragua
+113,Nigeria
+114,Pakistan
+115,Puerto Rico
+116,El Salvador
 117,Saudi Arabia
 118,Senegal
 119,Serbia
 120,Slovakia
 121,Slovenia
+122,South Korea
+123,Uzbekistan
+124,Vietnam
+125,Yugoslavia
 126,Madagascar
 127,Africa (general)
 128,Europe (general)
+130,South America (general)
+131,Asia (general)
+132,Arctic regions
+133,Middle East (general)
 134,Moravia
 135,Cote d'Ivoire
 136,Prussia
 137,Dominican Republic
+138,Kosovo
+139,Gibraltar
+140,West Indies
+141,Crimea
+142,Tibet
 143,Nepal
 144,Sudan
 145,Guernsey
 146,East Indies
+147,Isle of Man
+148,Jersey
+149,Barbados
+150,Bahamas
 151,Trinidad and Tobago
 152,Antarctica
 153,Uganda
 154,Antigua and Barbuda
+155,Bangladesh
+156,Botswana
+157,Brunei
+158,Burkina Faso
 159,Cambodia
 160,Cameroon
 161,Cayman Islands
 162,Central African Republic
+163,Democratic Republic of the Congo (Congo-Kinshasa)
+164,Cyprus
+165,Dominica
+166,Equatorial Guinea
+167,Eritrea
 168,Falkland Islands
 169,Gabon
 170,Gambia
 171,Ghana
+172,Grenada
+173,Guyana
+174,Holy See
+175,Honduras
 176,Kiribati
 177,Lesotho
 178,Malawi
 179,Mali
+180,Mauritius
+181,Montserrat
+182,Mozambique
+183,Namibia
 184,New Caledonia
 185,North Korea
 186,Papua New Guinea
 187,Rwanda
 188,Saint Helena
+189,Saint Kitts and Nevis
+190,Saint Vincent and the Grenadines
+191,Samoa
+192,Sierra Leone
 193,Solomon Islands
 194,Somalia
 195,Swaziland
 196,Togo
+197,Tonga
+198,Vanuatu
+199,Yemen
+200,Zambia
 318,Albania
+322,Angola
+324,Aruba
 328,Azerbaijan
 329,Bahrain
+332,Belarus
+348,Cook Islands
 362,Hong Kong
 380,Montenegro
 420,Turks and Caicos Islands
+422,U.S. Virgin Islands
+426,Borneo
 427,Silesia
 428,Atlantic Ocean
 429,Ceylon
+430,Unknown

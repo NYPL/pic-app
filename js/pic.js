@@ -68,7 +68,7 @@
     loadBaseData = function () {
         var r = new XMLHttpRequest();
 
-        r.open("GET", "csv/latlons.txt", true);
+        r.open("GET", "csv/latlons.txt?i=" + Math.random()*100000, true);
 
         r.onreadystatechange = function () {
           if (r.readyState != 4 || r.status != 200) return;
@@ -395,7 +395,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
 
         var r = new XMLHttpRequest();
 
-        r.open("GET", "csv/"+facet[0]+".csv", true);
+        r.open("GET", "csv/"+facet[0]+".csv?i=" + Math.random()*100000, true);
 
         r.onreadystatechange = function (event) {
             var r = event.target;

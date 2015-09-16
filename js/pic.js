@@ -215,7 +215,9 @@
 
     buildTooltipConstituent = function (p) {
         var string = '<div class="tooltip-item">';
-        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'"><strong>' + p.DisplayName + '</strong></h3>';
+        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
+        if (p.address) string += ' (' + p.address.length + ')';
+        string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>ID:" + p.ConstituentID + "</p>";
         string += "<p>" + p.DisplayDate + "</p>";
@@ -251,7 +253,7 @@
         string += "</div>";
         tooltipElement.append(string);
         $(".tooltip-toggle-" + p.ConstituentID).click(function () {
-            $(".tooltip-content-" + p.ConstituentID).fadeToggle();
+            $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
         });
     }
 

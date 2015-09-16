@@ -229,16 +229,14 @@
                 string += "<p>";
                 string += "ID:" + add.ConAddressID + "<br />";
                 string += facetValues.addresstypes[add.AddressTypeID] + "<br />";
-                string += add.DisplayName2 + "<br />";
-                string += add.StreetLine1 + "<br />";
-                string += add.StreetLine2 + "<br />";
-                string += add.StreetLine3 + "<br />";
-                string += add.City;
-                string += ", ";
-                string += add.State;
-                string += "<br />";
-                string += facetValues.countries[add.CountryID] + "<br />";
-                string += add.Remarks + "<br />";
+                if (add.DisplayName2 != "NULL") string += add.DisplayName2 + "<br />";
+                if (add.StreetLine1 != "NULL") string += add.StreetLine1 + "<br />";
+                if (add.StreetLine2 != "NULL") string += add.StreetLine2 + "<br />";
+                if (add.StreetLine3 != "NULL") string += add.StreetLine3 + "<br />";
+                if (add.City != "NULL") string += add.City + ", ";
+                if (add.State != "NULL") string += add.State + "<br />";
+                if (add.CountryID != "NULL") string += facetValues.countries[add.CountryID] + "<br />";
+                if (add.Remarks != "NULL") string += add.Remarks + "<br />";
                 string += "</p>";
             }
         }
@@ -488,5 +486,8 @@
         el.addEventListener("keyup", onKeyUp, false);
     }
 
-    init();
 }());
+
+window.onload = function () {
+    _pic.init();
+}

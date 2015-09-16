@@ -12,6 +12,11 @@
     this.elasticSize = 1500;
     this.lines;
 
+    var bounds = [-180, -90, 180, 90];
+    var padding = 0.1; // to extend the boundary a bit
+    var pixelSize = 2;
+    var tooltipLimit = 20;
+
     var pickedEntity;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
@@ -23,11 +28,6 @@
     var tooltipElement = $("#tooltip");
 
     var facetsElement = $("#facets");
-
-    var bounds = [-180, -90, 180, 90];
-    var padding = 0.1; // to extend the boundary a bit
-
-    var pixelSize = 2;
 
     var nameQueryElement = "nameQuery";
 
@@ -80,6 +80,7 @@
 
     parseBaseData = function (baseData) {
         var i, l = baseData.length;
+        allIDs = [];
         pointHash = {};
         for (i=0; i<l; i=i+6) {
             var id = baseData[i+3];
@@ -198,7 +199,7 @@
         var id = point.id;
         var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
-        var query = "q=(ConstituentID:" + realID + " OR address.Remarks:'" + originalLatlon + "')";
+        var query = "size="+tooltipLimit+"&q=(ConstituentID:" + realID + " OR address.Remarks:'" + originalLatlon + "')";
         console.log(query);
         getData("constituent", query, updateTooltip);
     }
@@ -211,6 +212,10 @@
         tooltipElement.empty();
         var data = JSON.parse(responseText);
         var constituents = data.hits.hits;
+        if (data.hits.total > tooltipLimit) {
+            var string = "<p>Found " + data.hits.total + " photographers in this location. Showing first " + tooltipLimit + ".</p>";
+            tooltipElement.append(string);
+        }
         for (var i=0; i<constituents.length; i++) {
             buildTooltipConstituent(constituents[i]._source);
         }

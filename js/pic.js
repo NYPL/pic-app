@@ -238,6 +238,7 @@
                 string += add.State;
                 string += "<br />";
                 string += facetValues.countries[add.CountryID] + "<br />";
+                string += add.Remarks + "<br />";
                 string += "</p>";
             }
         }

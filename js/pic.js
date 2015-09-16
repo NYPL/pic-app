@@ -12,7 +12,7 @@
     this.elasticSize = 1500;
     this.lines;
 
-    var bounds = [-180, -90, 180, 90];
+    var bounds;
     var padding = 0.1; // to extend the boundary a bit
     var pixelSize = 2;
     var tooltipLimit = 20;
@@ -57,6 +57,7 @@
     var filters = {};
 
     init = function () {
+        resetBounds();
         initWorld();
         loadBaseData();
         initMouseHandler(handler);
@@ -282,12 +283,25 @@
         });
     }
 
+    resetBounds = function () {
+        bounds = [-180, -90, 180, 90];
+    }
+
+    expandBounds = function (p) {
+        if (p[1] > bounds[0]) bounds[0] = p[1] + padding;
+        if (p[0] > bounds[1]) bounds[1] = p[0] + padding;
+        if (p[1] < bounds[2]) bounds[2] = p[1] - padding;
+        if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
+    }
+
     connectAddresses = function (ids) {
+        resetBounds();
         lines.removeAll();
         if (ids.length > 1) {
             var lastPoint = pointHash[ids[0]];
             for (var i=0; i<ids.length; i++) {
                 var p = pointHash[ids[i]];
+                expandBounds(p);
                 // console.log(p, ids[i]);
                 if (p === undefined) continue;
                 if (lastPoint === p) {
@@ -302,6 +316,7 @@
                 });
                 lastPoint = p;
             }
+            updateBounds();
         }
     }
 /*
@@ -346,10 +361,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             if (country != "*" && cid != country) continue;
             // end hack
             elasticResults.total++;
-            if (p[1] > bounds[0]) bounds[0] = p[1] + padding;
-            if (p[0] > bounds[1]) bounds[1] = p[0] + padding;
-            if (p[1] < bounds[2]) bounds[2] = p[1] - padding;
-            if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
+            expandBounds(p);
             var pt = points.add({
                 id: "P_"+p[2],
                 position : Cesium.Cartesian3.fromDegrees(p[1], p[0]),
@@ -435,8 +447,9 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     }
 
     removePoints = function () {
-        bounds = [-180, -90, 180, 90];
+        resetBounds();
         points.removeAll();
+        lines.removeAll();
     }
 
     applyFilters = function () {

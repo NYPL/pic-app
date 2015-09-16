@@ -1,27 +1,28 @@
 (function () {
     window._pic = this;
 
-    this.viewer = undefined;
-    this.scene = undefined;
-    this.canvas = undefined;
-    this.points = undefined;
-    this.handler = undefined;
+    this.viewer;
+    this.scene;
+    this.canvas;
+    this.points;
+    this.handler;
+    this.elasticResults = {};
+    this.pointHash = {};
+    this.allIDs = [];
+    this.elasticSize = 1500;
+    this.lines;
+
+    var pickedEntity;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
     // the way we knoe in elastic if a constituent has latlon-looking data
     var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
-    this.elasticSize = 1500;
 
-    var pickedEntity = undefined;
 
     var tooltipElement = $("#tooltip");
 
     var facetsElement = $("#facets");
-
-    this.elasticResults = {};
-    this.pointHash = {};
-    this.allIDs = [];
 
     var bounds = [-180, -90, 180, 90];
     var padding = 0.1; // to extend the boundary a bit
@@ -132,6 +133,8 @@
           blending : Cesium.BlendingState.ADDITIVE_BLEND
         });
 
+        lines = scene.primitives.add(new Cesium.PolylineCollection());
+
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
 
@@ -233,7 +236,10 @@
             string += "</p>";
         }
         if (p.address) {
-            string += "<p><strong>Addresses:</strong></p>";
+            string += "<p>";
+            string += "<strong>Addresses:</strong>";
+            if (p.address.length > 1) string += '<br /><span class="connector tooltip-connector-'+p.ConstituentID+'">Connect</span>';
+            string += "</p>";
             for (var i=0; i<p.address.length; i++) {
                 var add = p.address[i];
                 string += "<p>";
@@ -254,6 +260,26 @@
         tooltipElement.append(string);
         $(".tooltip-toggle-" + p.ConstituentID).click(function () {
             $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
+        });
+        $(".tooltip-connector-" + p.ConstituentID).click(function () {
+            connectAddresses(p.ConstituentID);
+        });
+    }
+
+    connectAddresses = function (cid) {
+        console.log(cid);
+        lines.removeAll();
+        lines.add({
+            name : 'Orange line with black outline at height and following the surface',
+            polyline : {
+                positions : Cesium.Cartesian3.fromDegreesArrayHeights([-75, 39, 250000, -125, 39, 250000]),
+                width : 5,
+                material : new Cesium.PolylineOutlineMaterialProperty({
+                    color : Cesium.Color.ORANGE,
+                    outlineWidth : 2,
+                    outlineColor : Cesium.Color.BLACK
+                })
+            }
         });
     }
 

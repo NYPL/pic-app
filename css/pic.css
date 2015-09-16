@@ -34,8 +34,9 @@ html, body {
     border-top: 2px solid black;
 }
 
-.tooltip-item h3 {
+.tooltip-item h3, .tooltip-item .connector {
     cursor: pointer;
+    color: #900;
 }
 
 .hidden {

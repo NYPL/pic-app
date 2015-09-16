@@ -34,6 +34,14 @@ html, body {
     border-top: 2px solid black;
 }
 
+.tooltip-item h3 {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
 #totalPoints, #facets, #tooltip {
     margin: 5px;
 }

@@ -205,10 +205,18 @@
     }
 
     updateTooltip = function (responseText) {
+        tooltipElement.empty();
         var data = JSON.parse(responseText);
-        var string = "";
-        var p = data.hits.hits[0]._source;
-        string += "<p><strong>" + p.DisplayName + "</strong></p>";
+        var constituents = data.hits.hits;
+        for (var i=0; i<constituents.length; i++) {
+            buildTooltipConstituent(constituents[i]._source);
+        }
+    }
+
+    buildTooltipConstituent = function (p) {
+        var string = '<div class="tooltip-item">';
+        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'"><strong>' + p.DisplayName + '</strong></h3>';
+        string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>ID:" + p.ConstituentID + "</p>";
         string += "<p>" + p.DisplayDate + "</p>";
         if (p.gender) string += "<p>" + facetValues.genders[p.gender[0].TermID] + "</p>";
@@ -240,7 +248,11 @@
                 string += "</p>";
             }
         }
-        tooltipElement.html(string);
+        string += "</div>";
+        tooltipElement.append(string);
+        $(".tooltip-toggle-" + p.ConstituentID).click(function () {
+            $(".tooltip-content-" + p.ConstituentID).fadeToggle();
+        });
     }
 
     getData = function (facet, query, callback) {

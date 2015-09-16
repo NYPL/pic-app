@@ -234,12 +234,15 @@
         if (p.address) string += ' (' + p.address.length + ')';
         string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
-        string += "<p>ID:" + p.ConstituentID + "</p>";
-        string += "<p>" + p.DisplayDate + "</p>";
-        if (p.gender) string += "<p>" + facetValues.genders[p.gender[0].TermID] + "</p>";
+        string += "<p>";
+        string += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
+        string += "ID:" + p.ConstituentID + "<br />";
+        string += p.DisplayDate + "<br />";
+        if (p.gender) string += facetValues.genders[p.gender[0].TermID] + "<br />";
+        string += "</p>";
         if (p.role) {
-            string += "<p><strong>Roles:</strong></p>";
             string += "<p>";
+            string += "<strong>Roles:</strong><br />";
             var roles = [];
             for (var i in p.role) {
                 roles.push(facetValues.roles[p.role[i].TermID]);
@@ -391,6 +394,36 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         r.send();
     }
 
+    createFacet = function (facet) {
+        // console.log(r, facet);
+        var f = facet[0];
+        var string = '<div class="facet">';
+        string += '<label for="'+f+'">'+facet[1]+'</label>';
+        string += '<select id="'+f+'" class="facet" name="'+f+'">';
+        string += '<option value="*">Any</option>';
+        string += '</select>';
+        string += '</div>';
+        $("#facetList").append(string);
+        facetValues[f] = {};
+        updateFilter(f, "*");
+    }
+
+    updateFacet = function (r, facet) {
+        var data = r.responseText.csvToArray({trim:true, rSep: '\n'});
+        if (data.length <= 1) return;
+        var el = $("#"+facet[0]);
+        var idColumn = data[0].indexOf(facet[2]);
+        var valueColumn = data[0].indexOf(facet[3]);
+        facetValues[facet[0]] = {};
+        var i, l=data.length;
+        var string = "";
+        for (i=1; i<l; i++) {
+            string += '<option value="'+data[i][idColumn]+'">'+data[i][valueColumn]+'</option>';
+            facetValues[facet[0]][data[i][idColumn]] = data[i][valueColumn];
+        }
+        el.append(string);
+    }
+
     disableFacets = function () {
         $("#facets .facet").prop('disabled', 'disabled');
         $("#tooltip").html("").hide();
@@ -484,34 +517,6 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     updateTotals = function (total) {
         if (total === undefined) total = elasticResults.total;
         $("#totalPoints").text(total + " total locations");
-    }
-
-    createFacet = function (facet) {
-        // console.log(r, facet);
-        var f = facet[0];
-        var string = '<label for="'+f+'">'+facet[1]+'</label>';
-        string += '<select id="'+f+'" class="facet" name="'+f+'">';
-        string += '<option value="*">Any</option>';
-        string += '</select>';
-        $("#facetList").append(string);
-        facetValues[f] = {};
-        updateFilter(f, "*");
-    }
-
-    updateFacet = function (r, facet) {
-        var data = r.responseText.csvToArray({trim:true, rSep: '\n'});
-        if (data.length <= 1) return;
-        var el = $("#"+facet[0]);
-        var idColumn = data[0].indexOf(facet[2]);
-        var valueColumn = data[0].indexOf(facet[3]);
-        facetValues[facet[0]] = {};
-        var i, l=data.length;
-        var string = "";
-        for (i=1; i<l; i++) {
-            string += '<option value="'+data[i][idColumn]+'">'+data[i][valueColumn]+'</option>';
-            facetValues[facet[0]][data[i][idColumn]] = data[i][valueColumn];
-        }
-        el.append(string);
     }
 
     updateFilter = function (facetName, value) {

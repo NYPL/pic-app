@@ -5,9 +5,13 @@ html, body {
     background: black;
 }
 
+p {
+    margin-bottom: 1em;
+}
+
 #cesiumContainer {
     position: absolute;
-    left: 300px;
+    left: 270px;
     top: 0;
     right: 0;
     bottom: 0;
@@ -16,7 +20,7 @@ html, body {
 #overlays {
     background-color: #ccc;
     position: absolute;
-    width: 300px;
+    width: 270px;
     top: 0;
     left: 0;
     bottom: 0;
@@ -28,10 +32,24 @@ html, body {
 }
 
 #facets {
+    margin-left: 5px;
+}
+
+.facet {
+    margin-bottom: 5px;
 }
 
 #tooltip {
     border-top: 2px solid black;
+    padding-top: 10px;
+}
+
+.tooltip-item {
+    margin: 0 0 10px 0;
+}
+
+.tooltip-item h3 {
+    margin-bottom: 1em;
 }
 
 .tooltip-item h3, .tooltip-item .connector {
@@ -44,13 +62,15 @@ html, body {
 }
 
 #totalPoints, #facets, #tooltip {
-    margin: 5px;
+    margin: 10px;
 }
 
 #overlays label, #overlays select {
     display: block;
 }
 
-#overlays select {
-    width: 270px;
+#overlays select, #overlays input {
+    font-size: 14px;
+    font-family: Verdana;
+    width: 250px;
 }

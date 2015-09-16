@@ -134,9 +134,15 @@
           blending : Cesium.BlendingState.ADDITIVE_BLEND
         });
 
-        lines = scene.primitives.add(new Cesium.PolylineCollection());
+        lines = new Cesium.PolylineCollection();
+
+        scene.primitives.add(lines);
 
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
+    }
+
+    debug = function () {
+        viewer.extend(Cesium.viewerCesiumInspectorMixin);
     }
 
     refreshPicked = function (picked) {
@@ -174,7 +180,7 @@
         handler.setInputAction(function(movement) {
             // pick
             var pickedObject = scene.pick(movement.endPosition);
-            if (Cesium.defined(pickedObject) && (pickedObject.id.toString().indexOf("P_") === 0)) {
+            if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
                 refreshPicked(pickedObject);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
@@ -222,6 +228,7 @@
     }
 
     buildTooltipConstituent = function (p) {
+        var addressIDs = [];
         var string = '<div class="tooltip-item">';
         string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
         if (p.address) string += ' (' + p.address.length + ')';
@@ -247,6 +254,7 @@
             string += "</p>";
             for (var i=0; i<p.address.length; i++) {
                 var add = p.address[i];
+                addressIDs.push(add.ConAddressID);
                 string += "<p>";
                 string += "ID:" + add.ConAddressID + "<br />";
                 string += facetValues.addresstypes[add.AddressTypeID] + "<br />";
@@ -267,27 +275,40 @@
             $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
         });
         $(".tooltip-connector-" + p.ConstituentID).click(function () {
-            connectAddresses(p.ConstituentID);
+            connectAddresses(addressIDs);
         });
     }
 
-    connectAddresses = function (cid) {
-        console.log(cid);
+    connectAddresses = function (ids) {
         lines.removeAll();
-        lines.add({
-            name : 'Orange line with black outline at height and following the surface',
-            polyline : {
-                positions : Cesium.Cartesian3.fromDegreesArrayHeights([-75, 39, 250000, -125, 39, 250000]),
-                width : 5,
-                material : new Cesium.PolylineOutlineMaterialProperty({
+        if (ids.length > 1) {
+            var lastPoint = pointHash[ids[0]];
+            for (var i=0; i<ids.length; i++) {
+                var p = pointHash[ids[i]];
+                // console.log(p, ids[i]);
+                if (p === undefined) continue;
+                if (lastPoint === p) {
+                    continue;
+                }
+                lines.add({
                     color : Cesium.Color.ORANGE,
-                    outlineWidth : 2,
-                    outlineColor : Cesium.Color.BLACK
-                })
+                    positions : Cesium.Cartesian3.fromDegreesArray([
+                             p[1], p[0],
+                             lastPoint[1], lastPoint[0]]),
+                    width : 2
+                });
+                lastPoint = p;
             }
-        });
+        }
     }
-
+/*
+width : 5,
+material : new Cesium.PolylineOutlineMaterialProperty({
+    color : Cesium.Color.ORANGE,
+    outlineWidth : 2,
+    outlineColor : Cesium.Color.BLACK
+})
+*/
     getData = function (facet, query, callback) {
         // console.log(facet, key, value);
 
@@ -328,7 +349,7 @@
             if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
             var pt = points.add({
                 id: "P_"+p[2],
-                position : new Cesium.Cartesian3.fromDegrees(p[1], p[0]),
+                position : Cesium.Cartesian3.fromDegrees(p[1], p[0]),
                 color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)

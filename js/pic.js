@@ -116,6 +116,7 @@
           ,navigationInstructionsInitiallyVisible : false
           ,mapProjection : new Cesium.WebMercatorProjection()
           ,creditContainer : "credits"
+          ,selectionIndicator : false
           ,sceneMode : Cesium.SceneMode.SCENE2D
         });
 

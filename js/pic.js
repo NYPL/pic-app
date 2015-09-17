@@ -256,7 +256,7 @@
             string += "<strong>Included in collections:</strong><br />";
             var links = [];
             for (var i in p.collection) {
-                var link = '<a href="'+ p.collection[i].URL +'">';
+                var link = '<a target="_blank" class="external" href="'+ p.collection[i].URL +'">';
                 link += facetValues.collections[p.collection[i].TermID];
                 link += '</a>';
                 links.push(link);
@@ -269,7 +269,7 @@
             string += "<strong>Data found in:</strong><br />";
             var links = [];
             for (var i in p.biography) {
-                var link = '<a href="'+ p.biography[i].URL +'">';
+                var link = '<a target="_blank" class="external" href="'+ p.biography[i].URL +'">';
                 link += facetValues.biographies[p.biography[i].TermID];
                 link += '</a>';
                 links.push(link);

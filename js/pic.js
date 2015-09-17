@@ -252,21 +252,26 @@
             string += "</p>";
         }
         if (p.collection) {
-            string += "<p>";
-            string += "<strong>Included in collections:</strong><br />";
             var links = [];
             for (var i in p.collection) {
+                if (p.collection[i].URL == "") {
+                    continue;
+                }
                 var link = '<a target="_blank" class="external" href="'+ p.collection[i].URL +'">';
                 link += facetValues.collections[p.collection[i].TermID];
                 link += '</a>';
                 links.push(link);
             }
-            string += links.join(", ");
-            string += "</p>";
+            if (links.length > 0) {
+                string += "<p>";
+                string += "<strong>Included in collections:</strong><br />(links open in new window)<br />";
+                string += links.join(", ");
+                string += "</p>";
+            }
         }
         if (p.biography) {
             string += "<p>";
-            string += "<strong>Data found in:</strong><br />";
+            string += "<strong>Data found in:</strong><br />(links open in new window)<br />";
             var links = [];
             for (var i in p.biography) {
                 var link = '<a target="_blank" class="external" href="'+ p.biography[i].URL +'">';

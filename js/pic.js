@@ -8,6 +8,7 @@
     this.handler;
     this.elasticResults = {};
     this.pointHash = {};
+    this.heightHash = {};
     this.allIDs = [];
     this.elasticSize = 1500;
     this.lines;
@@ -16,6 +17,9 @@
     var padding = 0.1; // to extend the boundary a bit
     var pixelSize = 2;
     var tooltipLimit = 20;
+    var heightDelta = 1000;
+    var minScale = 1;
+    var maxScale = 6;
 
     var pickedEntity;
 
@@ -147,20 +151,25 @@
     }
 
     refreshPicked = function (picked) {
-        if (pickedEntity === undefined || picked !== pickedEntity.entity) {
-            if (pickedEntity != undefined) {
-                // revert properties
-                pickedEntity.entity.primitive.color = pickedEntity.color;
-                pickedEntity.entity.primitive.pixelSize = pixelSize;
+        // reset
+        if (pickedEntity != undefined && picked !== pickedEntity.entity) {
+            // revert properties
+            pickedEntity.entity.primitive.color = pickedEntity.color;
+            pickedEntity.entity.primitive.pixelSize = pixelSize;
+        }
+        if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
+            if (pickedEntity === undefined || picked !== pickedEntity.entity) {
+                pickedEntity = {
+                    color: Cesium.clone(picked.primitive.color),
+                    entity: picked
+                };
+                // apply new properties
+                picked.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
+                pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
             }
-            pickedEntity = {
-                color: Cesium.clone(picked.primitive.color),
-                entity: picked
-            };
-            // apply new properties
-            picked.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
-            pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
-            showConstituent(picked);
+        } else {
+            // reset
+            pickedEntity = undefined;
         }
     }
 
@@ -181,8 +190,8 @@
         handler.setInputAction(function(movement) {
             // pick
             var pickedObject = scene.pick(movement.endPosition);
+            refreshPicked(pickedObject);
             if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
-                refreshPicked(pickedObject);
                 // console.log("then:", pickedObject.color);
                 // label tooltip
                 // var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
@@ -198,6 +207,8 @@
         handler.setInputAction(function(position) {
             // console.log(position);
             // flags.looking = false;
+            if (pickedEntity === undefined) return;
+            showConstituent(pickedEntity.entity);
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
 
@@ -229,7 +240,6 @@
     }
 
     buildTooltipConstituent = function (p) {
-        var addressIDs = [];
         var string = '<div class="tooltip-item">';
         string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
         if (p.address) string += ' (' + p.address.length + ')';
@@ -302,27 +312,32 @@
             string += links.join(", ");
             string += "</p>";
         }
+        var addressIDs = [];
         if (p.address) {
-            string += "<p>";
-            string += "<strong>Addresses:</strong>";
-            if (p.address.length > 1) string += '<br /><span class="connector tooltip-connector-'+p.ConstituentID+'">Connect</span>';
-            string += "</p>";
+            var addstring = "";
             for (var i=0; i<p.address.length; i++) {
                 var add = p.address[i];
-                addressIDs.push(add.ConAddressID);
-                string += "<p>";
-                string += "ID:" + add.ConAddressID + "<br />";
-                string += facetValues.addresstypes[add.AddressTypeID] + "<br />";
-                if (add.DisplayName2 != "NULL") string += add.DisplayName2 + "<br />";
-                if (add.StreetLine1 != "NULL") string += add.StreetLine1 + "<br />";
-                if (add.StreetLine2 != "NULL") string += add.StreetLine2 + "<br />";
-                if (add.StreetLine3 != "NULL") string += add.StreetLine3 + "<br />";
-                if (add.City != "NULL") string += add.City + ", ";
-                if (add.State != "NULL") string += add.State + "<br />";
-                if (add.CountryID != "NULL") string += facetValues.countries[add.CountryID] + "<br />";
-                if (add.Remarks != "NULL") string += add.Remarks + "<br />";
-                string += "</p>";
+                addstring += "<p>";
+                addstring += "ID:" + add.ConAddressID + "<br />";
+                addstring += facetValues.addresstypes[add.AddressTypeID] + "<br />";
+                if (add.DisplayName2 != "NULL") addstring += add.DisplayName2 + "<br />";
+                if (add.StreetLine1 != "NULL") addstring += add.StreetLine1 + "<br />";
+                if (add.StreetLine2 != "NULL") addstring += add.StreetLine2 + "<br />";
+                if (add.StreetLine3 != "NULL") addstring += add.StreetLine3 + "<br />";
+                if (add.City != "NULL") addstring += add.City + ", ";
+                if (add.State != "NULL") addstring += add.State + "<br />";
+                if (add.CountryID != "NULL") addstring += facetValues.countries[add.CountryID] + "<br />";
+                if (add.Remarks != "NULL") {
+                    addressIDs.push(add.ConAddressID);
+                    addstring += add.Remarks + "<br />";
+                }
+                addstring += "</p>";
             }
+            string += "<p>";
+            string += "<strong>Addresses:</strong>";
+            if (addressIDs.length > 1) string += '<br /><span class="connector tooltip-connector-'+p.ConstituentID+'">Connect</span>';
+            string += "</p>";
+            string += addstring;
         }
         string += "</div>";
         tooltipElement.append(string);
@@ -459,6 +474,11 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         for (i=0; i<l; i++) {
             var p = pointHash[newPoints[i]];
             if (!p) continue;
+            if (heightHash[p[0]+","+p[1]] === undefined) {
+                heightHash[p[0]+","+p[1]] = 0;
+            } else {
+                heightHash[p[0]+","+p[1]] += heightDelta;
+            }
             // hack, because elastic returns all addresses of a given id
             var tid = p[4];
             var cid = p[5];
@@ -469,10 +489,10 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             expandBounds(p);
             var pt = points.add({
                 id: "P_"+p[2],
-                position : Cesium.Cartesian3.fromDegrees(p[1], p[0]),
+                position : Cesium.Cartesian3.fromDegrees(p[1], p[0], heightHash[p[0]+","+p[1]]),
                 color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
-                scaleByDistance : new Cesium.NearFarScalar(2.0e3, 6, 8.0e6, 1)
+                scaleByDistance : new Cesium.NearFarScalar(2.0e3, maxScale, 8.0e6, minScale)
             });
             pt.originalLatlon = p[0] + "," + p[1];
         }
@@ -555,6 +575,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         resetBounds();
         points.removeAll();
         viewer.entities.remove(lines);
+        heightHash = {};
     }
 
     applyFilters = function () {

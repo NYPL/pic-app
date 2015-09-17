@@ -136,9 +136,7 @@
           blending : Cesium.BlendingState.ADDITIVE_BLEND
         });
 
-        lines = new Cesium.PolylineCollection();
-
-        scene.primitives.add(lines);
+        lines = viewer.entities.add(new Cesium.Entity());
 
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
@@ -297,27 +295,35 @@
 
     connectAddresses = function (ids) {
         resetBounds();
-        lines.removeAll();
+        viewer.entities.remove(lines);
         if (ids.length > 1) {
             var addresses = sortAddresses(getAddressPoints(ids));
             var lastPoint = addresses[0];
+            var positions = [];
             for (var i=0; i<ids.length; i++) {
                 var p = addresses[i];
                 // console.log(p, ids[i]);
                 if (p === undefined) continue;
                 expandBounds(p);
-                if (lastPoint === p) {
-                    continue;
-                }
-                lines.add({
-                    color : Cesium.Color.ORANGE,
-                    positions : Cesium.Cartesian3.fromDegreesArray([
-                             p[1], p[0],
-                             lastPoint[1], lastPoint[0]]),
-                    width : 2
-                });
-                lastPoint = p;
+                positions.push(p[1], p[0], 500);
+                // if (lastPoint === p) {
+                //     continue;
+                // }
+                // lastPoint = p;
             }
+            var polyline = new Cesium.PolylineGraphics();
+            polyline.material = new Cesium.PolylineOutlineMaterialProperty({
+                color: Cesium.Color.WHITE,
+                outlineColor: Cesium.Color.BLACK
+            });
+            polyline.width = new Cesium.ConstantProperty(3);
+            polyline.followSurface = new Cesium.ConstantProperty(true);
+            polyline.positions = Cesium.Cartesian3.fromDegreesArrayHeights(positions);
+            lines = new Cesium.Entity({
+                show : true,
+                polyline : polyline
+            });
+            viewer.entities.add(lines);
             updateBounds();
         }
     }
@@ -496,7 +502,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     removePoints = function () {
         resetBounds();
         points.removeAll();
-        lines.removeAll();
+        viewer.entities.remove(lines);
     }
 
     applyFilters = function () {

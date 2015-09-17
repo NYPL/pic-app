@@ -39,6 +39,7 @@
         ["processes", "Process", "TermID", "Term", "process"],
         ["roles", "Role", "TermID", "Term", "role"],
         ["formats", "Format", "TermID", "Term", "format"],
+        ["biographies", "Source", "TermID", "Term", "biography"],
         [nameQueryElement, "", "DisplayName", "", ""]
     ];
 

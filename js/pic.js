@@ -40,6 +40,7 @@
         ["roles", "Role", "TermID", "Term", "role"],
         ["formats", "Format", "TermID", "Term", "format"],
         ["biographies", "Source", "TermID", "Term", "biography"],
+        ["collections", "Collections", "TermID", "Term", "collection"],
         [nameQueryElement, "", "DisplayName", "", ""]
     ];
 
@@ -248,6 +249,32 @@
                 roles.push(facetValues.roles[p.role[i].TermID]);
             }
             string += roles.join(", ");
+            string += "</p>";
+        }
+        if (p.collection) {
+            string += "<p>";
+            string += "<strong>Included in collections:</strong><br />";
+            var links = [];
+            for (var i in p.collection) {
+                var link = '<a href="'+ p.collection[i].URL +'">';
+                link += facetValues.collections[p.collection[i].TermID];
+                link += '</a>';
+                links.push(link);
+            }
+            string += links.join(", ");
+            string += "</p>";
+        }
+        if (p.biography) {
+            string += "<p>";
+            string += "<strong>Data found in:</strong><br />";
+            var links = [];
+            for (var i in p.biography) {
+                var link = '<a href="'+ p.biography[i].URL +'">';
+                link += facetValues.biographies[p.biography[i].TermID];
+                link += '</a>';
+                links.push(link);
+            }
+            string += links.join(", ");
             string += "</p>";
         }
         if (p.address) {

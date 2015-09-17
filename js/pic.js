@@ -298,12 +298,13 @@
         resetBounds();
         lines.removeAll();
         if (ids.length > 1) {
-            var lastPoint = pointHash[ids[0]];
+            var addresses = sortAddresses(getAddressPoints(ids));
+            var lastPoint = addresses[0];
             for (var i=0; i<ids.length; i++) {
-                var p = pointHash[ids[i]];
-                expandBounds(p);
+                var p = addresses[i];
                 // console.log(p, ids[i]);
                 if (p === undefined) continue;
+                expandBounds(p);
                 if (lastPoint === p) {
                     continue;
                 }
@@ -318,6 +319,51 @@
             }
             updateBounds();
         }
+    }
+
+    getAddressPoints = function (ids) {
+        var addresses = [];
+        for (var i=0; i<ids.length; i++) {
+            var p = pointHash[ids[i]];
+            if (p !== undefined) addresses.push(p);
+        }
+        // console.log(addresses);
+        return addresses;
+    }
+
+    sortAddresses = function (addresses) {
+        var sorted = [];
+        var i, l = addresses.length;
+        var born;
+        var died;
+        if (l <= 1) return addresses;
+        // put the active ones
+        for (i=0; i<l; ++i) {
+            var add = addresses[i];
+            if (add[4] === 7) {
+                sorted.push(add);
+            }
+            // find born if any
+            if (add[4] === 5) {
+                born = add;
+            }
+            // find died if any
+            if (add[4] === 6) {
+                died = add;
+            }
+        }
+        // put the biz ones
+        for (i=0; i<l; ++i) {
+            if (addresses[i][4] === 2) {
+                sorted.push(addresses[i]);
+            }
+        }
+        // prepend born
+        if (born) sorted.unshift(born);
+        // append died
+        if (died) sorted.push(died);
+        // console.log(addresses, sorted);
+        return sorted;
     }
 /*
 width : 5,

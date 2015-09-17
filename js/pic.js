@@ -244,11 +244,31 @@
         if (p.role) {
             string += "<p>";
             string += "<strong>Roles:</strong><br />";
-            var roles = [];
+            var list = [];
             for (var i in p.role) {
-                roles.push(facetValues.roles[p.role[i].TermID]);
+                list.push(facetValues.roles[p.role[i].TermID]);
             }
-            string += roles.join(", ");
+            string += list.join(", ");
+            string += "</p>";
+        }
+        if (p.process) {
+            string += "<p>";
+            string += "<strong>Processes used:</strong><br />";
+            var list = [];
+            for (var i in p.process) {
+                list.push(facetValues.processes[p.process[i].TermID]);
+            }
+            string += list.join(", ");
+            string += "</p>";
+        }
+        if (p.format) {
+            string += "<p>";
+            string += "<strong>Formats used:</strong><br />";
+            var list = [];
+            for (var i in p.format) {
+                list.push(facetValues.formats[p.format[i].TermID]);
+            }
+            string += list.join(", ");
             string += "</p>";
         }
         if (p.collection) {

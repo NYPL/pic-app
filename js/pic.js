@@ -317,7 +317,7 @@
             string += "<strong>Processes used:</strong><br />";
             var list = [];
             for (var i in p.process) {
-                console.log(p.process[i].TermID);
+                // console.log(p.process[i].TermID);
                 if (facetValues.processes[p.process[i].TermID] !== undefined) list.push(facetValues.processes[p.process[i].TermID]);
             }
             string += list.join(", ");

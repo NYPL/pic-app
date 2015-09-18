@@ -11,7 +11,7 @@ p {
 
 #cesiumContainer {
     position: absolute;
-    left: 270px;
+    left: 250px;
     top: 0;
     right: 0;
     bottom: 0;
@@ -20,7 +20,7 @@ p {
 #overlays {
     background-color: #ccc;
     position: absolute;
-    width: 270px;
+    width: 250px;
     top: 0;
     left: 0;
     bottom: 0;
@@ -72,5 +72,5 @@ p {
 #overlays select, #overlays input {
     font-size: 14px;
     font-family: Verdana;
-    width: 250px;
+    width: 220px;
 }

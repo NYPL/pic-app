@@ -267,6 +267,7 @@
         for (var i=0; i<l; i++) {
             buildTooltipConstituent(results[i]._source);
         }
+        tooltipElement.find(".results").append("<hr />");
         if (start + l < total) {
             var more = total - (l + start) > tooltipLimit ? tooltipLimit : total - (l + start);
             var string = '<div class="link more">Load '+more+' more</div>';

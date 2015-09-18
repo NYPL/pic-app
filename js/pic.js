@@ -81,18 +81,23 @@
         getFacets();
     }
 
-    loadBaseData = function () {
+    loadTextFile = function (path, callback) {
         var r = new XMLHttpRequest();
 
-        r.open("GET", "csv/latlons.txt?i=" + Math.random()*100000, true);
+        r.open("GET", path, true);
 
         r.onreadystatechange = function () {
-          if (r.readyState != 4 || r.status != 200) return;
-          var baseData = JSON.parse(r.responseText)[1];
-          parseBaseData(baseData);
-          displayBaseData();
+            if (r.readyState != 4 || r.status != 200) return;
+            callback(r.responseText);
         };
-        r.send(null);
+        r.send();
+    }
+
+    loadBaseData = function () {
+        loadTextFile("csv/latlons.txt?i=" + Math.random()*100000, function (responseText) {
+            var baseData = JSON.parse(responseText)[1];
+            parseBaseData(baseData);
+        });
     }
 
     parseBaseData = function (baseData) {
@@ -111,6 +116,17 @@
             ];
             allIDs.push(id);
         }
+
+        loadTextFile("csv/heights.txt?i=" + Math.random()*100000, function (responseText) {
+            var heightData = JSON.parse(responseText)[1];
+            var i, l = heightData.length;
+            for (i=0; i<l; i=i+2) {
+                var id = heightData[i];
+                if (pointHash[id] === undefined) continue;
+                pointHash[id][6] = heightData[i+1];
+            }
+            displayBaseData();
+        });
     }
 
     displayBaseData = function () {
@@ -402,13 +418,17 @@
         });
         $(".link.tooltip-address").click(function (e) {
             var id = $(e.target).data("id");
-            var p = pointHash[id];
-            var height = p[6] ? p[6] + (heightDelta * 10) : (heightDelta * 10);
-            // console.log(id, height, p);
-            viewer.camera.flyTo({
-                destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
-                duration : 1
-            });
+            flyToAddressID(id);
+        });
+    }
+
+    flyToAddressID = function (id) {
+        var p = pointHash[id];
+        var height = p[6] ? p[6] + (heightDelta * 10) : (heightDelta * 10);
+        // console.log(id, height, p);
+        viewer.camera.flyTo({
+            destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
+            duration : 1
         });
     }
 
@@ -537,13 +557,18 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         for (i=0; i<l; i++) {
             var p = pointHash[newPoints[i]];
             if (!p) continue;
-            if (heightHash[p[0]+","+p[1]] === undefined) {
-                heightHash[p[0]+","+p[1]] = 0;
+            var height;
+            if (p[6] === undefined) {
+                if (heightHash[p[0]+","+p[1]] === undefined) {
+                    heightHash[p[0]+","+p[1]] = 0;
+                } else {
+                    heightHash[p[0]+","+p[1]] += heightDelta;
+                }
+                height = heightHash[p[0]+","+p[1]];
+                pointHash[newPoints[i]][6] = height;
             } else {
-                heightHash[p[0]+","+p[1]] += heightDelta;
+                height = p[6];
             }
-            var height = heightHash[p[0]+","+p[1]];
-            pointHash[newPoints[i]][6] = height;
             // hack, because elastic returns all addresses of a given id
             var tid = p[4];
             var cid = p[5];

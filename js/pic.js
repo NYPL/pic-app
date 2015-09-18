@@ -559,13 +559,13 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             if (!p) continue;
             var height;
             if (p[6] === undefined) {
-                if (heightHash[p[0]+","+p[1]] === undefined) {
-                    heightHash[p[0]+","+p[1]] = 0;
+                var latlonHash = p[0]+","+p[1];
+                if (heightHash[latlonHash] === undefined) {
+                    height = heightDelta;
                 } else {
-                    heightHash[p[0]+","+p[1]] += heightDelta;
+                    height = heightHash[latlonHash] + heightDelta;
                 }
-                height = heightHash[p[0]+","+p[1]];
-                pointHash[newPoints[i]][6] = height;
+                heightHash[latlonHash] = height;
             } else {
                 height = p[6];
             }

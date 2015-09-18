@@ -24,6 +24,7 @@
 
     var pickedEntity;
     var mousePosition, startMousePosition;
+    var lastID, lastLatlon;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
@@ -226,33 +227,66 @@
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
 
+    buildFacetQuery = function (facetList) {
+        var facetQuery = facetList.length > 0 ? "(" + facetList.join(" AND ") + ")" : "";
+        return facetQuery;
+    }
+
+    buildConstituentQuery = function (id, latlon, facetList, start) {
+        var facetQuery = "";
+        if (facetList.length > 0) facetQuery = " AND " + buildFacetQuery(facetList);
+        return "from="+start+"&size="+tooltipLimit+"&q=((ConstituentID:" + id + " OR (address.Remarks:\"" + latlon + "\")) " + facetQuery + ")";
+    }
+
     showConstituent = function (point) {
         if (point == pickedEntity) return;
         var id = point.id;
         var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
+        lastID = realID;
+        lastLatlon = originalLatlon;
         var facetList = buildFacetList();
-        var facetQuery = facetList.length > 0 ? " AND (" + facetList.join(" AND ") + ")" : "";
-        var query = "size="+tooltipLimit+"&q=((ConstituentID:" + realID + " OR (address.Remarks:\"" + originalLatlon + "\")) " + facetQuery + ")";
+        var query = buildConstituentQuery(realID, originalLatlon, facetList, 0);
         console.log(query);
         getData("constituent", query, updateTooltip);
     }
 
-    removeTooltip = function () {
-        tooltipElement.html("");
-    }
-
     updateTooltip = function (responseText) {
-        tooltipElement.empty();
+        clearTooltip();
         var data = JSON.parse(responseText);
         var constituents = data.hits.hits;
         if (data.hits.total > tooltipLimit) {
             var string = "<p>Found " + data.hits.total + " photographers in this location. Showing first " + tooltipLimit + ".</p>";
-            tooltipElement.append(string);
+            tooltipElement.find(".results").prepend(string);
         }
-        for (var i=0; i<constituents.length; i++) {
-            buildTooltipConstituent(constituents[i]._source);
+        addTooltipResults(constituents, 0, data.hits.total);
+    }
+
+    addTooltipResults = function (results, start, total) {
+        var l = results.length;
+        for (var i=0; i<l; i++) {
+            buildTooltipConstituent(results[i]._source);
         }
+        if (start + l < total) {
+            var more = total - (l + start) > tooltipLimit ? tooltipLimit : total - (l + start);
+            var string = '<div class="link more">Load '+more+' more</div>';
+            tooltipElement.find(".more").replaceWith(string);
+            tooltipElement.find(".more").click(function() {
+                loadMoreResults(start + l);
+            });
+        }
+    }
+
+    loadMoreResults = function (start) {
+        tooltipElement.find(".more").empty();
+        var facetList = buildFacetList();
+        var query = buildConstituentQuery(lastID, lastLatlon, facetList, start);
+        console.log(query);
+        getData("constituent", query, function (responseText) {
+            var data = JSON.parse(responseText);
+            var constituents = data.hits.hits;
+            addTooltipResults(constituents, start, data.hits.total);
+        });
     }
 
     buildTooltipConstituent = function (p) {
@@ -358,7 +392,7 @@
             string += addstring;
         }
         string += "</div>";
-        tooltipElement.append(string);
+        tooltipElement.find(".results").append(string);
         $(".tooltip-toggle-" + p.ConstituentID).click(function () {
             $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
         });
@@ -591,14 +625,18 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         el.append(string);
     }
 
+    clearTooltip = function () {
+        tooltipElement.find(".results").empty();
+        tooltipElement.find(".more").empty();
+    }
+
     disableFacets = function () {
         $("#facets .facet").prop('disabled', 'disabled');
-        $("#tooltip").html("").hide();
+        clearTooltip();
     }
 
     enableFacets = function () {
         $("#facets .facet").prop('disabled', '');
-        $("#tooltip").show();
     }
 
     removePoints = function () {
@@ -619,8 +657,8 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             return;
         }
         var addresses = [];
-        var query = facetList.length > 0 ? "q=(" + facetList.join(" AND ") + ")" : "";
-        query = "_source=address.ConAddressID&size=" + elasticSize + "&" + query;
+        var query = buildFacetQuery(facetList);
+        query = "_source=address.ConAddressID&size=" + elasticSize + "&q=" + query;
         console.log(query);
         // reset elastic results to prepare for the new set
         elasticResults = {};

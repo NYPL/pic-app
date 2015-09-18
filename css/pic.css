@@ -24,7 +24,8 @@ p {
     top: 0;
     left: 0;
     bottom: 0;
-    overflow-y: auto;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 .legend {

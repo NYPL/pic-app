@@ -215,9 +215,11 @@
     showConstituent = function (point) {
         if (point == pickedEntity) return;
         var id = point.id;
-        var originalLatlon = point.primitive.originalLatlon.split(",");
+        var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
-        var query = "size="+tooltipLimit+"&q=(ConstituentID:" + realID + " OR (address.Remarks:'" + originalLatlon[0] + "' AND address.Remarks:'" + originalLatlon[1] + "'))";
+        var facetList = buildFacetList();
+        var facetQuery = facetList.length > 0 ? " AND (" + facetList.join(" AND ") + ")" : "";
+        var query = "size="+tooltipLimit+"&q=((ConstituentID:" + realID + " OR (address.Remarks:\"" + originalLatlon + "\")) " + facetQuery + ")";
         console.log(query);
         getData("constituent", query, updateTooltip);
     }
@@ -583,10 +585,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         pickedEntity = undefined;
         disableFacets();
         removePoints();
-        var facetList = [];
-        for (var k in filters) {
-            if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
-        }
+        var facetList = buildFacetList();
         if (facetList.length === 0) {
             displayBaseData();
             return;
@@ -602,6 +601,14 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         elasticResults.hits = [];
         elasticResults.total = 0;
         getData("constituent", query, getNextSet);
+    }
+
+    buildFacetList = function () {
+        var facetList = [];
+        for (var k in filters) {
+            if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
+        }
+        return facetList;
     }
 
     getNextSet = function (re) {
@@ -678,7 +685,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     onKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var value = el.value.trim() != "" ? '"' + el.value.trim() + '"' : "*"
+            var value = el.value.trim() != "" ? '(' + el.value.trim() + '*)' : "*"
             updateFilter(el.id, value);
             applyFilters();
         }

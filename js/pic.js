@@ -17,9 +17,10 @@
     var padding = 0.1; // to extend the boundary a bit
     var pixelSize = 2;
     var tooltipLimit = 20;
-    var heightDelta = 1000;
+    var heightDelta = 100;
     var minScale = 1;
     var maxScale = 6;
+    var lineWidth = 2;
 
     var pickedEntity;
 
@@ -52,12 +53,19 @@
 
     var start;
 
+    var selectedColor = new Cesium.Color(1, 1, 0.2, 1);
+    var bizColor = new Cesium.Color(1, 0.50, 0.001, 1);
+    var birthColor = new Cesium.Color(0.30, 0.68, 0.29, 1);
+    var diedColor = new Cesium.Color(0.21, 0.49, 0.72, 1);
+    var activeColor = new Cesium.Color(0.89, 0.10, 0.10, 1);
+    var unknownColor = new Cesium.Color(1, 0.01, 1, 1);
+
     var addressTypePalette = {
-        "2": new Cesium.Color(0.01, 1, 1, 1), // biz
-        "5": new Cesium.Color(0.01, 1, 0.01, 1), // birth
-        "6": new Cesium.Color(0.01, 0.01, 1, 1), // death
-        "7": new Cesium.Color(1, 0.01, 0.01, 1), // active
-        "1": new Cesium.Color(1, 0.01, 1, 1), // unknown
+        "2": bizColor, // biz
+        "5": birthColor, // birth
+        "6": diedColor, // death
+        "7": activeColor, // active
+        "1": unknownColor, // unknown
     };
 
     var filters = {};
@@ -164,7 +172,7 @@
                     entity: picked
                 };
                 // apply new properties
-                picked.primitive.color = new Cesium.Color(1, 1, 0.01, 1);
+                picked.primitive.color = selectedColor;
                 pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
             }
         } else {
@@ -374,7 +382,7 @@
                 // console.log(p, ids[i]);
                 if (p === undefined) continue;
                 expandBounds(p);
-                positions.push(p[1], p[0], 500);
+                positions.push(p[1], p[0], p[6]);
                 // if (lastPoint === p) {
                 //     continue;
                 // }
@@ -385,7 +393,7 @@
                 color: Cesium.Color.WHITE,
                 outlineColor: Cesium.Color.BLACK
             });
-            polyline.width = new Cesium.ConstantProperty(3);
+            polyline.width = new Cesium.ConstantProperty(lineWidth);
             polyline.followSurface = new Cesium.ConstantProperty(true);
             polyline.positions = Cesium.Cartesian3.fromDegreesArrayHeights(positions);
             lines = new Cesium.Entity({
@@ -481,6 +489,8 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             } else {
                 heightHash[p[0]+","+p[1]] += heightDelta;
             }
+            var height = heightHash[p[0]+","+p[1]];
+            pointHash[newPoints[i]][6] = height;
             // hack, because elastic returns all addresses of a given id
             var tid = p[4];
             var cid = p[5];
@@ -491,7 +501,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             expandBounds(p);
             var pt = points.add({
                 id: "P_"+p[2],
-                position : Cesium.Cartesian3.fromDegrees(p[1], p[0], heightHash[p[0]+","+p[1]]),
+                position : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
                 color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, maxScale, 8.0e6, minScale)

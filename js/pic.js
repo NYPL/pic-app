@@ -23,7 +23,7 @@
     var lineWidth = 2;
 
     var pickedEntity;
-    // var mousePosition, startMousePosition;
+    var mousePosition, startMousePosition;
     var lastID, lastLatlon;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
@@ -217,6 +217,7 @@
         canvas.onclick = function(e) {
             canvas.focus();
             // console.log(mousePosition, startMousePosition, e);
+            if (mousePosition != startMousePosition) return;
             var pickedObject = pickEntity({x:e.layerX, y:e.layerY});
             refreshPicked(pickedObject);
             if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
@@ -226,15 +227,15 @@
 
         var ellipsoid = scene.globe.ellipsoid;
 
-        // handler.setInputAction(function(movement) {
-        //     // console.log(movement);
-        //     // flags.looking = true;
-        //     mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
-        // }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+        handler.setInputAction(function(movement) {
+            // console.log(movement);
+            // flags.looking = true;
+            mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
+        }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         handler.setInputAction(function(movement) {
             // pick
-            // mousePosition = movement.endPosition;
+            mousePosition = movement.endPosition;
             var pickedObject = scene.pick(movement.endPosition);
             refreshPicked(pickedObject);
             // if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {

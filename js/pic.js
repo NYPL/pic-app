@@ -654,6 +654,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     clearTooltip = function () {
         tooltipElement.find(".results").empty();
         tooltipElement.find(".more").empty();
+        viewer.entities.remove(lines);
     }
 
     disableFacets = function () {

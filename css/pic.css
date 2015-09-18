@@ -52,7 +52,7 @@ p {
     margin-bottom: 1em;
 }
 
-.tooltip-item h3, .tooltip-item .connector {
+.tooltip-item h3, .tooltip-item .link {
     cursor: pointer;
     color: #900;
 }

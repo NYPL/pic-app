@@ -339,13 +339,14 @@
                 if (add.CountryID != "NULL") addstring += facetValues.countries[add.CountryID] + "<br />";
                 if (add.Remarks != "NULL") {
                     addressIDs.push(add.ConAddressID);
+                    addstring += '<span class="link tooltip-address" id="tooltip-address-'+add.ConAddressID+'" data-id="'+add.ConAddressID+'">Go</span><br />';
                     addstring += add.Remarks + "<br />";
                 }
                 addstring += "</p>";
             }
             string += "<p>";
             string += "<strong>Addresses:</strong>";
-            if (addressIDs.length > 1) string += '<br /><span class="connector tooltip-connector-'+p.ConstituentID+'">Connect</span>';
+            if (addressIDs.length > 1) string += '<br /><span class="link" id="tooltip-connector-'+p.ConstituentID+'">Connect</span>';
             string += "</p>";
             string += addstring;
         }
@@ -354,8 +355,17 @@
         $(".tooltip-toggle-" + p.ConstituentID).click(function () {
             $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
         });
-        $(".tooltip-connector-" + p.ConstituentID).click(function () {
+        $("#tooltip-connector-" + p.ConstituentID).click(function () {
             connectAddresses(addressIDs);
+        });
+        $(".link.tooltip-address").click(function (e) {
+            var id = $(e.target).data("id");
+            console.log(id);
+            var p = pointHash[id];
+            viewer.camera.flyTo({
+                destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], p[6]),
+                duration : 1
+            });
         });
     }
 

@@ -23,6 +23,7 @@
     var lineWidth = 2;
 
     var pickedEntity;
+    var mousePosition, startMousePosition;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
 
@@ -134,6 +135,7 @@
           ,mapProjection : new Cesium.WebMercatorProjection()
           ,creditContainer : "credits"
           ,selectionIndicator : false
+          ,skyBox : false
           ,sceneMode : Cesium.SceneMode.SCENE2D
         });
 
@@ -185,6 +187,10 @@
         canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
         canvas.onclick = function() {
             canvas.focus();
+            // console.log(mousePosition, startMousePosition);
+            if (pickedEntity === undefined) return;
+            if (mousePosition != startMousePosition) return;
+            showConstituent(pickedEntity.entity);
         };
 
         var ellipsoid = scene.globe.ellipsoid;
@@ -192,11 +198,12 @@
         handler.setInputAction(function(movement) {
             // console.log(movement);
             // flags.looking = true;
-            // mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
+            mousePosition = startMousePosition = Cesium.Cartesian3.clone(movement.position);
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
 
         handler.setInputAction(function(movement) {
             // pick
+            mousePosition = movement.endPosition;
             var pickedObject = scene.pick(movement.endPosition);
             refreshPicked(pickedObject);
             if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
@@ -215,8 +222,7 @@
         handler.setInputAction(function(position) {
             // console.log(position);
             // flags.looking = false;
-            if (pickedEntity === undefined) return;
-            showConstituent(pickedEntity.entity);
+            // mousePosition = Cesium.Cartesian3.clone(position);
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
 
@@ -276,7 +282,8 @@
             string += "<strong>Processes used:</strong><br />";
             var list = [];
             for (var i in p.process) {
-                list.push(facetValues.processes[p.process[i].TermID]);
+                console.log(p.process[i].TermID);
+                if (facetValues.processes[p.process[i].TermID] !== undefined) list.push(facetValues.processes[p.process[i].TermID]);
             }
             string += list.join(", ");
             string += "</p>";
@@ -360,10 +367,11 @@
         });
         $(".link.tooltip-address").click(function (e) {
             var id = $(e.target).data("id");
-            console.log(id);
             var p = pointHash[id];
+            var height = p[6] ? p[6] + (heightDelta * 10) : (heightDelta * 10);
+            // console.log(id, height, p);
             viewer.camera.flyTo({
-                destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], p[6]),
+                destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
                 duration : 1
             });
         });

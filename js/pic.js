@@ -217,7 +217,7 @@
         var id = point.id;
         var originalLatlon = point.primitive.originalLatlon.split(",");
         var realID = id.substr(2);
-        var query = "size="+tooltipLimit+"&q=(ConstituentID:" + realID + " OR (address.Remarks:'" + originalLatlon[0] + "' AND address.Remarks:'" + [1] + "'))";
+        var query = "size="+tooltipLimit+"&q=(ConstituentID:" + realID + " OR (address.Remarks:'" + originalLatlon[0] + "' AND address.Remarks:'" + originalLatlon[1] + "'))";
         console.log(query);
         getData("constituent", query, updateTooltip);
     }

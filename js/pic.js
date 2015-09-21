@@ -314,8 +314,10 @@
 
     buildTooltipConstituent = function (p) {
         var string = '<div class="tooltip-item">';
-        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName + "<span>" + p.DisplayDate + "</span>" + "</h3>";
-        // if (p.addressTotal) string += ' (' + p.addressTotal + ')';
+        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
+        string += "<span>" + p.DisplayDate;
+        if (p.addressTotal) string += ' (' + p.addressTotal + ')';
+        string += "</span>"
         string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>";

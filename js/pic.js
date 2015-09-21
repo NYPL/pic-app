@@ -8,6 +8,7 @@
     this.handler;
     this.elasticResults = {};
     this.pointHash = {};
+    this.latlonHeightHash = {};
     this.heightHash = {};
     this.allIDs = [];
     this.elasticSize = 1500;
@@ -238,17 +239,6 @@
             mousePosition = movement.endPosition;
             var pickedObject = scene.pick(movement.endPosition);
             refreshPicked(pickedObject);
-            // if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
-            //     console.log("then:", pickedObject.color);
-            //     // label tooltip
-            //     var cartesian = viewer.camera.pickEllipsoid(movement.endPosition, ellipsoid);
-            //     if (cartesian) {
-            //         var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-            //         var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
-            //         var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
-            //         console.log(latitudeString, longitudeString);
-            //     }
-            // }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
         handler.setInputAction(function(position) {
@@ -266,7 +256,7 @@
     buildConstituentQuery = function (id, latlon, facetList, start) {
         var facetQuery = "";
         if (facetList.length > 0) facetQuery = " AND " + buildFacetQuery(facetList);
-        return "from="+start+"&size="+tooltipLimit+"&q=((ConstituentID:" + id + " OR (address.Remarks:\"" + latlon + "\")) " + facetQuery + ")";
+        return "filter_path=hits.total,hits.hits._source&_source_exclude=address&from="+start+"&size="+tooltipLimit+"&q=((ConstituentID:" + id + " OR (address.Remarks:\"" + latlon + "\")) " + facetQuery + ")";
     }
 
     showConstituent = function (point) {
@@ -278,7 +268,7 @@
         lastLatlon = originalLatlon;
         var facetList = buildFacetList();
         var query = buildConstituentQuery(realID, originalLatlon, facetList, 0);
-        console.log(query);
+        // console.log(query);
         getData("constituent", query, updateTooltip);
     }
 
@@ -313,7 +303,7 @@
         tooltipElement.find(".more").empty();
         var facetList = buildFacetList();
         var query = buildConstituentQuery(lastID, lastLatlon, facetList, start);
-        console.log(query);
+        // console.log(query);
         getData("constituent", query, function (responseText) {
             var data = JSON.parse(responseText);
             var constituents = data.hits.hits;
@@ -324,7 +314,7 @@
     buildTooltipConstituent = function (p) {
         var string = '<div class="tooltip-item">';
         string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
-        if (p.address) string += ' (' + p.address.length + ')';
+        if (p.addressTotal) string += ' (' + p.addressTotal + ')';
         string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>";
@@ -395,11 +385,38 @@
             string += links.join(", ");
             string += "</p>";
         }
-        var addressIDs = [];
-        if (p.address) {
+        if (p.addressTotal > 0) {
+            string += '<div class="addresses">';
+            if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect addresses</strong></span>';
+            string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>List addresses</strong></span></div></div>';
+        }
+        string += "</div>";
+        tooltipElement.find(".results").append(string);
+        $(".tooltip-toggle-" + p.ConstituentID).click(function () {
+            $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
+        });
+        $("#tooltip-addresslist-" + p.ConstituentID).click(function (e) {
+            getAddressList(parseInt(p.ConstituentID));
+        });
+        $("#tooltip-connector-" + p.ConstituentID).click(function (e) {
+            connectAddresses(parseInt(p.ConstituentID));
+        });
+    }
+
+    getAddressList = function (id) {
+        var query = "filter_path=hits.hits._source&q=ConstituentID:" + id;
+        getData("constituent", query, function (responseText) {
+            var data = JSON.parse(responseText);
+            buildConstituentAddresses(id, data.hits.hits[0]._source.address);
+        });
+    }
+
+    buildConstituentAddresses = function (id, addresses) {
+        // console.log(id);
+        if (addresses) {
             var addstring = "";
-            for (var i=0; i<p.address.length; i++) {
-                var add = p.address[i];
+            for (var i=0; i<addresses.length; i++) {
+                var add = addresses[i];
                 addstring += "<p>";
                 addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += facetValues.addresstypes[add.AddressTypeID] + "<br />";
@@ -411,30 +428,21 @@
                 if (add.State != "NULL") addstring += add.State + "<br />";
                 if (add.CountryID != "NULL") addstring += facetValues.countries[add.CountryID] + "<br />";
                 if (add.Remarks != "NULL") {
-                    addressIDs.push(add.ConAddressID);
                     addstring += '<span class="link tooltip-address" id="tooltip-address-'+add.ConAddressID+'" data-id="'+add.ConAddressID+'">Go</span><br />';
                     addstring += add.Remarks + "<br />";
                 }
                 addstring += "</p>";
             }
-            string += "<p>";
+            var string = "<p>";
             string += "<strong>Addresses:</strong>";
-            if (addressIDs.length > 1) string += '<br /><span class="link" id="tooltip-connector-'+p.ConstituentID+'">Connect</span>';
             string += "</p>";
             string += addstring;
+            $("#tooltip-addresslist-" + id).empty().append(string);
+            $("#tooltip-addresslist-" + id + " .link.tooltip-address").click(function (e) {
+                var id = $(e.target).data("id");
+                flyToAddressID(id);
+            });
         }
-        string += "</div>";
-        tooltipElement.find(".results").append(string);
-        $(".tooltip-toggle-" + p.ConstituentID).click(function () {
-            $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
-        });
-        $("#tooltip-connector-" + p.ConstituentID).click(function () {
-            connectAddresses(addressIDs);
-        });
-        $(".link.tooltip-address").click(function (e) {
-            var id = $(e.target).data("id");
-            flyToAddressID(id);
-        });
     }
 
     flyToAddressID = function (id) {
@@ -458,19 +466,22 @@
         if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
     }
 
-    connectAddresses = function (ids) {
+    connectAddresses = function (id) {
+        // console.log(id);
         resetBounds();
         viewer.entities.remove(lines);
-        if (ids.length > 1) {
-            var addresses = sortAddresses(getAddressPoints(ids));
+        var addresses = addressesForID(id);
+        if (addresses.length > 1) {
+            addresses = sortAddresses(addresses);
             var lastPoint = addresses[0];
             var positions = [];
-            for (var i=0; i<ids.length; i++) {
+            for (var i=0; i<addresses.length; i++) {
                 var p = addresses[i];
-                // console.log(p, ids[i]);
+                // console.log(p, addresses[i]);
                 if (p === undefined) continue;
                 expandBounds(p);
-                positions.push(p[1], p[0], p[6]);
+                var height = p[6] !== undefined ? p[6] : heightHash[p[3]];
+                positions.push(p[1], p[0], height);
                 // if (lastPoint === p) {
                 //     continue;
                 // }
@@ -550,9 +561,9 @@ material : new Cesium.PolylineOutlineMaterialProperty({
 
         var r = new XMLHttpRequest();
 
-        var params = query;
+        console.log(query);
 
-        r.open("POST", baseUrl+"/"+facet+"/_search?"+params, true);
+        r.open("POST", baseUrl+"/"+facet+"/_search?"+query, true);
 
         r.onreadystatechange = function () {
             if (r.readyState != 4 || r.status != 200) return;
@@ -573,14 +584,16 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             var p = pointHash[newPoints[i]];
             if (!p) continue;
             var height;
+            // point has no real height
             if (p[6] === undefined) {
                 var latlonHash = p[0]+","+p[1];
-                if (heightHash[latlonHash] === undefined) {
+                if (latlonHeightHash[latlonHash] === undefined) {
                     height = heightDelta;
                 } else {
-                    height = heightHash[latlonHash] + heightDelta;
+                    height = latlonHeightHash[latlonHash] + heightDelta;
                 }
-                heightHash[latlonHash] = height;
+                latlonHeightHash[latlonHash] = height;
+                heightHash[p[3]] = height;
             } else {
                 height = p[6];
             }
@@ -685,6 +698,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         resetBounds();
         points.removeAll();
         viewer.entities.remove(lines);
+        latlonHeightHash = {};
         heightHash = {};
     }
 
@@ -700,8 +714,7 @@ material : new Cesium.PolylineOutlineMaterialProperty({
         }
         var addresses = [];
         var query = buildFacetQuery(facetList);
-        query = "_source=address.ConAddressID&size=" + elasticSize + "&q=" + query;
-        console.log(query);
+        query = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + elasticSize + "&q=" + query;
         // reset elastic results to prepare for the new set
         elasticResults = {};
         elasticResults.query = query;
@@ -766,6 +779,15 @@ material : new Cesium.PolylineOutlineMaterialProperty({
             }
         }
         addPoints(addresses);
+    }
+
+    addressesForID = function (id) {
+        var i;
+        var addresses = [];
+        for (i in pointHash) {
+            if (pointHash[i][2] === id) addresses.push(pointHash[i]);
+        }
+        return addresses;
     }
 
     updateTotals = function (total) {

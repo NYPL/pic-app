@@ -154,6 +154,7 @@
           ,creditContainer : "credits"
           ,selectionIndicator : false
           ,skyBox : false
+          ,moon : new Cesium.Moon()
           ,sceneMode : Cesium.SceneMode.SCENE2D
         });
 

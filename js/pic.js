@@ -548,14 +548,7 @@
         // console.log(addresses, sorted);
         return sorted;
     }
-/*
-width : 5,
-material : new Cesium.PolylineOutlineMaterialProperty({
-    color : Cesium.Color.ORANGE,
-    outlineWidth : 2,
-    outlineColor : Cesium.Color.BLACK
-})
-*/
+
     getData = function (facet, query, callback) {
         // console.log(facet, key, value);
 
@@ -574,7 +567,6 @@ material : new Cesium.PolylineOutlineMaterialProperty({
     }
 
     addPoints = function (newPoints) {
-        // points.removeAll();
         // if (newPoints.length === 0) return;
         // console.log(newPoints);
         var addressType = $("#"+facetWithName("addresstypes")[0]).val();

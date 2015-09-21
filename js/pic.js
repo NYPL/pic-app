@@ -314,14 +314,13 @@
 
     buildTooltipConstituent = function (p) {
         var string = '<div class="tooltip-item">';
-        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName;
-        if (p.addressTotal) string += ' (' + p.addressTotal + ')';
+        string += '<h3 class="tooltip-toggle-'+p.ConstituentID+'">' + p.DisplayName + "<span>" + p.DisplayDate + "</span>" + "</h3>";
+        // if (p.addressTotal) string += ' (' + p.addressTotal + ')';
         string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>";
         string += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
         string += "ID:" + p.ConstituentID + "<br />";
-        string += p.DisplayDate + "<br />";
         if (p.gender) string += facetValues.genders[p.gender[0].TermID] + "<br />";
         string += "</p>";
         if (p.role) {

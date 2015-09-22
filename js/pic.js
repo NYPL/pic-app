@@ -30,7 +30,7 @@
     var lastID, lastLatlon;
 
     var baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
-    var geonamesURL = "http://api.geonames.org/findNearbyPlaceNameJSON?username=demo";
+    var geonamesURL = "http://api.geonames.org/findNearbyPlaceNameJSON?username=mgiraldo";
 
     // the way we knoe in elastic if a constituent has latlon-looking data
     var latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
@@ -282,6 +282,7 @@
             var reverseGeo = geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
             loadTextFile(reverseGeo, function(response) {
                 var data = JSON.parse(response);
+                console.log(data);
                 var geo = data.geonames[0];
                 if (!geo) return;
                 $("#geoname").text("near " + geo.name + ", " + geo.countryName);

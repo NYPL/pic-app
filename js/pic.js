@@ -257,6 +257,7 @@
 
     positionHover = function (visible) {
         var el = $("#hover");
+        var leftOffset = 250;
         var margin = 30;
         var x = mousePosition.x-(el.width()*.5);
         var y = mousePosition.y-el.height()-margin;
@@ -267,6 +268,7 @@
             x = -10000;
             y = -10000;
         }
+        x += leftOffset;
         el.offset({left:x, top:y});
         if (!pickedEntity || !pickedEntity.entity) return;
         var position = pickedEntity.entity.primitive.originalLatlon;

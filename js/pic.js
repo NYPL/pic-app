@@ -275,7 +275,7 @@
             el.html(string);
             var latlon = position.split(",");
             if (latlon.length === 3 && latlon[2] > 10000) {
-                var place = latlon[2] === "3850000" ? "near the Moon!" : "in the ISS";
+                var place = latlon[2] === "3850000" ? "near the Moon!" : "in Outer Space";
                 $("#geoname").text(place);
                 return;
             }

@@ -83,13 +83,17 @@ p {
 }
 
 #hover {
-    width: 200px;
+    width: 250px;
     position: absolute;
     background: white;
     padding: 10px;
     left: -1000px;
     top: -1000px;
     text-align: center;
+}
+
+#hover .geoname {
+    white-space: nowrap;
 }
 
 #hover .hits {

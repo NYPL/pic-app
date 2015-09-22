@@ -11,7 +11,7 @@ p {
 
 #cesiumContainer {
     position: absolute;
-    left: 250px;
+    left: 0;
     top: 0;
     right: 0;
     bottom: 0;
@@ -21,9 +21,9 @@ p {
     background-color: #ccc;
     position: absolute;
     width: 250px;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 }
@@ -81,3 +81,21 @@ p {
     font-family: Verdana;
     width: 220px;
 }
+
+#hover {
+    width: 200px;
+    position: absolute;
+    background: white;
+    padding: 10px;
+    left: -1000px;
+    top: -1000px;
+    text-align: center;
+}
+
+#hover .hits {
+    font-weight: bold;
+}
+
+
+
+

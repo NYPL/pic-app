@@ -180,6 +180,7 @@
     }
 
     refreshPicked = function (picked) {
+        var showHover = false;
         // reset
         if (pickedEntity != undefined && picked !== pickedEntity.entity) {
             // revert properties
@@ -196,10 +197,12 @@
                 picked.primitive.color = selectedColor;
                 pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
             }
+            showHover = true;
         } else {
             // reset
             pickedEntity = undefined;
         }
+        positionHover(showHover);
     }
 
     pickEntity = function (windowPosition) {
@@ -247,6 +250,36 @@
             // flags.looking = false;
             // mousePosition = Cesium.Cartesian3.clone(position);
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
+    }
+
+    positionHover = function (visible) {
+        var el = $("#hover");
+        var margin = 30;
+        var x = mousePosition.x-(el.width()*.5);
+        var y = mousePosition.y-el.height()-margin;
+        if (y < 0) {
+            y = mousePosition.y+margin;
+        }
+        if (!visible) {
+            x = -10000;
+            y = -10000;
+        }
+        el.offset({left:x, top:y});
+        if (!pickedEntity || !pickedEntity.entity) return;
+        var position = pickedEntity.entity.primitive.originalLatlon;
+        console.log(position);
+        var query = 'filter_path=hits.total&q=(address.Remarks:"'+position+'")';
+        getData("constituent", query, function (responseText) {
+            var data = JSON.parse(responseText);
+            var hits = data.hits.total;
+            var string = "<div>";
+            string += '<span class="hits">' + hits + '</span>';
+            string += hits > 1 ? " total results" : "result";
+            // string += " in location " + position;
+            string += "<br /> Click to view list";
+            string += "</div>";
+            el.html(string);
+        });
     }
 
     buildFacetQuery = function (facetList) {

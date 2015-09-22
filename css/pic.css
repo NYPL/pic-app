@@ -40,6 +40,10 @@ p {
     margin-bottom: 5px;
 }
 
+.facet.date {
+    width: 60px;
+}
+
 #tooltip {
     border-top: 2px solid black;
     padding-top: 10px;
@@ -76,7 +80,7 @@ p {
     display: block;
 }
 
-#overlays select, #overlays input {
+#overlays select, input {
     font-size: 14px;
     font-family: Verdana;
     width: 220px;

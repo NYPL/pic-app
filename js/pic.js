@@ -41,6 +41,8 @@
     var facetsElement = $("#facets");
 
     var nameQueryElement = "nameQuery";
+    var fromDateElement = "fromDate";
+    var toDateElement = "toDate";
 
     var facets = [
         ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
@@ -52,7 +54,9 @@
         ["formats", "Format", "TermID", "Term", "format"],
         ["biographies", "Source", "TermID", "Term", "biography"],
         ["collections", "Collections", "TermID", "Term", "collection"],
-        [nameQueryElement, "", "DisplayName", "", ""]
+        [nameQueryElement, "", "DisplayName", "", ""],
+        [fromDateElement, "", "Date", "", ""],
+        [toDateElement, "", "Date", "", ""]
     ];
 
     var facetValues = {};
@@ -82,6 +86,7 @@
         loadBaseData();
         initMouseHandler(handler);
         initNameQuery();
+        initDateQuery();
         getFacets();
     }
 
@@ -614,7 +619,7 @@
 
         var r = new XMLHttpRequest();
 
-        if (debug) console.log(query);
+        console.log(query);
 
         r.open("POST", baseUrl+"/"+facet+"/_search?"+query, true);
 
@@ -779,7 +784,13 @@
     buildFacetList = function () {
         var facetList = [];
         for (var k in filters) {
-            if (filters[k] != "*") facetList.push("("+k+":"+filters[k]+")");
+            if (filters[k] != "*") {
+                if (k.indexOf("Date") === -1) {
+                    facetList.push("("+k+":"+filters[k]+")");
+                } else {
+                    facetList.push("(address.BeginDate:"+filters[k]+" OR address.EndDate:"+filters[k]+")");
+                }
+            }
         }
         return facetList;
     }
@@ -864,10 +875,44 @@
         applyFilters();
     }
 
-    onKeyUp = function (e) {
+    onFromDateKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var value = el.value.trim() != "" ? '(' + el.value.trim() + '*)' : "*"
+            var from = el.value.trim();
+            var to = $("#" + toDateElement).val().trim();
+            var value = "*";
+            from = parseInt(from);
+            to = parseInt(to);
+            if (from != isNaN && to != isNaN && from < to) {
+                value = '[' + from + ' TO ' + to + ']';
+                // value += ' OR ([' + from + ' TO ' + to + ']))';
+            }
+            updateFilter(el.id, value);
+            applyFilters();
+        }
+    }
+
+    onToDateKeyUp = function (e) {
+        var el = e.target;
+        if (e.keyCode === 13) {
+            var to = el.value.trim();
+            var from = $("#" + fromDateElement).val().trim();
+            var value = "*";
+            from = parseInt(from);
+            to = parseInt(to);
+            if (from != isNaN && to != isNaN && from < to) {
+                value = '[' + from + ' TO ' + to + ']';
+                // value += ' OR ([' + from + ' TO ' + to + ']))';
+            }
+            updateFilter(el.id, value);
+            applyFilters();
+        }
+    }
+
+    onNameQueryKeyUp = function (e) {
+        var el = e.target;
+        if (e.keyCode === 13) {
+            var value = el.value.trim() != "" ? '(' + el.value.trim() + ')' : "*"
             updateFilter(el.id, value);
             applyFilters();
         }
@@ -878,11 +923,22 @@
         el.addEventListener("change", onFacetChanged, false);
     }
 
+    initDateQuery = function () {
+        $("#" + fromDateElement).val("0");
+        $("#" + toDateElement).val(new Date().getFullYear());
+        updateFilter(fromDateElement, "*");
+        updateFilter(toDateElement, "*");
+        var from = document.getElementById(fromDateElement);
+        from.addEventListener("keyup", onFromDateKeyUp, false);
+        var to = document.getElementById(toDateElement);
+        to.addEventListener("keyup", onToDateKeyUp, false);
+    }
+
     initNameQuery = function () {
         $("#" + nameQueryElement).val("");
         updateFilter(nameQueryElement, "*");
         var el = document.getElementById(nameQueryElement);
-        el.addEventListener("keyup", onKeyUp, false);
+        el.addEventListener("keyup", onNameQueryKeyUp, false);
     }
 
 }());

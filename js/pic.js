@@ -639,7 +639,7 @@
                 pixelSize : pixelSize,
                 scaleByDistance : new Cesium.NearFarScalar(2.0e3, maxScale, 8.0e6, minScale)
             });
-            pt.originalLatlon = p[0] + "," + p[1];
+            pt.originalLatlon = p[0] + "," + p[1] + (p[6] ? "," + p[6] : "");
         }
         updateTotals();
     }

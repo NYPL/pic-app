@@ -11,7 +11,7 @@ p {
 
 #cesiumContainer {
     position: absolute;
-    left: 0;
+    left: 250px;
     top: 0;
     right: 0;
     bottom: 0;
@@ -21,9 +21,9 @@ p {
     background-color: #ccc;
     position: absolute;
     width: 250px;
-    top: 10px;
-    left: 10px;
-    bottom: 10px;
+    top: 0;
+    left: 0;
+    bottom: 0;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 }

@@ -2,4 +2,4 @@
 
 By David Lowe / [Mauricio Giraldo](https://github.com/mgiraldo)
 
-view at: http://davidrlowe.github.io/pic
+view at: http://mgiraldo.github.io/pic

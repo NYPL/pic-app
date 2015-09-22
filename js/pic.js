@@ -16,12 +16,12 @@
 
     var bounds;
     var padding = 0.1; // to extend the boundary a bit
-    var pixelSize = 2;
     var tooltipLimit = 20;
     var heightDelta = 100;
-    var minScale = 1;
-    var maxScale = 6;
     var lineWidth = 2;
+    var pixelSize = 2;
+    var minScale = 1;
+    var maxScale = 4;
 
     var debug = false;
 
@@ -156,7 +156,6 @@
           ,creditContainer : "credits"
           ,selectionIndicator : false
           ,skyBox : false
-          ,moon : new Cesium.Moon()
           ,sceneMode : Cesium.SceneMode.SCENE2D
         });
 
@@ -282,7 +281,7 @@
             var string = "<div>";
             string += '<span class="hits">' + hits + '</span>';
             string += hits > 1 ? " total results" : " result";
-            // string += " in location " + position;
+            string += " in location " + position;
             string += "<br /> Click to view list";
             string += "</div>";
             el.html(string);
@@ -646,7 +645,7 @@
                 position : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
                 color: addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                 pixelSize : pixelSize,
-                scaleByDistance : new Cesium.NearFarScalar(2.0e3, maxScale, 8.0e6, minScale)
+                scaleByDistance : new Cesium.NearFarScalar(1.0e1, maxScale, 8.0e6, minScale)
             });
             pt.originalLatlon = p[0] + "," + p[1] + (p[6] ? "," + p[6] : "");
         }

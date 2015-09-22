@@ -274,7 +274,7 @@
             var hits = data.hits.total;
             var string = "<div>";
             string += '<span class="hits">' + hits + '</span>';
-            string += hits > 1 ? " total results" : "result";
+            string += hits > 1 ? " total results" : " result";
             // string += " in location " + position;
             string += "<br /> Click to view list";
             string += "</div>";
@@ -354,7 +354,7 @@
         string += '</h3>';
         string += '<div class="hidden tooltip-content-'+p.ConstituentID+'">';
         string += "<p>";
-        string += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
+        // string += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
         string += "ID:" + p.ConstituentID + "<br />";
         if (p.gender) string += facetValues.genders[p.gender[0].TermID] + "<br />";
         string += "</p>";

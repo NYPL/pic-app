@@ -198,7 +198,7 @@
                 };
                 // apply new properties
                 picked.primitive.color = selectedColor;
-                pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
+                pickedEntity.entity.primitive.pixelSize = pixelSize*maxScale;
             }
             showHover = true;
         } else {
@@ -289,6 +289,11 @@
             y = mousePosition.y-el.height()-margin;
             el.offset({left:x, top:y});
             var latlon = position.split(",");
+            if (latlon.length === 3 && latlon[2] > 10000) {
+                var place = latlon[2] === "3850000" ? "near the Moon!" : "in the ISS";
+                $("#geoname").text(place);
+                return;
+            }
             var reverseGeo = geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
             loadTextFile(reverseGeo, function(response) {
                 var data = JSON.parse(response);

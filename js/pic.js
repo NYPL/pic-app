@@ -23,6 +23,8 @@
     var maxScale = 6;
     var lineWidth = 2;
 
+    var debug = false;
+
     var pickedEntity;
     var mousePosition, startMousePosition;
     var lastID, lastLatlon;
@@ -175,7 +177,8 @@
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
 
-    debug = function () {
+    debugMode = function () {
+        debug = true;
         viewer.extend(Cesium.viewerCesiumInspectorMixin);
     }
 
@@ -267,8 +270,10 @@
         el.offset({left:x, top:y});
         if (!pickedEntity || !pickedEntity.entity) return;
         var position = pickedEntity.entity.primitive.originalLatlon;
-        console.log(position);
-        var query = 'filter_path=hits.total&q=(address.Remarks:"'+position+'")';
+        var query = '(address.Remarks:"'+position+'")';
+        var facetList = buildFacetList();
+        if (facetList.length > 0) query = "(" + query + " AND " + buildFacetQuery(facetList) + ")";
+        query = "filter_path=hits.total&q=" + query;
         getData("constituent", query, function (responseText) {
             var data = JSON.parse(responseText);
             var hits = data.hits.total;
@@ -589,7 +594,7 @@
 
         var r = new XMLHttpRequest();
 
-        console.log(query);
+        if (debug) console.log(query);
 
         r.open("POST", baseUrl+"/"+facet+"/_search?"+query, true);
 

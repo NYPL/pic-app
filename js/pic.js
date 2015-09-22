@@ -197,8 +197,8 @@
                     entity: picked
                 };
                 // apply new properties
-                picked.primitive.color = selectedColor;
-                pickedEntity.entity.primitive.pixelSize = pixelSize*maxScale;
+                // picked.primitive.color = selectedColor;
+                pickedEntity.entity.primitive.pixelSize = pixelSize*pixelSize;
                 buildHover();
             }
             showHover = true;
@@ -293,7 +293,7 @@
     positionHover = function (visible) {
         var el = $("#hover");
         var leftOffset = 250;
-        var margin = 30;
+        var margin = 50;
         var x = mousePosition.x-(el.width()*.5);
         var y = mousePosition.y-el.height()-margin;
         if (y < 0) {

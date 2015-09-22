@@ -60,7 +60,7 @@
     var start;
 
     var selectedColor = new Cesium.Color(1, 1, 0.2, 1);
-    var bizColor = new Cesium.Color(1, 0.50, 0.001, 1);
+    var bizColor = new Cesium.Color(1, 0.50, 0.01, 1);
     var birthColor = new Cesium.Color(0.30, 0.68, 0.29, 1);
     var diedColor = new Cesium.Color(0.21, 0.49, 0.72, 1);
     var activeColor = new Cesium.Color(0.89, 0.10, 0.10, 1);
@@ -199,6 +199,7 @@
                 // apply new properties
                 picked.primitive.color = selectedColor;
                 pickedEntity.entity.primitive.pixelSize = pixelSize*maxScale;
+                buildHover();
             }
             showHover = true;
         } else {
@@ -255,6 +256,39 @@
         }, Cesium.ScreenSpaceEventType.LEFT_UP);
     }
 
+    buildHover = function () {
+        var el = $("#hover");
+        var position = pickedEntity.entity.primitive.originalLatlon;
+        var query = '(address.Remarks:"'+position+'")';
+        var facetList = buildFacetList();
+        if (facetList.length > 0) query = "(" + query + " AND " + buildFacetQuery(facetList) + ")";
+        query = "filter_path=hits.total&q=" + query;
+        getData("constituent", query, function (responseText) {
+            var data = JSON.parse(responseText);
+            var hits = data.hits.total;
+            var string = "<div>";
+            string += '<span class="hits">' + hits + '</span>';
+            string += hits === 1 ? " result" : " total results";
+            string += "<br /><span id='geoname'>&nbsp;</span>";
+            string += "<br />click to view list";
+            string += "</div>";
+            el.html(string);
+            var latlon = position.split(",");
+            if (latlon.length === 3 && latlon[2] > 10000) {
+                var place = latlon[2] === "3850000" ? "near the Moon!" : "in the ISS";
+                $("#geoname").text(place);
+                return;
+            }
+            var reverseGeo = geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
+            loadTextFile(reverseGeo, function(response) {
+                var data = JSON.parse(response);
+                var geo = data.geonames[0];
+                if (!geo) return;
+                $("#geoname").text("near " + geo.name + ", " + geo.countryName);
+            });
+        });
+    }
+
     positionHover = function (visible) {
         var el = $("#hover");
         var leftOffset = 250;
@@ -270,38 +304,6 @@
         }
         x += leftOffset;
         el.offset({left:x, top:y});
-        if (!pickedEntity || !pickedEntity.entity) return;
-        var position = pickedEntity.entity.primitive.originalLatlon;
-        var query = '(address.Remarks:"'+position+'")';
-        var facetList = buildFacetList();
-        if (facetList.length > 0) query = "(" + query + " AND " + buildFacetQuery(facetList) + ")";
-        query = "filter_path=hits.total&q=" + query;
-        getData("constituent", query, function (responseText) {
-            var data = JSON.parse(responseText);
-            var hits = data.hits.total;
-            var string = "<div>";
-            string += '<span class="hits">' + hits + '</span>';
-            string += hits > 1 ? " total results" : " result";
-            string += "<br /><span id='geoname'>&nbsp;</span>";
-            string += "<br />click to view list";
-            string += "</div>";
-            el.html(string);
-            y = mousePosition.y-el.height()-margin;
-            el.offset({left:x, top:y});
-            var latlon = position.split(",");
-            if (latlon.length === 3 && latlon[2] > 10000) {
-                var place = latlon[2] === "3850000" ? "near the Moon!" : "in the ISS";
-                $("#geoname").text(place);
-                return;
-            }
-            var reverseGeo = geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
-            loadTextFile(reverseGeo, function(response) {
-                var data = JSON.parse(response);
-                var geo = data.geonames[0];
-                if (!geo) return;
-                $("#geoname").text("near " + geo.name + ", " + geo.countryCode);
-            });
-        });
     }
 
     buildFacetQuery = function (facetList) {

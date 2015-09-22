@@ -811,7 +811,7 @@
             console.log("took:", time, "ms");
             enableFacets();
         }
-        addressesToPoints(results.hits.hits);
+        if (results.hits.hits) addressesToPoints(results.hits.hits);
         if (results.hits.total <= elasticResults.from + elasticSize) {
             updateBounds();
         }
@@ -912,7 +912,7 @@
     onNameQueryKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var value = el.value.trim() != "" ? '(' + el.value.trim() + ')' : "*"
+            var value = el.value.trim() != "" ? '(' + el.value.trim() + '*)' : "*"
             updateFilter(el.id, value);
             applyFilters();
         }

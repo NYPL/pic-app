@@ -282,7 +282,7 @@
             var reverseGeo = geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
             loadTextFile(reverseGeo, function(response) {
                 var data = JSON.parse(response);
-                console.log(data);
+                // console.log(data);
                 var geo = data.geonames[0];
                 if (!geo) return;
                 $("#geoname").text("near " + geo.name + ", " + geo.countryName);

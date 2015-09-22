@@ -542,7 +542,7 @@
             var polyline = new Cesium.PolylineGraphics();
             polyline.material = new Cesium.PolylineOutlineMaterialProperty({
                 color: Cesium.Color.WHITE,
-                outlineColor: Cesium.Color.BLACK
+                outlineColor: new Cesium.Color(136, 136, 136, 1)
             });
             polyline.width = new Cesium.ConstantProperty(lineWidth);
             polyline.followSurface = new Cesium.ConstantProperty(true);

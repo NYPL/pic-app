@@ -266,8 +266,8 @@
         if (!visible) {
             x = -10000;
             y = -10000;
+            el.offset({left:x, top:y});
         }
-        el.offset({left:x, top:y});
         if (!pickedEntity || !pickedEntity.entity) return;
         var position = pickedEntity.entity.primitive.originalLatlon;
         var query = '(address.Remarks:"'+position+'")';
@@ -284,6 +284,7 @@
             string += "<br /> Click to view list";
             string += "</div>";
             el.html(string);
+            el.offset({left:x, top:y});
         });
     }
 

@@ -23,6 +23,9 @@
     var minScale = 1;
     var maxScale = 4;
 
+    var minYear = 1700;
+    var maxYear = new Date().getFullYear();
+
     var debug = false;
 
     var pickedEntity;
@@ -55,8 +58,7 @@
         ["biographies", "Source", "TermID", "Term", "biography"],
         ["collections", "Collections", "TermID", "Term", "collection"],
         [nameQueryElement, "", "DisplayName", "", ""],
-        [fromDateElement, "", "Date", "", ""],
-        [toDateElement, "", "Date", "", ""]
+        ["date", "", "Date", "", ""]
     ];
 
     var facetValues = {};
@@ -78,7 +80,7 @@
         "1": unknownColor, // unknown
     };
 
-    var filters = {};
+    this.filters = {};
 
     init = function () {
         resetBounds();
@@ -788,7 +790,7 @@
                 if (k.indexOf("Date") === -1) {
                     facetList.push("("+k+":"+filters[k]+")");
                 } else {
-                    facetList.push("(address.BeginDate:"+filters[k]+" OR address.EndDate:"+filters[k]+")");
+                    facetList.push("(address.BeginDate:"+filters[k]+" OR address.EndDate:"+filters[k]+" OR BeginDate:"+filters[k]+" OR EndDate:"+filters[k]+")");
                 }
             }
         }
@@ -815,6 +817,7 @@
         if (results.hits.total <= elasticResults.from + elasticSize) {
             updateBounds();
         }
+        updateTotals();
     }
 
     updateBounds = function () {
@@ -875,19 +878,35 @@
         applyFilters();
     }
 
+    validateYear = function (element, defaultValue) {
+        var el = $("#" + element);
+        var string = el.val().trim();
+        if (string === "") {
+            el.val(defaultValue);
+            return defaultValue;
+        }
+        var year = parseInt(string);
+        if (isNaN(year)) {
+            el.val(defaultValue);
+            return defaultValue;
+        }
+        return year;
+    }
+
+    updateTimeFilters = function () {
+        var from = validateYear(fromDateElement, minYear);
+        var to = validateYear(toDateElement, maxYear);
+        var value = "*";
+        if ((from !== minYear || to !== maxYear) && from < to) {
+            value = '[' + from + ' TO ' + to + ']';
+        }
+        updateFilter("date", value);
+    }
+
     onFromDateKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var from = el.value.trim();
-            var to = $("#" + toDateElement).val().trim();
-            var value = "*";
-            from = parseInt(from);
-            to = parseInt(to);
-            if (from != isNaN && to != isNaN && from < to) {
-                value = '[' + from + ' TO ' + to + ']';
-                // value += ' OR ([' + from + ' TO ' + to + ']))';
-            }
-            updateFilter(el.id, value);
+            updateTimeFilters();
             applyFilters();
         }
     }
@@ -895,16 +914,7 @@
     onToDateKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var to = el.value.trim();
-            var from = $("#" + fromDateElement).val().trim();
-            var value = "*";
-            from = parseInt(from);
-            to = parseInt(to);
-            if (from != isNaN && to != isNaN && from < to) {
-                value = '[' + from + ' TO ' + to + ']';
-                // value += ' OR ([' + from + ' TO ' + to + ']))';
-            }
-            updateFilter(el.id, value);
+            updateTimeFilters();
             applyFilters();
         }
     }
@@ -924,14 +934,15 @@
     }
 
     initDateQuery = function () {
-        $("#" + fromDateElement).val("0");
-        $("#" + toDateElement).val(new Date().getFullYear());
-        updateFilter(fromDateElement, "*");
-        updateFilter(toDateElement, "*");
+        $("#" + fromDateElement).val(minYear);
+        $("#" + toDateElement).val(maxYear);
+        updateFilter("date", "*");
         var from = document.getElementById(fromDateElement);
         from.addEventListener("keyup", onFromDateKeyUp, false);
+        from.addEventListener("blur", updateTimeFilters, false);
         var to = document.getElementById(toDateElement);
         to.addEventListener("keyup", onToDateKeyUp, false);
+        to.addEventListener("blur", updateTimeFilters, false);
     }
 
     initNameQuery = function () {

@@ -1,141 +1,194 @@
+/* -------------------------------------------------------------
+  Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
+  By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets
+
+  List of CSS3 Sass Mixins File to be @imported and @included as you need
+
+  The purpose of this library is to facilitate the use of CSS3 on different browsers avoiding HARD TO READ and NEVER
+  ENDING css files
+
+  note: All CSS3 Properties are being supported by Safari 5
+  more info: http://www.findmebyip.com/litmus/#css3-properties
+
+  Mixins available:
+    -   background-gradient     - arguments: Start Color: #3C3C3C, End Color: #999999
+    -   background-size         - arguments: Width: 100%, Height: 100%
+    -   border-radius           - arguments: Radius: 5px
+    -   border-radius-separate  - arguments: Top Left: 5px, Top Right: 5px, Bottom Left: 5px, Bottom Right: 5px
+    -   box                     - arguments: Orientation: horizontal, Pack: center, Align: center
+    -   box-rgba                - arguments: R: 60, G: 3, B: 12, Opacity: 0.23, Color: #3C3C3C
+    -   box-shadow              - arguments: X: 2px, Y: 2px, Blur: 5px, Color: rgba(0,0,0,.4)
+    -   box-sizing              - arguments: Type: border-box
+    -   columns                 - arguments: Count: 3, Gap: 10
+    -   double-borders          - arguments: Color One: #3C3C3C, Color Two: #999999, Radius: 0
+    -   flex                    - arguments: Value: 1
+    -   flip                    - arguments: ScaleX: -1
+    -   font-face               - arguments: Font Family: myFont, Eot File Src: myFont.eot, Woff File Src: myFont.woff, Ttf File Src: myFont.ttf
+    -   opacity                 - arguments: Opacity: 0.5
+    -   outline radius          - arguments: Radius: 5px
+    -   resize                  - arguments: Direction: both
+    -   rotate                  - arguments: Degree: 0, M11: 0, M12: 0, M21: 0, M22: 0
+    CSS Matrix Rotation Calculator http://www.boogdesign.com/examples/transforms/matrix-calculator.html
+    -   text-shadow             - arguments: X: 2px, Y: 2px, Blur: 5px, Color: rgba(0,0,0,.4)
+    -   transform               - arguments: Parameters: null
+    -   transition              - arguments: What: all, Length: 1s, Easing: ease-in-out
+    -   triple-borders          - arguments: Color One: #3C3C3C, Color Two: #999999, Color Three: #000000, Radius: 0
+
+------------------------------------------------------------- */
+/* BACKGROUND GRADIENT */
+/* BACKGROUND SIZE */
+/* BORDER RADIUS */
+/* BOX */
+/* BOX RGBA */
+/* BOX SHADOW */
+/* BOX SHADOW INSET */
+/* BOX SIZING */
+/* COLUMNS */
+/* DOUBLE BORDERS */
+/* FLEX */
+/* FLIP */
+/* FONT FACE */
+/* OPACITY */
+/* OUTLINE RADIUS */
+/* RESIZE */
+/* ROTATE*/
+/* TEXT SHADOW */
+/* TRANSFORM  */
+/* TRANSITION */
+/* TRIPLE BORDERS */
+.timeline {
+  zoom: 1; }
+  .timeline:before, .timeline:after {
+    content: "\0020";
+    display: block;
+    height: 0;
+    overflow: hidden; }
+  .timeline:after {
+    clear: both; }
+
 html, body {
-    width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    background: black;
-}
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  background: black; }
 
 p {
-    margin-bottom: 1em;
-}
+  margin-bottom: 1em; }
 
 #cesiumContainer {
-    position: absolute;
-    left: 250px;
-    top: 0;
-    right: 0;
-    bottom: 0;
-}
+  position: absolute;
+  left: 250px;
+  top: 0;
+  right: 0;
+  bottom: 0; }
 
 #overlays {
-    background-color: #ccc;
-    position: absolute;
-    width: 250px;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-}
+  background-color: #ccc;
+  position: absolute;
+  width: 250px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch; }
 
 .legend {
-    font-size: 12px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    color: white;
-    text-shadow: -1px 1px 0px black;
-    text-transform: uppercase;
-}
+  font-size: 12px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: white;
+  text-shadow: -1px 1px 0px black;
+  text-transform: uppercase; }
 
 .legend li {
-    margin-bottom: 1em;
-}
+  margin-bottom: 1em; }
 
 .legend li .color {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    border-radius: 10px;
-    vertical-align: middle;
-}
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 10px;
+  vertical-align: middle; }
 
 .biz {
-    background-color: rgba(255, 127, 2, 1);
-}
+  background-color: #ff7f02; }
 
 .born {
-    background-color: rgba(76, 173, 73, 1);
-}
+  background-color: #4cad49; }
 
 .died {
-    background-color: rgba(53, 124, 183, 1);
-}
+  background-color: #357cb7; }
 
 .active {
-    background-color: rgba(226, 25, 25, 1);
-}
+  background-color: #e21919; }
 
 #facets {
-    margin-left: 5px;
-    text-transform: uppercase;
-}
+  margin-left: 5px;
+  text-transform: uppercase; }
 
 .facet {
-    margin-bottom: 5px;
-}
+  margin-bottom: 5px; }
 
-.facet.date {
-    width: 60px;
-}
+.date-field {
+  float: left;
+  margin-right: 10px; }
+
+.facet.date-text {
+  width: 60px; }
 
 #tooltip {
-    border-top: 2px solid black;
-    padding-top: 10px;
-}
+  border-top: 2px solid black;
+  padding-top: 10px; }
 
 .tooltip-item {
-    margin: 0 0 10px 0;
-}
+  margin: 0 0 10px 0; }
 
 .tooltip-item h3 {
-    margin-bottom: 1em;
-}
+  margin-bottom: 1em; }
 
 .tooltip-item h3 span {
-    font-size: 0.8em;
-    font-weight: normal;
-    display: block;
-}
+  font-size: 0.8em;
+  font-weight: normal;
+  display: block; }
 
 .tooltip-item h3, #tooltip .link {
-    cursor: pointer;
-    color: #900;
-}
+  cursor: pointer;
+  color: #900; }
 
 .hidden {
-    display: none;
-}
+  display: none; }
 
 #totalPoints, #facets, #tooltip {
-    margin: 10px;
-}
+  margin: 10px; }
 
 #overlays label, #overlays select {
-    display: block;
-}
+  display: block;
+  clear: both; }
 
 #overlays select, input {
-    font-size: 14px;
-    font-family: Verdana;
-    width: 220px;
-}
+  font-size: 14px;
+  font-family: Verdana;
+  width: 220px; }
 
 #hover {
-    width: 250px;
-    position: absolute;
-    background: white;
-    padding: 10px;
-    left: -1000px;
-    top: -1000px;
-    text-align: center;
-}
+  width: 250px;
+  position: absolute;
+  background: white;
+  padding: 10px;
+  left: -1000px;
+  top: -1000px;
+  text-align: center; }
 
 #hover .geoname {
-    white-space: nowrap;
-}
+  white-space: nowrap; }
 
 #hover .hits {
-    font-weight: bold;
-}
+  font-weight: bold; }
+
+/*# sourceMappingURL=pic.css.map */

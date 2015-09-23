@@ -561,7 +561,7 @@ new Cesium.Primitive();
               geometryInstances : new Cesium.GeometryInstance({
                 geometry : new Cesium.PolylineGeometry({
                   positions : Cesium.Cartesian3.fromDegreesArrayHeights(positions),
-                  width : 2.0,
+                  width : lineWidth,
                   vertexFormat : Cesium.PolylineColorAppearance.VERTEX_FORMAT,
                   colors: colors,
                   colorsPerVertex: true

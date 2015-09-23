@@ -3,7 +3,6 @@ html, body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
     background: black;
-    text-transform: uppercase;
 }
 
 p {
@@ -36,6 +35,7 @@ p {
     bottom: 10px;
     color: white;
     text-shadow: -1px 1px 0px black;
+    text-transform: uppercase;
 }
 
 .legend li {
@@ -69,6 +69,7 @@ p {
 
 #facets {
     margin-left: 5px;
+    text-transform: uppercase;
 }
 
 .facet {

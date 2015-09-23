@@ -628,7 +628,7 @@ new Cesium.Primitive();
 
         console.log(query);
 
-        r.open("POST", baseUrl+"/"+facet+"/_search?"+query, true);
+        r.open("POST", baseUrl+"/"+facet+"/_search?sort=addressTotal:desc&"+query, true);
 
         r.onreadystatechange = function () {
             if (r.readyState != 4 || r.status != 200) return;
@@ -927,7 +927,15 @@ new Cesium.Primitive();
     onNameQueryKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var value = el.value.trim() != "" ? '(' + el.value.trim() + '*)' : "*"
+            var str = el.value.trim();
+            if (str !== "") {
+                str = str.replace(" ", "~ ");
+                str = str + "~";
+                str = '(' + str.split(" ").join(" AND ") + ')';
+            } else {
+                str = "*";
+            }
+            var value = str;
             updateFilter(el.id, value);
             applyFilters();
         }

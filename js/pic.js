@@ -13,6 +13,8 @@
     this.allIDs = [];
     this.elasticSize = 1500;
     this.lines;
+new Cesium.Primitive();
+
 
     var bounds;
     var padding = 0.1; // to extend the boundary a bit
@@ -179,7 +181,9 @@
           blending : Cesium.BlendingState.ADDITIVE_BLEND
         });
 
-        lines = viewer.entities.add(new Cesium.Entity());
+        lines = new Cesium.Primitive();
+
+        viewer.scene.primitives.add(lines);
 
         handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
@@ -536,12 +540,13 @@
     connectAddresses = function (id) {
         // console.log(id);
         resetBounds();
-        viewer.entities.remove(lines);
+        viewer.scene.primitives.remove(lines);
         var addresses = addressesForID(id);
         if (addresses.length > 1) {
             addresses = sortAddresses(addresses);
             var lastPoint = addresses[0];
             var positions = [];
+            var colors = [];
             for (var i=0; i<addresses.length; i++) {
                 var p = addresses[i];
                 // console.log(p, addresses[i]);
@@ -549,24 +554,24 @@
                 expandBounds(p);
                 var height = p[6] !== undefined ? p[6] : heightHash[p[3]];
                 positions.push(p[1], p[0], height);
-                // if (lastPoint === p) {
-                //     continue;
-                // }
-                // lastPoint = p;
+                colors.push(addressTypePalette[p[4]]);
             }
-            var polyline = new Cesium.PolylineGraphics();
-            polyline.material = new Cesium.PolylineOutlineMaterialProperty({
-                color: Cesium.Color.WHITE,
-                outlineColor: new Cesium.Color(136, 136, 136, 1)
+
+            lines = new Cesium.Primitive({
+              geometryInstances : new Cesium.GeometryInstance({
+                geometry : new Cesium.PolylineGeometry({
+                  positions : Cesium.Cartesian3.fromDegreesArrayHeights(positions),
+                  width : 2.0,
+                  vertexFormat : Cesium.PolylineColorAppearance.VERTEX_FORMAT,
+                  colors: colors,
+                  colorsPerVertex: true
+                })
+              }),
+              appearance : new Cesium.PolylineColorAppearance({
+                translucent : false
+              })
             });
-            polyline.width = new Cesium.ConstantProperty(lineWidth);
-            polyline.followSurface = new Cesium.ConstantProperty(true);
-            polyline.positions = Cesium.Cartesian3.fromDegreesArrayHeights(positions);
-            lines = new Cesium.Entity({
-                show : true,
-                polyline : polyline
-            });
-            viewer.entities.add(lines);
+            viewer.scene.primitives.add(lines);
             updateBounds();
         }
     }

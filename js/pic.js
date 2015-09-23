@@ -13,8 +13,6 @@
     this.allIDs = [];
     this.elasticSize = 1500;
     this.lines;
-new Cesium.Primitive();
-
 
     var bounds;
     var padding = 0.1; // to extend the boundary a bit
@@ -626,7 +624,7 @@ new Cesium.Primitive();
 
         var r = new XMLHttpRequest();
 
-        console.log(query);
+        // console.log(query);
 
         r.open("POST", baseUrl+"/"+facet+"/_search?sort=addressTotal:desc&"+query, true);
 
@@ -746,7 +744,7 @@ new Cesium.Primitive();
     clearTooltip = function () {
         tooltipElement.find(".results").empty();
         tooltipElement.find(".more").empty();
-        viewer.entities.remove(lines);
+        viewer.scene.primitives.remove(lines);
     }
 
     disableFacets = function () {
@@ -761,7 +759,7 @@ new Cesium.Primitive();
     removePoints = function () {
         resetBounds();
         points.removeAll();
-        viewer.entities.remove(lines);
+        viewer.scene.primitives.remove(lines);
         latlonHeightHash = {};
         heightHash = {};
     }

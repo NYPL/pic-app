@@ -97,9 +97,9 @@ p {
   -webkit-overflow-scrolling: touch; }
 
 .legend {
-  font-size: 12px;
+  font-size: 0.9em;
   position: absolute;
-  right: 10px;
+  left: 260px;
   bottom: 10px;
   color: white;
   text-shadow: -1px 1px 0px black;
@@ -133,13 +133,13 @@ p {
   text-transform: uppercase; }
 
 .facet {
-  margin-bottom: 5px; }
+  margin-bottom: 10px; }
 
 .date-field {
   float: left;
   margin-right: 10px; }
 
-.facet.date-text {
+.date-text {
   width: 60px; }
 
 #tooltip {

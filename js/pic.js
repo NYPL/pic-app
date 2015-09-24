@@ -22,6 +22,7 @@
     var pixelSize = 2;
     var minScale = 1;
     var maxScale = 4;
+    var generalMargin = 10;
 
     var minYear = 1700;
     var maxYear = new Date().getFullYear();
@@ -48,7 +49,7 @@
     var toDateElement = "toDate";
 
     var facets = [
-        ["addresstypes", "Address Types", "AddressTypeID", "AddressType", "address"],
+        ["addresstypes", "Address Type", "AddressTypeID", "AddressType", "address"],
         ["countries", "Address Country", "CountryID", "Country", "address"],
         ["nationalities", "Nationality", "Nationality", "Nationality", ""],
         ["genders", "Gender", "TermID", "Term", "gender"],
@@ -87,10 +88,8 @@
         initWorld();
         loadBaseData();
         initMouseHandler();
-        initNameQuery();
-        initDateQuery();
         getFacets();
-        $("#overlay-minimize").click(function () {minimize()});
+        initListeners();
     }
 
     loadTextFile = function (path, callback) {
@@ -162,7 +161,7 @@
           ,navigationHelpButton : false
           ,navigationInstructionsInitiallyVisible : false
           ,mapProjection : new Cesium.WebMercatorProjection()
-        //   ,creditContainer : "credits"
+          ,creditContainer : "credits"
           ,selectionIndicator : false
           ,skyBox : false
           ,sceneMode : Cesium.SceneMode.SCENE2D
@@ -230,12 +229,22 @@
 
     minimize = function () {
         $("#overlays").addClass("minimized");
-        document.getElementById("acronym").addEventListener("click", function() {maximize();}, false);
+        $(".legend").addClass("minimized");
+        document.getElementById("acronym").addEventListener("click", maximize, false);
     }
 
     maximize = function () {
         $("#overlays").removeClass("minimized");
-        document.getElementById("acronym").removeEventListener("click");
+        $(".legend").removeClass("minimized");
+        document.getElementById("acronym").removeEventListener("click", maximize);
+    }
+
+    fixOverlayHeight = function () {
+        var h = window.innerHeight - (generalMargin*2);
+        h -= $("#header").outerHeight(true);
+        h -= $("#facets").outerHeight(true);
+        h -= generalMargin;
+        $("#tooltip").height(h);
     }
 
     initMouseHandler = function () {
@@ -340,6 +349,7 @@
 
     showConstituent = function (point) {
         if (point == pickedEntity) return;
+        maximize();
         var id = point.id;
         var originalLatlon = point.primitive.originalLatlon;
         var realID = id.substr(2);
@@ -738,6 +748,7 @@
         $("#facetList").append(string);
         facetValues[f] = {};
         updateFilter(f, "*");
+        fixOverlayHeight();
     }
 
     updateFacet = function (r, facet) {
@@ -976,6 +987,14 @@
         updateFilter(nameQueryElement, "*");
         var el = document.getElementById(nameQueryElement);
         el.addEventListener("keyup", onNameQueryKeyUp, false);
+    }
+
+    initListeners = function () {
+        initNameQuery();
+        initDateQuery();
+        $("#overlay-minimize").click(function () {minimize()});
+        window.onresize = fixOverlayHeight;
+        fixOverlayHeight();
     }
 
 }());

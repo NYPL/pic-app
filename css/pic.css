@@ -118,6 +118,8 @@ p {
   color: #eee;
   text-shadow: -1px 1px 0px #444;
   text-transform: uppercase; }
+  .legend.minimized {
+    left: 10px; }
   .legend li {
     margin-bottom: 1em; }
     .legend li .color {

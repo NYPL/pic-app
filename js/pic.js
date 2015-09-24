@@ -90,6 +90,7 @@
         initNameQuery();
         initDateQuery();
         getFacets();
+        $("#overlay-minimize").click(function () {minimize()});
     }
 
     loadTextFile = function (path, callback) {
@@ -161,7 +162,7 @@
           ,navigationHelpButton : false
           ,navigationInstructionsInitiallyVisible : false
           ,mapProjection : new Cesium.WebMercatorProjection()
-          ,creditContainer : "credits"
+        //   ,creditContainer : "credits"
           ,selectionIndicator : false
           ,skyBox : false
           ,sceneMode : Cesium.SceneMode.SCENE2D
@@ -227,6 +228,15 @@
         return undefined;
     };
 
+    minimize = function () {
+        $("#overlays").addClass("minimized");
+        document.getElementById("acronym").addEventListener("click", function() {maximize();}, false);
+    }
+
+    maximize = function () {
+        $("#overlays").removeClass("minimized");
+        document.getElementById("acronym").removeEventListener("click");
+    }
 
     initMouseHandler = function () {
         handler = new Cesium.ScreenSpaceEventHandler(canvas);

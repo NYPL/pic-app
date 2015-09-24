@@ -96,9 +96,19 @@ p {
   width: 250px;
   top: 10px;
   left: 10px;
-  bottom: 10px;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch; }
+  #overlays.minimized {
+    width: 70px;
+    cursor: pointer; }
+    #overlays.minimized #slogan, #overlays.minimized #facets, #overlays.minimized #tooltip, #overlays.minimized #overlay-minimize {
+      display: none; }
+
+#overlay-minimize {
+  cursor: pointer; }
+
+#acronym {
+  display: inline-block; }
 
 .legend {
   font-size: 0.9em;

@@ -20,7 +20,11 @@
     <div id="credits"></div>
     <div id="cesiumContainer"></div>
     <div id="overlays">
-        <p id="totalPoints"></p>
+        <div id="header">
+            <h1 id="acronym">PIC</h1>
+            <p id="slogan">Photographer's Identities Catalog</p>
+            <a href="javascript:void(0)" id="overlay-hide">minimize</a>
+        </div>
         <div id="facets">
             <div id="facetList">
                 <label for="nameQuery">Name</label>
@@ -43,6 +47,7 @@
         </div>
     </div>
     <ul class="legend">
+        <div id="total-points"></div>
         <li><span class="color born"></span>Born</li>
         <li><span class="color active"></span>Active in</li>
         <li><span class="color biz"></span>Business</li>

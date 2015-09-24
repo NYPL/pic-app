@@ -15,7 +15,7 @@
     this.lines;
 
     var bounds;
-    var padding = 0.1; // to extend the boundary a bit
+    var padding = 0.01; // to extend the boundary a bit
     var tooltipLimit = 20;
     var heightDelta = 100;
     var lineWidth = 2;
@@ -86,7 +86,7 @@
         resetBounds();
         initWorld();
         loadBaseData();
-        initMouseHandler(handler);
+        initMouseHandler();
         initNameQuery();
         initDateQuery();
         getFacets();
@@ -182,8 +182,6 @@
         lines = new Cesium.Primitive();
 
         viewer.scene.primitives.add(lines);
-
-        handler = new Cesium.ScreenSpaceEventHandler(canvas);
     }
 
     debugMode = function () {
@@ -230,7 +228,9 @@
     };
 
 
-    initMouseHandler = function (handler) {
+    initMouseHandler = function () {
+        handler = new Cesium.ScreenSpaceEventHandler(canvas);
+
         canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
         canvas.onclick = function(e) {
             canvas.focus();
@@ -295,13 +295,14 @@
                 var geo = data.geonames[0];
                 if (!geo) return;
                 $("#geoname").text("near " + geo.name + ", " + geo.countryName);
+                positionHover();
             });
         });
     }
 
     positionHover = function (visible) {
         var el = $("#hover");
-        var leftOffset = 250;
+        var leftOffset = 0;
         var margin = 50;
         var x = mousePosition.x-(el.width()*.5);
         var y = mousePosition.y-el.height()-margin;
@@ -456,8 +457,8 @@
         }
         if (p.addressTotal > 0) {
             string += '<div class="addresses">';
-            if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect addresses</strong></span>';
-            string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>List addresses</strong></span></div></div>';
+            if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
+            string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>List locations</strong></span></div></div>';
         }
         string += "</div>";
         tooltipElement.find(".results").append(string);
@@ -516,11 +517,11 @@
 
     flyToAddressID = function (id) {
         var p = pointHash[id];
-        var height = p[6] ? p[6] + (heightDelta * 10) : (heightDelta * 10);
+        var height = p[6] ? p[6] + (heightDelta * 50) : (heightDelta * 50);
         // console.log(id, height, p);
         viewer.camera.flyTo({
             destination : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
-            duration : 1
+            duration : 1.5
         });
     }
 
@@ -535,10 +536,14 @@
         if (p[0] < bounds[3]) bounds[3] = p[0] - padding;
     }
 
+    removeLines = function () {
+        viewer.scene.primitives.remove(lines);
+    }
+
     connectAddresses = function (id) {
         // console.log(id);
         resetBounds();
-        viewer.scene.primitives.remove(lines);
+        removeLines();
         var addresses = addressesForID(id);
         if (addresses.length > 1) {
             addresses = sortAddresses(addresses);
@@ -744,7 +749,7 @@
     clearTooltip = function () {
         tooltipElement.find(".results").empty();
         tooltipElement.find(".more").empty();
-        viewer.scene.primitives.remove(lines);
+        removeLines();
     }
 
     disableFacets = function () {
@@ -759,7 +764,7 @@
     removePoints = function () {
         resetBounds();
         points.removeAll();
-        viewer.scene.primitives.remove(lines);
+        removeLines();
         latlonHeightHash = {};
         heightHash = {};
     }
@@ -861,7 +866,7 @@
 
     updateTotals = function (total) {
         if (total === undefined) total = elasticResults.total;
-        $("#totalPoints").text(total + " total locations");
+        $("#total-points").html("<span class=\"number\">" + total + "</span><br />total locations");
     }
 
     updateFilter = function (facetName, value) {

@@ -56,14 +56,14 @@
 /* TRANSFORM  */
 /* TRANSITION */
 /* TRIPLE BORDERS */
-.timeline {
+#facets .timeline {
   zoom: 1; }
-  .timeline:before, .timeline:after {
+  #facets .timeline:before, #facets .timeline:after {
     content: "\0020";
     display: block;
     height: 0;
     overflow: hidden; }
-  .timeline:after {
+  #facets .timeline:after {
     clear: both; }
 
 html, body {
@@ -74,121 +74,121 @@ html, body {
   overflow: hidden;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
-  background: black; }
+  background: #444; }
 
 p {
   margin-bottom: 1em; }
 
 #cesiumContainer {
   position: absolute;
-  left: 250px;
+  left: 0;
   top: 0;
   right: 0;
   bottom: 0; }
 
+#header {
+  margin: 10px; }
+
 #overlays {
-  background-color: #ccc;
+  background-color: #aaa;
+  color: #444;
   position: absolute;
   width: 250px;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  top: 10px;
+  left: 10px;
+  bottom: 10px;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch; }
 
 .legend {
   font-size: 0.9em;
   position: absolute;
-  left: 260px;
+  left: 270px;
   bottom: 10px;
-  color: white;
-  text-shadow: -1px 1px 0px black;
+  color: #eee;
+  text-shadow: -1px 1px 0px #444;
   text-transform: uppercase; }
+  .legend li {
+    margin-bottom: 1em; }
+    .legend li .color {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border-radius: 10px;
+      vertical-align: middle; }
 
-.legend li {
-  margin-bottom: 1em; }
+#total-points {
+  text-shadow: -1px 1px 0px #444;
+  color: #eee;
+  font-size: 1em;
+  margin-bottom: 10px; }
+  #total-points .number {
+    font-size: 3em; }
 
-.legend li .color {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border-radius: 10px;
-  vertical-align: middle; }
-
-.biz {
+.biz.color {
   background-color: #ff7f02; }
 
-.born {
+.born.color {
   background-color: #4cad49; }
 
-.died {
+.died.color {
   background-color: #357cb7; }
 
-.active {
+.active.color {
   background-color: #e21919; }
-
-#facets {
-  margin-left: 5px;
-  text-transform: uppercase; }
-
-.facet {
-  margin-bottom: 10px; }
-
-.date-field {
-  float: left;
-  margin-right: 10px; }
-
-.date-text {
-  width: 60px; }
-
-#tooltip {
-  border-top: 2px solid black;
-  padding-top: 10px; }
-
-.tooltip-item {
-  margin: 0 0 10px 0; }
-
-.tooltip-item h3 {
-  margin-bottom: 1em; }
-
-.tooltip-item h3 span {
-  font-size: 0.8em;
-  font-weight: normal;
-  display: block; }
-
-.tooltip-item h3, #tooltip .link {
-  cursor: pointer;
-  color: #900; }
 
 .hidden {
   display: none; }
 
-#totalPoints, #facets, #tooltip {
+#facets, #tooltip {
   margin: 10px; }
 
-#overlays label, #overlays select {
-  display: block;
-  clear: both; }
+#facets {
+  margin-left: 10px; }
+  #facets label, #facets select {
+    display: block;
+    clear: both; }
+  #facets select, #facets input {
+    font-size: 14px;
+    font-family: Verdana;
+    width: 220px; }
+  #facets .facet {
+    margin-bottom: 10px; }
+  #facets .date-field {
+    float: left;
+    margin-right: 10px; }
+  #facets .date-text {
+    width: 60px; }
 
-#overlays select, input {
-  font-size: 14px;
-  font-family: Verdana;
-  width: 220px; }
+#tooltip {
+  border-top: 2px solid #444;
+  padding-top: 10px; }
+  #tooltip .tooltip-item {
+    margin: 0 0 10px 0; }
+    #tooltip .tooltip-item h3 {
+      margin-bottom: 1em;
+      cursor: pointer;
+      color: #900; }
+      #tooltip .tooltip-item h3 span {
+        font-size: 0.8em;
+        font-weight: normal;
+        display: block; }
+  #tooltip .link {
+    cursor: pointer;
+    color: #900; }
 
 #hover {
   width: 250px;
   position: absolute;
-  background: white;
+  background: #eee;
   padding: 10px;
   left: -1000px;
   top: -1000px;
   text-align: center; }
-
-#hover .geoname {
-  white-space: nowrap; }
-
-#hover .hits {
-  font-weight: bold; }
+  #hover .geoname {
+    white-space: nowrap; }
+  #hover .hits {
+    font-weight: bold; }
 
 /*# sourceMappingURL=pic.css.map */

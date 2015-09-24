@@ -258,7 +258,7 @@
             var pickedObject = pickEntity({x:e.layerX, y:e.layerY});
             refreshPicked(pickedObject);
             if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
-                showConstituent(pickedEntity.entity);
+                clickPoint(pickedEntity.entity);
             }
         };
 
@@ -298,7 +298,7 @@
             string += '<span class="hits">' + hits + '</span>';
             string += hits === 1 ? " result" : " total results";
             string += "<br /><span id='geoname'>&nbsp;</span>";
-            string += "<br />click to view list";
+            string += "<br />click dot to view list";
             string += "</div>";
             el.html(string);
             var latlon = position.split(",");
@@ -347,7 +347,7 @@
         return "filter_path=hits.total,hits.hits._source&_source_exclude=address&from="+start+"&size="+tooltipLimit+"&q=((ConstituentID:" + id + " OR (address.Remarks:\"" + latlon + "\")) " + facetQuery + ")";
     }
 
-    showConstituent = function (point) {
+    clickPoint = function (point) {
         if (point == pickedEntity) return;
         maximize();
         var id = point.id;
@@ -357,7 +357,7 @@
         lastLatlon = originalLatlon;
         var facetList = buildFacetList();
         var query = buildConstituentQuery(realID, originalLatlon, facetList, 0);
-        // console.log(query);
+        console.log(query);
         getData("constituent", query, updateTooltip);
     }
 
@@ -477,7 +477,7 @@
         }
         if (p.addressTotal > 0) {
             string += '<div class="addresses">';
-            if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
+            // if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
             string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>List locations</strong></span></div></div>';
         }
         string += "</div>";
@@ -495,6 +495,7 @@
 
     getAddressList = function (id) {
         var query = "filter_path=hits.hits._source&q=ConstituentID:" + id;
+        connectAddresses(id);
         getData("constituent", query, function (responseText) {
             var data = JSON.parse(responseText);
             buildConstituentAddresses(id, data.hits.hits[0]._source.address);
@@ -654,6 +655,7 @@
         r.open("POST", baseUrl+"/"+facet+"/_search?sort=addressTotal:desc&"+query, true);
 
         r.onreadystatechange = function () {
+            console.log(r.responseText);
             if (r.readyState != 4 || r.status != 200) return;
             callback(r.responseText);
         }

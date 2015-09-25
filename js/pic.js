@@ -357,7 +357,7 @@
         lastLatlon = originalLatlon;
         var facetList = buildFacetList();
         var query = buildConstituentQuery(realID, originalLatlon, facetList, 0);
-        console.log(query);
+        // console.log(query);
         getData("constituent", query, updateTooltip);
     }
 
@@ -655,9 +655,8 @@
         r.open("POST", baseUrl+"/"+facet+"/_search?sort=addressTotal:desc&"+query, true);
 
         r.onreadystatechange = function () {
-            console.log(r.responseText);
             if (r.readyState != 4 || r.status != 200) return;
-            callback(r.responseText);
+            if (callback) callback(r.responseText);
         }
 
         r.send();

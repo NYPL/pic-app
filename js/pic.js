@@ -314,7 +314,7 @@
                 var geo = data.geonames[0];
                 if (!geo) return;
                 $("#geoname").text("near " + geo.name + ", " + geo.countryName);
-                positionHover();
+                positionHover(true);
             });
         });
     }
@@ -478,7 +478,13 @@
         if (p.addressTotal > 0) {
             string += '<div class="addresses">';
             // if (p.addressTotal > 1) string += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
-            string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>List locations</strong></span></div></div>';
+            string += '<div id="tooltip-addresslist-'+p.ConstituentID+'"><span class="link"><strong>';
+            if (p.addressTotal != 1) {
+                string += 'List '+p.addressTotal+' locations';
+            } else {
+                string += 'Show location';
+            }
+            string += '</strong></span></div></div>';
         }
         string += "</div>";
         tooltipElement.find(".results").append(string);
@@ -509,7 +515,7 @@
             for (var i=0; i<addresses.length; i++) {
                 var add = addresses[i];
                 addstring += "<p>";
-                addstring += "ID:" + add.ConAddressID + "<br />";
+                // addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += facetValues.addresstypes[add.AddressTypeID] + "<br />";
                 if (add.DisplayName2 != "NULL") addstring += add.DisplayName2 + "<br />";
                 if (add.StreetLine1 != "NULL") addstring += add.StreetLine1 + "<br />";
@@ -520,11 +526,18 @@
                 if (add.CountryID != "NULL") addstring += facetValues.countries[add.CountryID] + "<br />";
                 if (add.Remarks != "NULL") {
                     addstring += '<span class="link tooltip-address" id="tooltip-address-'+add.ConAddressID+'" data-id="'+add.ConAddressID+'">Go</span><br />';
-                    addstring += add.Remarks + "<br />";
+                    // addstring += add.Remarks + "<br />";
                 }
                 addstring += "</p>";
             }
-            var string = "<p>";
+            var string = '<span class="link"><strong>';
+            if (addresses.length != 1) {
+                string += 'Connect locations';
+            } else {
+                string += 'Show location';
+            }
+            string += "</strong></span>";
+            string += "<p>";
             string += "<strong>Addresses:</strong>";
             string += "</p>";
             string += addstring;
@@ -566,21 +579,21 @@
         resetBounds();
         removeLines();
         var addresses = addressesForID(id);
-        if (addresses.length > 1) {
-            addresses = sortAddresses(addresses);
-            var lastPoint = addresses[0];
-            var positions = [];
-            var colors = [];
-            for (var i=0; i<addresses.length; i++) {
-                var p = addresses[i];
-                // console.log(p, addresses[i]);
-                if (p === undefined) continue;
-                expandBounds(p);
-                var height = p[6] !== undefined ? p[6] : heightHash[p[3]];
-                positions.push(p[1], p[0], height);
-                colors.push(addressTypePalette[p[4]]);
-            }
+        addresses = sortAddresses(addresses);
+        var lastPoint = addresses[0];
+        var positions = [];
+        var colors = [];
+        for (var i=0; i<addresses.length; i++) {
+            var p = addresses[i];
+            // console.log(p, addresses[i]);
+            if (p === undefined) continue;
+            expandBounds(p);
+            var height = p[6] !== undefined ? p[6] : heightHash[p[3]];
+            positions.push(p[1], p[0], height);
+            colors.push(addressTypePalette[p[4]]);
+        }
 
+        if (addresses.length > 1) {
             lines = new Cesium.Primitive({
               geometryInstances : new Cesium.GeometryInstance({
                 geometry : new Cesium.PolylineGeometry({
@@ -596,8 +609,9 @@
               })
             });
             viewer.scene.primitives.add(lines);
-            updateBounds();
         }
+
+        updateBounds();
     }
 
     getAddressPoints = function (ids) {

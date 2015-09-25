@@ -93,7 +93,7 @@ p {
   background-color: #aaa;
   color: #444;
   position: absolute;
-  width: 250px;
+  width: 300px;
   top: 10px;
   left: 10px;
   overflow-y: scroll;
@@ -113,9 +113,9 @@ p {
 .legend {
   font-size: 0.9em;
   position: absolute;
-  left: 270px;
+  left: 320px;
   bottom: 10px;
-  color: #eee;
+  color: #efefef;
   text-shadow: -1px 1px 0px #444;
   text-transform: uppercase; }
   .legend.minimized {
@@ -132,7 +132,7 @@ p {
 
 #total-points {
   text-shadow: -1px 1px 0px #444;
-  color: #eee;
+  color: #efefef;
   font-size: 1em;
   margin-bottom: 10px; }
   #total-points .number {
@@ -164,7 +164,7 @@ p {
   #facets select, #facets input {
     font-size: 14px;
     font-family: Verdana;
-    width: 220px; }
+    width: 270px; }
   #facets .facet {
     margin-bottom: 10px; }
   #facets .date-field {
@@ -191,9 +191,9 @@ p {
     color: #900; }
 
 #hover {
-  width: 250px;
+  width: 300px;
   position: absolute;
-  background: #eee;
+  background: #efefef;
   padding: 10px;
   left: -1000px;
   top: -1000px;

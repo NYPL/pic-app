@@ -963,19 +963,23 @@
         }
     }
 
+    updateNameFilter = function () {
+        var str = $("#" + nameQueryElement).val().trim();
+        if (str !== "") {
+            str = str.replace(" ", "~ ");
+            str = str + "~";
+            str = '(' + str.split(" ").join(" AND ") + ')';
+        } else {
+            str = "*";
+        }
+        var value = str;
+        updateFilter(nameQueryElement, value);
+    }
+
     onNameQueryKeyUp = function (e) {
         var el = e.target;
         if (e.keyCode === 13) {
-            var str = el.value.trim();
-            if (str !== "") {
-                str = str.replace(" ", "~ ");
-                str = str + "~";
-                str = '(' + str.split(" ").join(" AND ") + ')';
-            } else {
-                str = "*";
-            }
-            var value = str;
-            updateFilter(el.id, value);
+            updateNameFilter();
             applyFilters();
         }
     }
@@ -1002,6 +1006,7 @@
         updateFilter(nameQueryElement, "*");
         var el = document.getElementById(nameQueryElement);
         el.addEventListener("keyup", onNameQueryKeyUp, false);
+        el.addEventListener("blur", updateNameFilter, false);
     }
 
     initListeners = function () {

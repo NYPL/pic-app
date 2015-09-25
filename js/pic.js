@@ -587,6 +587,7 @@
             var p = addresses[i];
             // console.log(p, addresses[i]);
             if (p === undefined) continue;
+            if (p[0] === 0 && p[1] === 0) continue;
             expandBounds(p);
             var height = p[6] !== undefined ? p[6] : heightHash[p[3]];
             positions.push(p[1], p[0], height);

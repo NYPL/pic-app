@@ -215,7 +215,7 @@ class PIC {
     getData (facet, query, callback, parameter = undefined) {
         var url = this.baseUrl+"/"+facet+"/_search?sort=addressTotal:desc&"+query;
 
-        console.log(url);
+        // console.log(url);
         this.loadTextFile(url, callback, parameter);
     }
 

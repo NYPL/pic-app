@@ -8,7 +8,7 @@
   <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <title>PIC - Photographer's Identities Catalog</title>
-  <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   <script src="js/lib/Cesium/Cesium.js"></script>
   <style>
       @import url(css/reset.css);
@@ -55,7 +55,13 @@
         <li><span class="color died"></span>Died</li>
     </ul>
     <div id="hover"></div>
-  <script src="js/lib/csvToArray.v2.1.js"></script>
-  <script src="js/pic.js"></script>
+    <script src="js/lib/csvToArray.v2.1.js"></script>
+    <script src="js/pic.js"></script>
+    <script type="text/javascript">
+    var _pic = new PIC();
+    window.onload = function () {
+        _pic.init();
+    }
+    </script>
 </body>
 </html>

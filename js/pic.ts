@@ -1020,7 +1020,7 @@ class PIC {
         this.initNameQuery();
         this.initDateQuery();
         $("#overlay-minimize").click( () => this.minimize() );
-        window.onresize = this.fixOverlayHeight;
+        window.onresize = this.fixOverlayHeight.bind(this);
         this.fixOverlayHeight();
     }
 }

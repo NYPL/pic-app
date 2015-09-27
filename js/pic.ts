@@ -606,7 +606,6 @@ class PIC {
         this.resetBounds();
         this.removeLines();
         var addresses = this.addressesForID(id);
-        // addresses = this.sortAddresses(addresses);
         var lastPoint = addresses[0];
         var positions = [];
         var colors = [];
@@ -745,6 +744,7 @@ class PIC {
         this.disableFacets();
         this.removePoints();
         var facetList = this.buildFacetList();
+        $("#facets-clear").hide();
         if (facetList.length === 0) {
             this.displayBaseData();
             return;
@@ -764,7 +764,18 @@ class PIC {
         this.getData("constituent", query, this.getNextSet);
     }
 
+    clearFilters () {
+        this.resetNameQuery();
+        this.resetDateQuery();
+        for (var i = 0; i < this.facets.length; i++) {
+            var facet = this.facets[i];
+            this.updateFilter(facet[0], "*");
+        }
+        this.applyFilters();
+    }
+
     resetView () {
+        $("#facets-clear").show();
         this.scene.camera.flyTo({
             destination: Cesium.Camera.DEFAULT_VIEW_RECTANGLE
         });
@@ -801,41 +812,6 @@ class PIC {
         }
         return addresses;
     }
-
-    // sortAddresses (addresses) {
-    //     var sorted = [];
-    //     var i, l = addresses.length;
-    //     var born;
-    //     var died;
-    //     if (l <= 1) return addresses;
-    //     // put the active ones
-    //     for (i=0; i < l; ++i) {
-    //         var add = addresses[i];
-    //         if (add[4] === 7) {
-    //             sorted.push(add);
-    //         }
-    //         // find born if any
-    //         if (add[4] === 5) {
-    //             born = add;
-    //         }
-    //         // find died if any
-    //         if (add[4] === 6) {
-    //             died = add;
-    //         }
-    //     }
-    //     // put the biz ones
-    //     for (i=0; i < l; ++i) {
-    //         if (addresses[i][4] === 2) {
-    //             sorted.push(addresses[i]);
-    //         }
-    //     }
-    //     // prepend born
-    //     if (born) sorted.unshift(born);
-    //     // append died
-    //     if (died) sorted.push(died);
-    //     // console.log(addresses, sorted);
-    //     return sorted;
-    // }
 
     addressesToPoints (hits) {
         var addresses = [];
@@ -926,24 +902,18 @@ class PIC {
         $("#" + facet[0]).change( (e) => this.onFacetChanged(e) );
     }
 
-    initDateQuery () {
+    resetDateQuery () {
         var from = $("#" + this.fromDateElement);
         var to = $("#" + this.toDateElement);
         from.val(this.minYear.toString());
         to.val(this.maxYear.toString());
         this.updateFilter("date", "*");
-        from.keyup( (e) => this.onFromDateKeyUp(e) );
-        from.blur( () => this.updateTimeFilters() );
-        to.keyup( (e) => this.onToDateKeyUp(e) );
-        to.blur( () => this.updateTimeFilters() );
     }
 
-    initNameQuery () {
+    resetNameQuery () {
         var el = $("#" + this.nameQueryElement)
         el.val("");
         this.updateFilter(this.nameQueryElement, "*");
-        el.keyup( (e) => this.onNameQueryKeyUp(e) );
-        el.blur( () => this.updateNameFilter() );
     }
 
     validateYear (element, defaultValue) {
@@ -1017,9 +987,19 @@ class PIC {
     }
 
     initListeners () {
-        this.initNameQuery();
-        this.initDateQuery();
-        $("#overlay-minimize").click( () => this.minimize() );
+        this.resetNameQuery();
+        this.resetDateQuery();
+        var from = $("#" + this.fromDateElement);
+        var to = $("#" + this.toDateElement);
+        from.keyup((e) => this.onFromDateKeyUp(e));
+        from.blur(() => this.updateTimeFilters());
+        to.keyup((e) => this.onToDateKeyUp(e));
+        to.blur(() => this.updateTimeFilters());
+        var name = $("#" + this.nameQueryElement)
+        name.keyup((e) => this.onNameQueryKeyUp(e));
+        name.blur(() => this.updateNameFilter());
+        $("#facets-clear").click(() => this.clearFilters());
+        $("#overlay-minimize").click(() => this.minimize());
         window.onresize = this.fixOverlayHeight.bind(this);
         this.fixOverlayHeight();
     }

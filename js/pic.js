@@ -549,7 +549,6 @@ var PIC = (function () {
         this.resetBounds();
         this.removeLines();
         var addresses = this.addressesForID(id);
-        // addresses = this.sortAddresses(addresses);
         var lastPoint = addresses[0];
         var positions = [];
         var colors = [];
@@ -678,6 +677,7 @@ var PIC = (function () {
         this.disableFacets();
         this.removePoints();
         var facetList = this.buildFacetList();
+        $("#facets-clear").hide();
         if (facetList.length === 0) {
             this.displayBaseData();
             return;
@@ -696,7 +696,17 @@ var PIC = (function () {
         this.start = new Date().getTime();
         this.getData("constituent", query, this.getNextSet);
     };
+    PIC.prototype.clearFilters = function () {
+        this.resetNameQuery();
+        this.resetDateQuery();
+        for (var i = 0; i < this.facets.length; i++) {
+            var facet = this.facets[i];
+            this.updateFilter(facet[0], "*");
+        }
+        this.applyFilters();
+    };
     PIC.prototype.resetView = function () {
+        $("#facets-clear").show();
         this.scene.camera.flyTo({
             destination: Cesium.Camera.DEFAULT_VIEW_RECTANGLE
         });
@@ -734,40 +744,6 @@ var PIC = (function () {
         }
         return addresses;
     };
-    // sortAddresses (addresses) {
-    //     var sorted = [];
-    //     var i, l = addresses.length;
-    //     var born;
-    //     var died;
-    //     if (l <= 1) return addresses;
-    //     // put the active ones
-    //     for (i=0; i < l; ++i) {
-    //         var add = addresses[i];
-    //         if (add[4] === 7) {
-    //             sorted.push(add);
-    //         }
-    //         // find born if any
-    //         if (add[4] === 5) {
-    //             born = add;
-    //         }
-    //         // find died if any
-    //         if (add[4] === 6) {
-    //             died = add;
-    //         }
-    //     }
-    //     // put the biz ones
-    //     for (i=0; i < l; ++i) {
-    //         if (addresses[i][4] === 2) {
-    //             sorted.push(addresses[i]);
-    //         }
-    //     }
-    //     // prepend born
-    //     if (born) sorted.unshift(born);
-    //     // append died
-    //     if (died) sorted.push(died);
-    //     // console.log(addresses, sorted);
-    //     return sorted;
-    // }
     PIC.prototype.addressesToPoints = function (hits) {
         var addresses = [];
         // var hits = elasticResults.hits;
@@ -861,25 +837,17 @@ var PIC = (function () {
         var _this = this;
         $("#" + facet[0]).change(function (e) { return _this.onFacetChanged(e); });
     };
-    PIC.prototype.initDateQuery = function () {
-        var _this = this;
+    PIC.prototype.resetDateQuery = function () {
         var from = $("#" + this.fromDateElement);
         var to = $("#" + this.toDateElement);
         from.val(this.minYear.toString());
         to.val(this.maxYear.toString());
         this.updateFilter("date", "*");
-        from.keyup(function (e) { return _this.onFromDateKeyUp(e); });
-        from.blur(function () { return _this.updateTimeFilters(); });
-        to.keyup(function (e) { return _this.onToDateKeyUp(e); });
-        to.blur(function () { return _this.updateTimeFilters(); });
     };
-    PIC.prototype.initNameQuery = function () {
-        var _this = this;
+    PIC.prototype.resetNameQuery = function () {
         var el = $("#" + this.nameQueryElement);
         el.val("");
         this.updateFilter(this.nameQueryElement, "*");
-        el.keyup(function (e) { return _this.onNameQueryKeyUp(e); });
-        el.blur(function () { return _this.updateNameFilter(); });
     };
     PIC.prototype.validateYear = function (element, defaultValue) {
         var el = $("#" + element);
@@ -947,8 +915,18 @@ var PIC = (function () {
     };
     PIC.prototype.initListeners = function () {
         var _this = this;
-        this.initNameQuery();
-        this.initDateQuery();
+        this.resetNameQuery();
+        this.resetDateQuery();
+        var from = $("#" + this.fromDateElement);
+        var to = $("#" + this.toDateElement);
+        from.keyup(function (e) { return _this.onFromDateKeyUp(e); });
+        from.blur(function () { return _this.updateTimeFilters(); });
+        to.keyup(function (e) { return _this.onToDateKeyUp(e); });
+        to.blur(function () { return _this.updateTimeFilters(); });
+        var name = $("#" + this.nameQueryElement);
+        name.keyup(function (e) { return _this.onNameQueryKeyUp(e); });
+        name.blur(function () { return _this.updateNameFilter(); });
+        $("#facets-clear").click(function () { return _this.clearFilters(); });
         $("#overlay-minimize").click(function () { return _this.minimize(); });
         window.onresize = this.fixOverlayHeight.bind(this);
         this.fixOverlayHeight();

@@ -163,7 +163,7 @@ var PIC = (function () {
     };
     PIC.prototype.getData = function (facet, query, callback, parameter) {
         if (parameter === void 0) { parameter = undefined; }
-        var url = this.baseUrl + "/" + facet + "/_search?sort=addressTotal:desc&" + query;
+        var url = this.baseUrl + "/" + facet + "/_search?sort=AlphaSort:asc&" + query;
         // console.log(url);
         this.loadTextFile(url, callback, parameter);
     };

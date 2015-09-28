@@ -283,6 +283,8 @@ var PIC = (function () {
     };
     PIC.prototype.buildHoverContent = function (responseText) {
         var el = $("#hover");
+        if (this.pickedEntity === undefined)
+            return;
         var position = this.pickedEntity.entity.primitive.originalLatlon;
         var data = JSON.parse(responseText);
         var hits = data.hits.total;
@@ -695,7 +697,6 @@ var PIC = (function () {
             this.displayBaseData();
             return;
         }
-        this.resetView();
         var addresses = [];
         var query = this.buildFacetQuery(facetList);
         query = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize + "&q=" + query;
@@ -717,12 +718,6 @@ var PIC = (function () {
             this.updateFilter(facet[0], "*");
         }
         this.applyFilters();
-    };
-    PIC.prototype.resetView = function () {
-        $("#facets-clear").show();
-        this.scene.camera.flyTo({
-            destination: Cesium.Camera.DEFAULT_VIEW_RECTANGLE
-        });
     };
     PIC.prototype.getNextSet = function (re) {
         var results = JSON.parse(re);
@@ -890,8 +885,8 @@ var PIC = (function () {
         var str = $("#" + this.nameQueryElement).val().trim();
         if (str !== "") {
             str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, '');
-            str = str.trim().replace(" ", "~ ");
-            str = str + "~";
+            str = str.trim().replace(" ", "~1 ");
+            str = str + "~1";
             var f = str.split(" ");
             var legit = [];
             for (var thing in f) {

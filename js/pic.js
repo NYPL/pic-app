@@ -1,13 +1,16 @@
+///<reference path='lib/jquery.d.ts' />
+///<reference path='lib/csvToArray.d.ts' />
+///<reference path='lib/cesium.d.ts' />
 var PIC = (function () {
     function PIC() {
         this.elasticResults = { query: "", from: 0, hits: [], total: 0 };
         this.pointArray = [];
-        this.pointHash = {};
+        this.pointHash = {}; // contains the index to a given id in the pointArray
         this.latlonHeightHash = {};
         this.heightHash = {};
         this.allIDs = [];
         this.elasticSize = 1500;
-        this.padding = 0.01;
+        this.padding = 0.01; // to extend the boundary a bit
         this.tooltipLimit = 20;
         this.heightDelta = 100;
         this.lineWidth = 2;
@@ -23,6 +26,7 @@ var PIC = (function () {
         this.mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
         this.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
         this.geonamesURL = "http://api.geonames.org/findNearbyPlaceNameJSON?username=mgiraldo";
+        // the way we knoe in elastic if a constituent has latlon-looking data
         this.latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
         this.tooltipElement = $("#tooltip");
         this.facetsElement = $("#facets");
@@ -55,7 +59,7 @@ var PIC = (function () {
             "5": this.birthColor,
             "6": this.diedColor,
             "7": this.activeColor,
-            "1": this.unknownColor,
+            "1": this.unknownColor
         };
     }
     PIC.prototype.init = function () {
@@ -170,12 +174,18 @@ var PIC = (function () {
         var url = this.baseUrl + "/" + facet + "/_search?sort=AlphaSort:asc&" + query;
         this.loadTextFile(url, callback, parameter);
     };
+    PIC.prototype.escapeQuery = function (query) {
+        query = query.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, '');
+        query = encodeURIComponent(query);
+        return query;
+    };
     PIC.prototype.updateTotals = function (total) {
         if (total === -1)
             total = this.elasticResults.total;
         $("#total-points").html("<span class=\"number\">" + total + "</span><br />total locations");
     };
     PIC.prototype.updateBounds = function () {
+        // console.log(bounds);
         var west = this.bounds[2];
         var south = this.bounds[3];
         var east = this.bounds[0];
@@ -199,9 +209,10 @@ var PIC = (function () {
         var _this = this;
         var pic = this;
         this.handler = new Cesium.ScreenSpaceEventHandler(this.canvas);
-        this.canvas.setAttribute('tabindex', '0');
+        this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
         this.canvas.onclick = function (e) {
             _this.canvas.focus();
+            // console.log(mousePosition, startMousePosition, e);
             if (_this.mousePosition != _this.startMousePosition)
                 return;
             var pickedObject = _this.pickEntity({ x: e.layerX, y: e.layerY });
@@ -211,9 +222,12 @@ var PIC = (function () {
             }
         };
         this.handler.setInputAction(function (movement) {
+            // console.log(movement);
+            // flags.looking = true;
             pic.mousePosition = pic.startMousePosition = Cesium.Cartesian3.clone(movement.position);
         }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
         this.handler.setInputAction(function (movement) {
+            // pick
             pic.mousePosition = movement.endPosition;
             var pickedObject = pic.scene.pick(movement.endPosition);
             pic.refreshPicked(pickedObject);
@@ -232,7 +246,9 @@ var PIC = (function () {
     ;
     PIC.prototype.refreshPicked = function (picked) {
         var showHover = false;
+        // reset
         if (this.pickedEntity != undefined && picked !== this.pickedEntity.entity) {
+            // revert properties
             this.pickedEntity.entity.primitive.color = this.pickedEntity.color;
             this.pickedEntity.entity.primitive.pixelSize = this.pixelSize;
         }
@@ -242,12 +258,15 @@ var PIC = (function () {
                     color: Cesium.clone(picked.primitive.color),
                     entity: picked
                 };
+                // apply new properties
+                // picked.primitive.color = selectedColor;
                 this.pickedEntity.entity.primitive.pixelSize = this.pixelSize * this.pixelScale;
                 this.buildHover();
             }
             showHover = true;
         }
         else {
+            // reset
             this.pickedEntity = undefined;
         }
         this.positionHover(showHover);
@@ -291,6 +310,7 @@ var PIC = (function () {
     };
     PIC.prototype.parseHoverLocation = function (responseText) {
         var data = JSON.parse(responseText);
+        // console.log(data);
         var geo = data.geonames[0];
         if (!geo)
             return;
@@ -327,6 +347,7 @@ var PIC = (function () {
         this.lastLatlon = originalLatlon;
         var facetList = this.buildFacetList();
         var query = this.buildConstituentQuery(realID, originalLatlon, facetList, 0);
+        // console.log(query);
         this.getData("constituent", query, this.updateTooltip);
     };
     PIC.prototype.buildConstituentQuery = function (id, latlon, facetList, start) {
@@ -363,6 +384,7 @@ var PIC = (function () {
         this.tooltipElement.find(".more").empty();
         var facetList = this.buildFacetList();
         var query = this.buildConstituentQuery(this.lastID, this.lastLatlon, facetList, start);
+        // console.log(query);
         var pic = this;
         this.getData("constituent", query, function (responseText) {
             var data = JSON.parse(responseText);
@@ -381,6 +403,7 @@ var PIC = (function () {
         str += '</h3>';
         str += '<div class="hidden tooltip-content-' + p.ConstituentID + '">';
         str += "<p>";
+        // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
         str += "ID:" + p.ConstituentID + "<br />";
         if (p.gender)
             str += this.facetValues["genders"][p.gender[0].TermID] + "<br />";
@@ -400,6 +423,7 @@ var PIC = (function () {
             str += "<strong>Processes used:</strong><br />";
             var list = [];
             for (var i in p.process) {
+                // console.log(p.process[i].TermID);
                 if (this.facetValues["processes"][p.process[i].TermID] !== undefined)
                     list.push(this.facetValues["processes"][p.process[i].TermID]);
             }
@@ -449,6 +473,7 @@ var PIC = (function () {
         }
         if (p.addressTotal > 0) {
             str += '<div class="addresses">';
+            // if (p.addressTotal > 1) str += '<span class="link" id="tooltip-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
             str += '<div id="tooltip-addresslist-' + p.ConstituentID + '"><span class="link address-header"><strong>';
             if (p.addressTotal != 1) {
                 str += 'List ' + p.addressTotal + ' locations';
@@ -464,6 +489,7 @@ var PIC = (function () {
         $("#tooltip-addresslist-" + p.ConstituentID + " .address-header").click(function () { return _this.getAddressList(parseInt(p.ConstituentID)); });
     };
     PIC.prototype.getAddressList = function (id) {
+        // console.log(id);
         var query = "filter_path=hits.hits._source&q=ConstituentID:" + id;
         this.getData("constituent", query, this.parseConstituentAddresses, id);
     };
@@ -473,12 +499,13 @@ var PIC = (function () {
     };
     PIC.prototype.buildConstituentAddresses = function (id, addresses) {
         var _this = this;
+        // console.log(id);
         if (addresses) {
             var addstring = "";
             for (var i = 0; i < addresses.length; i++) {
                 var add = addresses[i];
                 addstring += "<div class=\"address-item\">";
-                addstring += "ID:" + add.ConAddressID + "<br />";
+                // addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += this.facetValues["addresstypes"][add.AddressTypeID] + "<br />";
                 if (add.DisplayName2 != "NULL")
                     addstring += add.DisplayName2 + "<br />";
@@ -524,12 +551,14 @@ var PIC = (function () {
         var index = this.pointHash[id];
         var p = this.pointArray[index];
         var height = p[6] ? p[6] + (this.heightDelta * 50) : (this.heightDelta * 50);
+        // console.log(id, height, p);
         this.viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
             duration: 1.5
         });
     };
     PIC.prototype.connectAddresses = function (id) {
+        // console.log(id);
         this.resetBounds();
         this.removeLines();
         var addresses = this.addressesForID(id);
@@ -538,6 +567,7 @@ var PIC = (function () {
         var colors = [];
         for (var i = 0; i < addresses.length; i++) {
             var p = addresses[i];
+            // console.log(p, addresses[i]);
             if (p === undefined)
                 continue;
             if (p[0] === 0 && p[1] === 0)
@@ -579,6 +609,7 @@ var PIC = (function () {
         this.loadTextFile(url, this.updateFacet, facet);
     };
     PIC.prototype.createFacet = function (facet) {
+        // console.log(r, facet);
         var f = facet[0];
         var str = '<div class="facet">';
         str += '<label for="' + f + '">' + facet[1] + '</label>';
@@ -668,11 +699,12 @@ var PIC = (function () {
         var addresses = [];
         var query = this.buildFacetQuery(facetList);
         query = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize + "&q=" + query;
+        // reset elastic results to prepare for the new set
         this.elasticResults = {
             query: query,
             from: 0,
             hits: [],
-            total: 0,
+            total: 0
         };
         this.start = new Date().getTime();
         this.getData("constituent", query, this.getNextSet);
@@ -694,7 +726,10 @@ var PIC = (function () {
     };
     PIC.prototype.getNextSet = function (re) {
         var results = JSON.parse(re);
+        // console.log(results);
+        // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
         if (results.hits.total > this.elasticResults.from + this.elasticSize) {
+            // keep going
             var query = this.elasticResults.query;
             this.elasticResults.from += this.elasticSize;
             query = "from=" + this.elasticResults.from + "&" + query;
@@ -724,6 +759,8 @@ var PIC = (function () {
     };
     PIC.prototype.addressesToPoints = function (hits) {
         var addresses = [];
+        // var hits = elasticResults.hits;
+        // console.log(elasticResults);
         var i, j, l = hits.length;
         for (i = 0; i < l; ++i) {
             var item = hits[i]._source;
@@ -736,6 +773,8 @@ var PIC = (function () {
         this.addPoints(addresses);
     };
     PIC.prototype.addPoints = function (newPoints) {
+        // if (newPoints.length === 0) return;
+        // console.log(newPoints);
         var addressType = $("#" + this.facetWithName("addresstypes")[0]).val();
         var country = $("#" + this.facetWithName("countries")[0]).val();
         var i, l = newPoints.length;
@@ -745,6 +784,7 @@ var PIC = (function () {
             if (!p)
                 continue;
             var height;
+            // point has no real height
             if (p[6] === undefined) {
                 var latlonHash = p[0] + "," + p[1];
                 if (this.latlonHeightHash[latlonHash] === undefined) {
@@ -759,12 +799,14 @@ var PIC = (function () {
             else {
                 height = p[6];
             }
+            // hack, because elastic returns all addresses of a given id
             var tid = p[4];
             var cid = p[5];
             if (addressType != "*" && tid != addressType)
                 continue;
             if (country != "*" && cid != country)
                 continue;
+            // end hack
             this.elasticResults.total++;
             this.expandBounds(p);
             var pt = this.points.add({
@@ -847,9 +889,17 @@ var PIC = (function () {
     PIC.prototype.updateNameFilter = function () {
         var str = $("#" + this.nameQueryElement).val().trim();
         if (str !== "") {
-            str = str.replace(" ", "~ ");
+            str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, '');
+            str = str.trim().replace(" ", "~ ");
             str = str + "~";
-            str = '(' + str.split(" ").join(" AND ") + ')';
+            var f = str.split(" ");
+            var legit = [];
+            for (var thing in f) {
+                var trimmed = f[thing].trim();
+                if (trimmed !== "")
+                    legit.push(trimmed);
+            }
+            str = '(' + legit.join(" AND ") + ')';
         }
         else {
             str = "*";
@@ -905,3 +955,4 @@ var PIC = (function () {
     };
     return PIC;
 })();
+//# sourceMappingURL=pic.js.map

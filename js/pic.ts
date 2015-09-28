@@ -226,6 +226,12 @@ class PIC {
         this.loadTextFile(url, callback, parameter);
     }
 
+    escapeQuery (query) {
+        query = query.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,'');
+        query = encodeURIComponent(query);
+        return query;
+    }
+
     updateTotals (total) {
         if (total === -1) total = this.elasticResults.total;
         $("#total-points").html("<span class=\"number\">" + total + "</span><br />total locations");
@@ -562,7 +568,7 @@ class PIC {
             for (var i=0; i < addresses.length; i++) {
                 var add = addresses[i];
                 addstring += "<div class=\"address-item\">";
-                addstring += "ID:" + add.ConAddressID + "<br />";
+                // addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += this.facetValues["addresstypes"][add.AddressTypeID] + "<br />";
                 if (add.DisplayName2 != "NULL") addstring += add.DisplayName2 + "<br />";
                 if (add.StreetLine1 != "NULL") addstring += add.StreetLine1 + "<br />";
@@ -953,9 +959,16 @@ class PIC {
     updateNameFilter () {
         var str = $("#" + this.nameQueryElement).val().trim();
         if (str !== "") {
-            str = str.replace(" ", "~ ");
+            str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,'');
+            str = str.trim().replace(" ", "~ ");
             str = str + "~";
-            str = '(' + str.split(" ").join(" AND ") + ')';
+            var f = str.split(" ");
+            var legit = [];
+            for (var thing in f) {
+                var trimmed = f[thing].trim();
+                if (trimmed !== "") legit.push(trimmed);
+            }
+            str = '(' + legit.join(" AND ") + ')';
         } else {
             str = "*";
         }

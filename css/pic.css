@@ -100,7 +100,8 @@ p {
   -webkit-overflow-scrolling: touch; }
   #overlays.minimized {
     width: 70px;
-    cursor: pointer; }
+    cursor: pointer;
+    overflow-y: hidden; }
     #overlays.minimized #slogan, #overlays.minimized #facets, #overlays.minimized #tooltip, #overlays.minimized #overlay-minimize {
       display: none; }
 

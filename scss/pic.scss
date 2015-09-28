@@ -1,0 +1,229 @@
+@import "bourbon/bourbon";
+@import "css3-mixins.scss";
+
+%clearfix {
+    zoom:1;
+    &:before, &:after {
+        content: "\0020";
+        display: block;
+        height: 0;
+        overflow: hidden;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+$columnWidth: 300px;
+$columnMmargin: 30px;
+$generalMargin: 10px;
+$white: #efefef;
+$gray: #aaa;
+$black: #444;
+$linkColor: #900;
+
+html, body {
+    width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    background: $black;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+#cesiumContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#header {
+    margin: $generalMargin;
+}
+
+#overlays {
+    background-color: $gray;
+    color: $black;
+    position: absolute;
+    width: $columnWidth;
+    top: $generalMargin;
+    left: $generalMargin;
+    // bottom: $generalMargin;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    &.minimized {
+        width: 70px;
+        cursor: pointer;
+        overflow-y: hidden;
+
+        #slogan, #facets, #tooltip, #overlay-minimize {
+            display: none;
+        }
+    }
+}
+
+#overlay-minimize {
+    cursor: pointer;
+}
+
+// @include keyframes(popIn) {
+//   0% {
+//     @include transform(rotateZ(-200deg) scale(0));
+//   }
+//   90% {
+//     @include transform(rotateZ(-20deg) scale(1.2));
+//   }
+//   100% {
+//     @include transform(rotateZ(-20deg) scale(1));
+//   }
+// }
+// @include animation(popIn);
+
+#acronym {
+    display: inline-block;
+}
+
+.legend {
+    font-size: 0.9em;
+    position: absolute;
+    left: $columnWidth + ($generalMargin * 2);
+    bottom: $generalMargin;
+    color: $white;
+    @include text-shadow(-1px, 1px, 0px, $black);
+    text-transform: uppercase;
+
+    &.minimized {
+        left: $generalMargin;
+    }
+
+    li {
+        margin-bottom: 1em;
+
+        .color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: $generalMargin;
+            border-radius: 10px;
+            vertical-align: middle;
+        }
+    }
+}
+
+#total-points {
+    @include text-shadow(-1px, 1px, 0px, $black);
+    color: $white;
+    font-size: 1em;
+    margin-bottom: $generalMargin;
+
+    .number {
+        font-size: 3em;
+    }
+}
+
+
+.biz.color {
+    background-color: rgba(255, 127, 2, 1);
+}
+
+.born.color {
+    background-color: rgba(76, 173, 73, 1);
+}
+
+.died.color {
+    background-color: rgba(53, 124, 183, 1);
+}
+
+.active.color {
+    background-color: rgba(226, 25, 25, 1);
+}
+
+.hidden {
+    display: none;
+}
+
+#facets, #tooltip {
+    margin: $generalMargin;
+}
+
+#facets {
+    margin-left: $generalMargin;
+
+    label, select {
+        display: block;
+        clear: both;
+    }
+
+    select, input {
+        font-size: 14px;
+        font-family: Verdana;
+        width: $columnWidth - $columnMmargin;
+    }
+
+    .facet {
+        margin-bottom: $generalMargin;
+    }
+
+    .timeline {
+        @extend %clearfix;
+    }
+
+    .date-field {
+        float: left;
+        margin-right: $generalMargin;
+    }
+
+    .date-text {
+        width: 60px;
+    }
+}
+
+#tooltip {
+    border-top: 2px solid $black;
+    padding-top: $generalMargin;
+
+    .tooltip-item {
+        margin: 0 0 $generalMargin 0;
+
+        h3 {
+            margin-bottom: 1em;
+            cursor: pointer;
+            color: $linkColor;
+
+            span {
+                    font-size: 0.8em;
+                    font-weight: normal;
+                    display: block;
+            }
+        }
+    }
+
+    .link {
+        cursor: pointer;
+        color: $linkColor;
+    }
+}
+
+
+#hover {
+    width: $columnWidth;
+    position: absolute;
+    background: $white;
+    padding: $generalMargin;
+    left: -1000px;
+    top: -1000px;
+    text-align: center;
+
+    .geoname {
+        white-space: nowrap;
+    }
+
+    .hits {
+        font-weight: bold;
+    }
+}

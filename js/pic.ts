@@ -16,7 +16,8 @@ class PIC {
     points;
     handler;
     elasticResults : ElasticResults = {query: "", from: 0, hits:[], total:0};
-    pointHash = {};
+    pointArray = [];
+    pointHash = {}; // contains the index to a given id in the pointArray
     latlonHeightHash = {};
     heightHash = {};
     allIDs = [];
@@ -161,17 +162,19 @@ class PIC {
     parseBaseData (baseData) {
         var i, l = baseData.length;
         this.allIDs = [];
-        this.pointHash = {};
+        this.pointArray = [];
         for (i=0; i < l; i=i+6) {
             var id = baseData[i+3];
-            this.pointHash[id] = [
+            var index = this.pointArray.push([
                 baseData[i],
                 baseData[i+1],
                 baseData[i+2],
                 id,
                 baseData[i+4],
                 baseData[i+5]
-            ];
+            ]);
+            index = index - 1;
+            this.pointHash[id] = index;
             this.allIDs.push(id);
         }
 
@@ -425,7 +428,7 @@ class PIC {
         }
         this.tooltipElement.find(".results").append("<hr />");
         if (start + l < total) {
-            var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);
+            var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);co
             var string = '<div class="link more">Load '+more+' more</div>';
             this.tooltipElement.find(".more").replaceWith(string);
             this.tooltipElement.find(".more").click( () => this.loadMoreResults(start + l) );
@@ -555,7 +558,7 @@ class PIC {
             for (var i=0; i < addresses.length; i++) {
                 var add = addresses[i];
                 addstring += "<div class=\"address-item\">";
-                // addstring += "ID:" + add.ConAddressID + "<br />";
+                addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += this.facetValues["addresstypes"][add.AddressTypeID] + "<br />";
                 if (add.DisplayName2 != "NULL") addstring += add.DisplayName2 + "<br />";
                 if (add.StreetLine1 != "NULL") addstring += add.StreetLine1 + "<br />";
@@ -592,7 +595,8 @@ class PIC {
     }
 
     flyToAddressID (id) {
-        var p = this.pointHash[id];
+        var index = this.pointHash[id];
+        var p = this.pointArray[index];
         var height = p[6] ? p[6] + (this.heightDelta * 50) : (this.heightDelta * 50);
         // console.log(id, height, p);
         this.viewer.camera.flyTo({
@@ -807,8 +811,8 @@ class PIC {
     addressesForID (id) {
         var i;
         var addresses = [];
-        for (i in this.pointHash) {
-            if (this.pointHash[i][2] === id) addresses.push(this.pointHash[i]);
+        for (i in this.pointArray) {
+            if (this.pointArray[i][2] === id) addresses.push(this.pointArray[i]);
         }
         return addresses;
     }
@@ -835,7 +839,8 @@ class PIC {
         var country = $("#"+this.facetWithName("countries")[0]).val();
         var i, l = newPoints.length;
         for (i=0; i < l; i++) {
-            var p = this.pointHash[newPoints[i]];
+            var index = this.pointHash[newPoints[i]];
+            var p = this.pointArray[index];
             if (!p) continue;
             var height;
             // point has no real height
@@ -1004,9 +1009,3 @@ class PIC {
         this.fixOverlayHeight();
     }
 }
-
-
-
-
-
-

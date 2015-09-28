@@ -4,7 +4,8 @@
 var PIC = (function () {
     function PIC() {
         this.elasticResults = { query: "", from: 0, hits: [], total: 0 };
-        this.pointHash = {};
+        this.pointArray = [];
+        this.pointHash = {}; // contains the index to a given id in the pointArray
         this.latlonHeightHash = {};
         this.heightHash = {};
         this.allIDs = [];
@@ -113,17 +114,19 @@ var PIC = (function () {
     PIC.prototype.parseBaseData = function (baseData) {
         var i, l = baseData.length;
         this.allIDs = [];
-        this.pointHash = {};
+        this.pointArray = [];
         for (i = 0; i < l; i = i + 6) {
             var id = baseData[i + 3];
-            this.pointHash[id] = [
+            var index = this.pointArray.push([
                 baseData[i],
                 baseData[i + 1],
                 baseData[i + 2],
                 id,
                 baseData[i + 4],
                 baseData[i + 5]
-            ];
+            ]);
+            index = index - 1;
+            this.pointHash[id] = index;
             this.allIDs.push(id);
         }
         this.loadTextFile("csv/heights.txt?i=" + Math.random() * 100000, function (responseText) {
@@ -363,6 +366,7 @@ var PIC = (function () {
         this.tooltipElement.find(".results").append("<hr />");
         if (start + l < total) {
             var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);
+            co;
             var string = '<div class="link more">Load ' + more + ' more</div>';
             this.tooltipElement.find(".more").replaceWith(string);
             this.tooltipElement.find(".more").click(function () { return _this.loadMoreResults(start + l); });
@@ -493,7 +497,7 @@ var PIC = (function () {
             for (var i = 0; i < addresses.length; i++) {
                 var add = addresses[i];
                 addstring += "<div class=\"address-item\">";
-                // addstring += "ID:" + add.ConAddressID + "<br />";
+                addstring += "ID:" + add.ConAddressID + "<br />";
                 addstring += this.facetValues["addresstypes"][add.AddressTypeID] + "<br />";
                 if (add.DisplayName2 != "NULL")
                     addstring += add.DisplayName2 + "<br />";
@@ -536,7 +540,8 @@ var PIC = (function () {
         }
     };
     PIC.prototype.flyToAddressID = function (id) {
-        var p = this.pointHash[id];
+        var index = this.pointHash[id];
+        var p = this.pointArray[index];
         var height = p[6] ? p[6] + (this.heightDelta * 50) : (this.heightDelta * 50);
         // console.log(id, height, p);
         this.viewer.camera.flyTo({
@@ -738,9 +743,9 @@ var PIC = (function () {
     PIC.prototype.addressesForID = function (id) {
         var i;
         var addresses = [];
-        for (i in this.pointHash) {
-            if (this.pointHash[i][2] === id)
-                addresses.push(this.pointHash[i]);
+        for (i in this.pointArray) {
+            if (this.pointArray[i][2] === id)
+                addresses.push(this.pointArray[i]);
         }
         return addresses;
     };
@@ -766,7 +771,8 @@ var PIC = (function () {
         var country = $("#" + this.facetWithName("countries")[0]).val();
         var i, l = newPoints.length;
         for (i = 0; i < l; i++) {
-            var p = this.pointHash[newPoints[i]];
+            var index = this.pointHash[newPoints[i]];
+            var p = this.pointArray[index];
             if (!p)
                 continue;
             var height;

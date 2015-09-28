@@ -180,14 +180,19 @@ class PIC {
 
         this.loadTextFile("csv/heights.txt?i=" + Math.random()*100000, function (responseText) {
             var heightData = JSON.parse(responseText)[1];
-            var i, l = heightData.length;
-            for (i=0; i < l; i=i+2) {
-                var id = heightData[i];
-                if (this.pointHash[id] === undefined) continue;
-                this.pointHash[id][6] = heightData[i+1];
-            }
-            this.displayBaseData();
+            this.parseHeightData(heightData);
         });
+    }
+
+    parseHeightData (heightData) {
+        var i, l = heightData.length;
+        for (i=0; i < l; i=i+2) {
+            var id = heightData[i];
+            var index = this.pointHash[id];
+            if (this.pointArray[index] === undefined) continue;
+            this.pointArray[index][6] = heightData[i+1];
+        }
+        this.displayBaseData();
     }
 
     displayBaseData () {
@@ -216,9 +221,8 @@ class PIC {
     }
 
     getData (facet, query, callback, parameter = undefined) {
+        console.log(query);
         var url = this.baseUrl+"/"+facet+"/_search?sort=AlphaSort:asc&"+query;
-
-        // console.log(url);
         this.loadTextFile(url, callback, parameter);
     }
 
@@ -428,7 +432,7 @@ class PIC {
         }
         this.tooltipElement.find(".results").append("<hr />");
         if (start + l < total) {
-            var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);co
+            var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);
             var string = '<div class="link more">Load '+more+' more</div>';
             this.tooltipElement.find(".more").replaceWith(string);
             this.tooltipElement.find(".more").click( () => this.loadMoreResults(start + l) );

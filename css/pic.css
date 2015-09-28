@@ -117,8 +117,7 @@ p {
   left: 320px;
   bottom: 10px;
   color: #efefef;
-  text-shadow: -1px 1px 0px #444;
-  text-transform: uppercase; }
+  text-shadow: -1px 1px 0px #444; }
   .legend.minimized {
     left: 10px; }
   .legend li {
@@ -132,6 +131,10 @@ p {
       vertical-align: middle; }
 
 #total-points {
+  position: absolute;
+  left: 320px;
+  top: 10px;
+  max-width: 500px;
   text-shadow: -1px 1px 0px #444;
   color: #efefef;
   font-size: 1em;
@@ -190,6 +193,9 @@ p {
   #tooltip .link {
     cursor: pointer;
     color: #900; }
+
+.addresses .address-item {
+  margin-bottom: 10px; }
 
 #hover {
   width: 300px;

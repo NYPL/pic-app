@@ -95,7 +95,7 @@ p {
     bottom: $generalMargin;
     color: $white;
     @include text-shadow(-1px, 1px, 0px, $black);
-    text-transform: uppercase;
+    // text-transform: uppercase;
 
     &.minimized {
         left: $generalMargin;
@@ -116,6 +116,10 @@ p {
 }
 
 #total-points {
+    position: absolute;
+    left: $columnWidth + ($generalMargin * 2);
+    top: $generalMargin;
+    max-width: 500px;
     @include text-shadow(-1px, 1px, 0px, $black);
     color: $white;
     font-size: 1em;
@@ -209,6 +213,11 @@ p {
     }
 }
 
+.addresses {
+    .address-item {
+        margin-bottom: $generalMargin;
+    }
+}
 
 #hover {
     width: $columnWidth;

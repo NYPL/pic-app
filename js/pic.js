@@ -182,7 +182,7 @@ var PIC = (function () {
     PIC.prototype.updateTotals = function (total) {
         if (total === -1)
             total = this.elasticResults.total;
-        $("#total-points").html("<span class=\"number\">" + total + "</span><br />total locations");
+        $("#total-points").html("<span class=\"number\">" + total + "</span><br />" + this.humanizeFilters());
     };
     PIC.prototype.updateBounds = function () {
         // console.log(bounds);
@@ -210,6 +210,7 @@ var PIC = (function () {
         var pic = this;
         this.handler = new Cesium.ScreenSpaceEventHandler(this.canvas);
         this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
+        $("#overlays").mousemove(function () { return _this.positionHover(false); });
         this.canvas.onclick = function (e) {
             _this.canvas.focus();
             // console.log(mousePosition, startMousePosition, e);
@@ -221,17 +222,16 @@ var PIC = (function () {
                 _this.clickPoint(_this.pickedEntity.entity);
             }
         };
-        this.handler.setInputAction(function (movement) {
-            // console.log(movement);
-            // flags.looking = true;
-            pic.mousePosition = pic.startMousePosition = Cesium.Cartesian3.clone(movement.position);
-        }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
-        this.handler.setInputAction(function (movement) {
-            // pick
-            pic.mousePosition = movement.endPosition;
-            var pickedObject = pic.scene.pick(movement.endPosition);
-            pic.refreshPicked(pickedObject);
-        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        this.canvas.onmousemove = function (e) {
+            var c = new Cesium.Cartesian2(e.clientX, e.clientY);
+            _this.mousePosition = c;
+            var pickedObject = _this.scene.pick(c);
+            _this.refreshPicked(pickedObject);
+        };
+        this.canvas.onmousedown = function (e) {
+            var c = new Cesium.Cartesian2(e.clientX, e.clientY);
+            _this.mousePosition = _this.startMousePosition = c;
+        };
     };
     PIC.prototype.pickEntity = function (windowPosition) {
         var picked = this.scene.pick(windowPosition);
@@ -326,6 +326,8 @@ var PIC = (function () {
         var el = $("#hover");
         var leftOffset = 0;
         var margin = 50;
+        if (this.mousePosition === undefined)
+            return;
         var x = this.mousePosition.x - (el.width() * .5);
         var y = this.mousePosition.y - el.height() - margin;
         if (y < 0) {
@@ -880,6 +882,117 @@ var PIC = (function () {
             value = '[' + from + ' TO ' + to + ']';
         }
         this.updateFilter("date", value);
+    };
+    PIC.prototype.humanizeFilters = function () {
+        /*
+        template:
+        0  Birth
+           places
+        1  in Australia
+           for
+        2  English
+        3  , Female
+           photographers
+        9  named george
+        4  who worked with daguerreotype
+        5  as clerk
+        6  producing cabinet cards
+        8  whose photos are collected at NYPL
+        10 who were alive or active between 1890 and 1895
+        7  whose data came in part from Eastman House
+        */
+        var subject = "";
+        var predicate = "";
+        var text = "";
+        var facet;
+        var facetKey;
+        var key;
+        var hasQualifier = false;
+        // addresstype
+        facet = this.facets[0];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            subject += this.facetValues[facet[0]][key] + " ";
+        }
+        subject += "locations ";
+        // country
+        facet = this.facets[1];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            subject += "in " + this.facetValues[facet[0]][key] + " ";
+        }
+        predicate = "for ";
+        // nationality
+        facet = this.facets[2];
+        facetKey = facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += " " + this.facetValues[facet[0]][key];
+        }
+        // gender
+        facet = this.facets[3];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += (predicate !== "for " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
+        }
+        predicate += " photographers ";
+        // name
+        facet = this.facets[9];
+        facetKey = facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            var name = $("#" + this.nameQueryElement).val();
+            predicate += "named " + name + " ";
+        }
+        // process
+        facet = this.facets[4];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += "who created " + this.facetValues[facet[0]][key] + " ";
+        }
+        // role
+        facet = this.facets[5];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += "who worked as " + this.facetValues[facet[0]][key] + " ";
+        }
+        // format
+        facet = this.facets[6];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += "producing " + this.facetValues[facet[0]][key] + " ";
+        }
+        // collections
+        facet = this.facets[8];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += "whose work is collected by " + this.facetValues[facet[0]][key] + " ";
+        }
+        // dates
+        facet = this.facets[10];
+        facetKey = "Date";
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            var dates = $("#" + this.fromDateElement).val();
+            dates += " to " + $("#" + this.toDateElement).val();
+            predicate += "who were alive or active from " + dates + " ";
+        }
+        // biography
+        facet = this.facets[7];
+        facetKey = facet[4] + "." + facet[2];
+        key = this.filters[facetKey];
+        if (key !== "*") {
+            predicate += "whose data came in part from " + this.facetValues[facet[0]][key] + " ";
+        }
+        text = subject + predicate;
+        return text;
     };
     PIC.prototype.updateNameFilter = function () {
         var str = $("#" + this.nameQueryElement).val().trim();

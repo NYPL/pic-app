@@ -229,7 +229,7 @@ module PIC {
 
         getData (facet, query, callback, parameter = undefined) {
             var url = this.baseUrl+"/"+facet+"/_search?sort=nameSort:asc&"+query;
-            console.log(url);
+            // console.log(url);
             this.loadTextFile(url, callback, parameter);
         }
 
@@ -710,12 +710,16 @@ module PIC {
         }
 
         disableFacets () {
-            $("#facets .facet").prop('disabled', 'disabled');
+            for (var widget in this.facetWidgets) {
+                this.facetWidgets[widget].disable();
+            }
             this.clearTooltip();
         }
 
         enableFacets () {
-            $("#facets .facet").prop('disabled', '');
+            for (var widget in this.facetWidgets) {
+                this.facetWidgets[widget].enable();
+            }
         }
 
         buildFacetList () {

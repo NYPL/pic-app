@@ -3,6 +3,7 @@ var PIC;
     var Facet = (function () {
         function Facet(id, parent, description) {
             this.data = {};
+            this.enabled = false;
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
@@ -12,7 +13,17 @@ var PIC;
         }
         Facet.prototype.init = function () {
             this.setValue("*");
+            $(this.IDPrefix + " .facet-item:first-child").addClass("active");
             this.applyListeners();
+            this.enable();
+        };
+        Facet.prototype.enable = function () {
+            this.enabled = true;
+            $(this.IDPrefix).removeClass("disabled");
+        };
+        Facet.prototype.disable = function () {
+            this.enabled = false;
+            $(this.IDPrefix).addClass("disabled");
         };
         Facet.prototype.buildHTML = function () {
             var f = this.ID;
@@ -34,12 +45,17 @@ var PIC;
         };
         Facet.prototype.addFacetItem = function (name, value) {
             this.data[value] = name;
-            var str = '<div class="link facet-value" data-value="' + value + '">' + name + '</div>';
+            var str = '<div class="link facet-item" data-value="' + value + '">' + name + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         };
         Facet.prototype.handleItemClick = function (e) {
             var el = $(e.currentTarget);
-            this.setValue(el.data("value"));
+            var value = el.data("value").toString();
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            el.addClass("active");
+            if (value === this.value)
+                return;
+            this.setValue(value);
             $(this.IDPrefix).trigger("facet:change", this);
         };
         Facet.prototype.toggleGroup = function () {
@@ -53,10 +69,15 @@ var PIC;
         Facet.prototype.applyListeners = function () {
             var _this = this;
             $(this.IDPrefix + ".facet-header").click(function () {
+                if (!_this.enabled)
+                    return;
                 _this.toggleGroup();
             });
-            $(this.IDPrefix + ".facet-value").click(function (e) {
+            $(this.IDPrefix + ".facet-item").click(function (e) {
+                if (!_this.enabled)
+                    return;
                 _this.handleItemClick(e);
+                _this.closeGroup();
             });
         };
         return Facet;
@@ -241,7 +262,7 @@ var PIC;
         PIC.prototype.getData = function (facet, query, callback, parameter) {
             if (parameter === void 0) { parameter = undefined; }
             var url = this.baseUrl + "/" + facet + "/_search?sort=nameSort:asc&" + query;
-            console.log(url);
+            // console.log(url);
             this.loadTextFile(url, callback, parameter);
         };
         PIC.prototype.updateTotals = function (total) {
@@ -711,11 +732,15 @@ var PIC;
             return -1;
         };
         PIC.prototype.disableFacets = function () {
-            $("#facets .facet").prop('disabled', 'disabled');
+            for (var widget in this.facetWidgets) {
+                this.facetWidgets[widget].disable();
+            }
             this.clearTooltip();
         };
         PIC.prototype.enableFacets = function () {
-            $("#facets .facet").prop('disabled', '');
+            for (var widget in this.facetWidgets) {
+                this.facetWidgets[widget].enable();
+            }
         };
         PIC.prototype.buildFacetList = function () {
             var facetList = [];

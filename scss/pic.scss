@@ -5,6 +5,7 @@ $font: Helvetica, Arial, sans-serif;
 $columnWidth: 300px;
 $columnMmargin: 30px;
 $generalMargin: 10px;
+$facetMargin: 5px;
 $white: #efefef;
 $gray: #aaa;
 $black: #444;
@@ -170,11 +171,17 @@ p {
         cursor: pointer;
 
         &:before {
-            content: '> ';
+            content: ' ';
+            background: url('../svg/arrow.svg') no-repeat;
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            background-size: 100%;
+            margin-right: $facetMargin;
         }
 
         &.open:before {
-            content: 'v ';
+            @include transform(rotateZ(90deg));
         }
 
     }
@@ -187,14 +194,32 @@ p {
         }
     }
 
-    .facet-header, .facet-value {
+    .facet-header, .facet-item {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
     }
 
+    .facet-item {
+        padding: $facetMargin;
+        padding-left: $generalMargin;
+
+        &:hover {
+            background: $black;
+            color: $white;
+        }
+
+        &.active {
+            font-weight: bold;
+        }
+    }
+
     .facet {
         margin-bottom: $generalMargin;
+
+        &.disabled {
+            color: lighten($black, 20%);
+        }
     }
 
     .timeline {

@@ -21,6 +21,7 @@ module PIC {
         data: FacetValueMap = {};
         description: string;
         value: string;
+        enabled = false;
 
         constructor(id, parent, description) {
             this.parentElement = parent;
@@ -33,7 +34,19 @@ module PIC {
 
         init() {
             this.setValue("*");
+            $(this.IDPrefix + " .facet-item:first-child").addClass("active");
             this.applyListeners();
+            this.enable();
+        }
+
+        enable() {
+            this.enabled = true;
+            $(this.IDPrefix).removeClass("disabled");
+        }
+
+        disable() {
+            this.enabled = false;
+            $(this.IDPrefix).addClass("disabled");
         }
 
         buildHTML() {
@@ -58,13 +71,17 @@ module PIC {
 
         addFacetItem(name, value) {
             this.data[value] = name;
-            var str = '<div class="link facet-value" data-value="' + value + '">' + name + '</div>';
+            var str = '<div class="link facet-item" data-value="' + value + '">' + name + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         }
 
         handleItemClick (e: JQueryEventObject) {
-            var el = $(e.currentTarget)
-            this.setValue(el.data("value"));
+            var el = $(e.currentTarget);
+            var value = el.data("value").toString();
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            el.addClass("active");
+            if (value === this.value) return;
+            this.setValue(value);
             $(this.IDPrefix).trigger("facet:change", this);
         }
 
@@ -80,10 +97,13 @@ module PIC {
 
         applyListeners () {
             $(this.IDPrefix + ".facet-header").click(() => {
-                this.toggleGroup()
+                if (!this.enabled) return;
+                this.toggleGroup();
             });
-            $(this.IDPrefix + ".facet-value").click((e) => {
+            $(this.IDPrefix + ".facet-item").click((e) => {
+                if (!this.enabled) return;
                 this.handleItemClick(e);
+                this.closeGroup();
             });
         }
     }

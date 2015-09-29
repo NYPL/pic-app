@@ -170,19 +170,37 @@ p {
   #facets .facet-header {
     cursor: pointer; }
     #facets .facet-header:before {
-      content: '> '; }
+      content: ' ';
+      background: url("../svg/arrow.svg") no-repeat;
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      background-size: 100%;
+      margin-right: 5px; }
     #facets .facet-header.open:before {
-      content: 'v '; }
+      -webkit-transform: rotateZ(90deg);
+      -moz-transform: rotateZ(90deg);
+      transform: rotateZ(90deg); }
   #facets .facet-group {
     display: none; }
     #facets .facet-group.open {
       display: block; }
-  #facets .facet-header, #facets .facet-value {
+  #facets .facet-header, #facets .facet-item {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap; }
+  #facets .facet-item {
+    padding: 5px;
+    padding-left: 10px; }
+    #facets .facet-item:hover {
+      background: #444;
+      color: #efefef; }
+    #facets .facet-item.active {
+      font-weight: bold; }
   #facets .facet {
     margin-bottom: 10px; }
+    #facets .facet.disabled {
+      color: #777777; }
   #facets .timeline::after {
     clear: both;
     content: "";

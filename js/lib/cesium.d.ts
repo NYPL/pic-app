@@ -8,8 +8,12 @@ declare module Cesium {
       static fromCache(any);
   }
 
+  interface Promise<T> {
+      (arg: any): any;
+  }
+
   interface Proxy {
-    getURL(resource: string): string;
+      getURL(resource: string): string;
   }
 
   class ArcGisImageServerTerrainProvider {

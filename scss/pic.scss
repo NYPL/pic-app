@@ -1,26 +1,8 @@
 @import "bourbon/bourbon";
+@import "neat/neat";
+@import "variables.scss";
 @import "css3-mixins.scss";
-
-%clearfix {
-    zoom:1;
-    &:before, &:after {
-        content: "\0020";
-        display: block;
-        height: 0;
-        overflow: hidden;
-    }
-    &:after {
-        clear: both;
-    }
-}
-
-$columnWidth: 300px;
-$columnMmargin: 30px;
-$generalMargin: 10px;
-$white: #efefef;
-$gray: #aaa;
-$black: #444;
-$linkColor: #900;
+@import "facet.scss";
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
@@ -174,7 +156,7 @@ p {
     }
 
     .timeline {
-        @extend %clearfix;
+        @include clearfix;
     }
 
     .date-field {

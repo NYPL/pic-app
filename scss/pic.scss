@@ -1,12 +1,18 @@
 @import "bourbon/bourbon";
-@import "neat/neat";
-@import "variables.scss";
 @import "css3-mixins.scss";
-@import "facet.scss";
+
+$font: Helvetica, Arial, sans-serif;
+$columnWidth: 300px;
+$columnMmargin: 30px;
+$generalMargin: 10px;
+$white: #efefef;
+$gray: #aaa;
+$black: #444;
+$linkColor: #900;
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: $font;
     font-size: 14px;
     background: $black;
 }
@@ -34,7 +40,7 @@ p {
     width: $columnWidth;
     top: $generalMargin;
     left: $generalMargin;
-    // bottom: $generalMargin;
+    bottom: $generalMargin;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 
@@ -133,6 +139,11 @@ p {
     display: none;
 }
 
+.link {
+    cursor: pointer;
+    color: $linkColor;
+}
+
 #facets, #tooltip {
     margin: $generalMargin;
 }
@@ -140,15 +151,42 @@ p {
 #facets {
     margin-left: $generalMargin;
 
-    label, select {
+    label {
         display: block;
         clear: both;
     }
 
-    select, input {
+    span, input {
         font-size: 14px;
-        font-family: Verdana;
+        font-family: $font;
         width: $columnWidth - $columnMmargin;
+    }
+
+    .facet-header {
+        cursor: pointer;
+
+        &:before {
+            content: '> ';
+        }
+
+        &.open:before {
+            content: 'v ';
+        }
+
+    }
+
+    .facet-group {
+        display: none;
+
+        &.open {
+            display: block;
+        }
+    }
+
+    .facet-header, .facet-value {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     .facet {
@@ -189,10 +227,6 @@ p {
         }
     }
 
-    .link {
-        cursor: pointer;
-        color: $linkColor;
-    }
 }
 
 .addresses {

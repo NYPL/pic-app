@@ -2,44 +2,62 @@ var PIC;
 (function (PIC) {
     var Facet = (function () {
         function Facet(id, parent, description) {
+            this.data = {};
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
             this.description = description;
             this.buildHTML();
+            this.addFacetItem("Any", "*");
         }
-        Facet.prototype.applyData = function (data) {
-            this.data = data;
-            // this.applyListeners();
+        Facet.prototype.init = function () {
+            this.setValue("*");
+            this.applyListeners();
         };
         Facet.prototype.buildHTML = function () {
             var f = this.ID;
-            var str = '<div class="facet">';
-            str += '<label for="' + f + '">' + this.description + '</label>';
-            str += '<select id="' + f + '" class="facet" name="' + f + '">';
-            str += '<option value="*">Any</option>';
-            str += '</select>';
+            var str = '<div id="' + this.ID + '" class="facet" data-value="">';
+            str += '<div class="facet-header">' + this.description + '</div>';
+            str += '<div class="facet-group">';
+            str += '</div>';
             str += '</div>';
             this.parentElement.append(str);
+            this.element = $(this.IDPrefix);
+        };
+        Facet.prototype.setValue = function (value) {
+            this.value = value;
+            var txtValue = this.data[this.value];
+            var txt = this.description + ": " + txtValue;
+            $(this.IDPrefix).data("value", value);
+            $(this.IDPrefix + ".facet-header").text(txt);
+            this.closeGroup();
         };
         Facet.prototype.addFacetItem = function (name, value) {
-            var str = '<option value="' + name + '">' + value + '</option>';
-            $(this.IDPrefix).append(str);
+            this.data[value] = name;
+            var str = '<div class="link facet-value" data-value="' + value + '">' + name + '</div>';
+            $(this.IDPrefix + ".facet-group").append(str);
         };
         Facet.prototype.handleItemClick = function (e) {
-            // var el = $(e.currentTarget)
-            // this.value = el.data("value");
-            // $(this.IDPrefix + ".dropdown-button").html(el.html());
+            var el = $(e.currentTarget);
+            this.setValue(el.data("value"));
+            $(this.IDPrefix).trigger("facet:change", this);
+        };
+        Facet.prototype.toggleGroup = function () {
+            $(this.IDPrefix + ".facet-header").toggleClass("open");
+            $(this.IDPrefix + ".facet-group").toggleClass("open");
+        };
+        Facet.prototype.closeGroup = function () {
+            $(this.IDPrefix + ".facet-header").removeClass("open");
+            $(this.IDPrefix + ".facet-group").removeClass("open");
         };
         Facet.prototype.applyListeners = function () {
             var _this = this;
-            $(this.IDPrefix + ".dropdown-button").click(function () {
-                $(_this.IDPrefix + ".dropdown-menu").toggleClass("show-menu");
+            $(this.IDPrefix + ".facet-header").click(function () {
+                _this.toggleGroup();
             });
-            $(this.IDPrefix + ".dropdown-menu > li").click(function () {
-                $(_this.IDPrefix + ".dropdown-menu").removeClass("show-menu");
+            $(this.IDPrefix + ".facet-value").click(function (e) {
+                _this.handleItemClick(e);
             });
-            $(this.IDPrefix + ".dropdown-menu.dropdown-select > li").click(function (e) { return _this.handleItemClick(e); });
         };
         return Facet;
     })();
@@ -224,11 +242,6 @@ var PIC;
             var url = this.baseUrl + "/" + facet + "/_search?sort=nameSort:asc&" + query;
             console.log(url);
             this.loadTextFile(url, callback, parameter);
-        };
-        PIC.prototype.escapeQuery = function (query) {
-            query = query.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, '');
-            query = encodeURIComponent(query);
-            return query;
         };
         PIC.prototype.updateTotals = function (total) {
             if (total === -1)
@@ -670,23 +683,24 @@ var PIC;
             this.updateFilter(f, "*");
         };
         PIC.prototype.updateFacet = function (responseText, facet) {
+            var _this = this;
             var data = responseText.csvToArray({ trim: true, rSep: '\n' });
             if (data.length <= 1)
                 return;
             var widget = this.facetWidgets[facet[0]];
             var idColumn = data[0].indexOf(facet[2]);
-            var valueColumn = data[0].indexOf(facet[3]);
+            var nameColumn = data[0].indexOf(facet[3]);
             var name;
             var value;
             var l = data.length;
             for (var i = 1; i < l; i++) {
-                name = data[i][idColumn];
-                value = data[i][valueColumn];
-                this.facetValues[facet[0]][name] = value;
+                value = data[i][idColumn];
+                name = data[i][nameColumn];
+                this.facetValues[facet[0]][value] = name;
                 widget.addFacetItem(name, value);
             }
-            this.addListenersToFacet(facet);
-            // widget.applyData(data);
+            widget.init();
+            widget.element.on("facet:change", function (e, widget) { _this.onFacetChanged(widget); });
         };
         PIC.prototype.facetWithName = function (name) {
             for (var i = 0; i < this.facets.length; i++) {
@@ -817,8 +831,8 @@ var PIC;
         PIC.prototype.addPoints = function (newPoints) {
             // if (newPoints.length === 0) return;
             // console.log(newPoints);
-            var addressType = $("#" + this.facetWithName("addresstypes")[0]).val();
-            var country = $("#" + this.facetWithName("countries")[0]).val();
+            var addressType = $("#" + this.facetWithName("addresstypes")[0]).data("value").toString();
+            var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
             var i, l = newPoints.length;
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -888,10 +902,6 @@ var PIC;
             h -= $("#facets").outerHeight(true);
             h -= this.generalMargin;
             $("#tooltip").height(h);
-        };
-        PIC.prototype.addListenersToFacet = function (facet) {
-            var _this = this;
-            $("#" + facet[0]).change(function (e) { return _this.onFacetChanged(e); });
         };
         PIC.prototype.resetDateQuery = function () {
             var from = $("#" + this.fromDateElement);
@@ -1042,7 +1052,7 @@ var PIC;
         PIC.prototype.updateNameFilter = function () {
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
-                str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, '');
+                str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
                 str = str.trim().replace(" ", "~1 ");
                 str = str + "~1";
                 var f = str.split(" ");
@@ -1081,11 +1091,8 @@ var PIC;
                 this.applyFilters();
             }
         };
-        PIC.prototype.onFacetChanged = function (e) {
-            var el = e.target;
-            var index = el.selectedIndex;
-            var value = el.value;
-            this.updateFilter(el.id, value);
+        PIC.prototype.onFacetChanged = function (widget) {
+            this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         };
         PIC.prototype.initListeners = function () {
@@ -1103,8 +1110,6 @@ var PIC;
             name.blur(function () { return _this.updateNameFilter(); });
             $("#facets-clear").click(function () { return _this.clearFilters(); });
             $("#overlay-minimize").click(function () { return _this.minimize(); });
-            window.onresize = this.fixOverlayHeight.bind(this);
-            this.fixOverlayHeight();
         };
         return PIC;
     })();

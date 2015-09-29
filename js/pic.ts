@@ -232,12 +232,6 @@ module PIC {
             this.loadTextFile(url, callback, parameter);
         }
 
-        escapeQuery (query) {
-            query = query.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,'');
-            query = encodeURIComponent(query);
-            return query;
-        }
-
         updateTotals (total) {
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total + "</span><br />" + this.humanizeFilters());
@@ -693,18 +687,18 @@ module PIC {
             if (data.length <= 1) return;
             var widget = this.facetWidgets[facet[0]];
             var idColumn = data[0].indexOf(facet[2]);
-            var valueColumn = data[0].indexOf(facet[3]);
+            var nameColumn = data[0].indexOf(facet[3]);
             var name;
             var value;
             var l = data.length;
             for (var i = 1; i < l; i++) {
-                name = data[i][idColumn];
-                value = data[i][valueColumn];
-                this.facetValues[facet[0]][name] = value;
+                value = data[i][idColumn];
+                name = data[i][nameColumn];
+                this.facetValues[facet[0]][value] = name;
                 widget.addFacetItem(name, value);
             }
-            this.addListenersToFacet(facet);
-            // widget.applyData(data);
+            widget.init();
+            widget.element.on("facet:change", (e, widget:Facet) => { this.onFacetChanged(widget) });
         }
 
         facetWithName (name): Array<string> | Number {
@@ -841,8 +835,8 @@ module PIC {
         addPoints (newPoints) {
             // if (newPoints.length === 0) return;
             // console.log(newPoints);
-            var addressType = $("#"+this.facetWithName("addresstypes")[0]).val();
-            var country = $("#"+this.facetWithName("countries")[0]).val();
+            var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
+            var country = $("#"+this.facetWithName("countries")[0]).data("value").toString();
             var i, l = newPoints.length;
             for (i=0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -907,10 +901,6 @@ module PIC {
             h -= $("#facets").outerHeight(true);
             h -= this.generalMargin;
             $("#tooltip").height(h);
-        }
-
-        addListenersToFacet (facet) {
-            $("#" + facet[0]).change( (e) => this.onFacetChanged(e) );
         }
 
         resetDateQuery () {
@@ -1083,7 +1073,7 @@ module PIC {
         updateNameFilter () {
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
-                str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,'');
+                str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,' ');
                 str = str.trim().replace(" ", "~1 ");
                 str = str + "~1";
                 var f = str.split(" ");
@@ -1124,11 +1114,8 @@ module PIC {
             }
         }
 
-        onFacetChanged (e) {
-            var el = e.target;
-            var index = el.selectedIndex;
-            var value = el.value;
-            this.updateFilter(el.id, value);
+        onFacetChanged (widget:Facet) {
+            this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         }
 
@@ -1146,8 +1133,6 @@ module PIC {
             name.blur(() => this.updateNameFilter());
             $("#facets-clear").click(() => this.clearFilters());
             $("#overlay-minimize").click(() => this.minimize());
-            window.onresize = this.fixOverlayHeight.bind(this);
-            this.fixOverlayHeight();
         }
     }
 }

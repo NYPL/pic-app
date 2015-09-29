@@ -74,8 +74,8 @@ module PIC {
         }
 
         closeGroup() {
-            $(this.IDPrefix + ".facet-header").removeClass("open");
-            $(this.IDPrefix + ".facet-group").removeClass("open");
+            $(".facet-header").removeClass("open");
+            $(".facet-group").removeClass("open");
         }
 
         applyListeners () {

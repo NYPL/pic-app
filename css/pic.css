@@ -155,6 +155,9 @@ p {
 #facets, #tooltip {
   margin: 10px; }
 
+#facets-clear {
+  cursor: pointer; }
+
 #facets {
   margin-left: 10px; }
   #facets label {

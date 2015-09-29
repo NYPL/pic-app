@@ -47,8 +47,8 @@ var PIC;
             $(this.IDPrefix + ".facet-group").toggleClass("open");
         };
         Facet.prototype.closeGroup = function () {
-            $(this.IDPrefix + ".facet-header").removeClass("open");
-            $(this.IDPrefix + ".facet-group").removeClass("open");
+            $(".facet-header").removeClass("open");
+            $(".facet-group").removeClass("open");
         };
         Facet.prototype.applyListeners = function () {
             var _this = this;
@@ -87,6 +87,7 @@ var PIC;
             this.minScale = 1;
             this.maxScale = 4;
             this.generalMargin = 10;
+            this.defaultValue = "*";
             this.minYear = 1700;
             this.maxYear = new Date().getFullYear();
             this.debug = false;
@@ -753,7 +754,6 @@ var PIC;
             this.disableFacets();
             this.removePoints();
             var facetList = this.buildFacetList();
-            $("#facets-clear").hide();
             if (facetList.length === 0) {
                 this.displayBaseData();
                 return;
@@ -776,7 +776,12 @@ var PIC;
             this.resetDateQuery();
             for (var i = 0; i < this.facets.length; i++) {
                 var facet = this.facets[i];
-                this.updateFilter(facet[0], "*");
+                var f = facet[0];
+                this.updateFilter(f, this.defaultValue);
+                var widget = this.facetWidgets[f];
+                if (widget === undefined)
+                    continue;
+                widget.setValue(this.defaultValue);
             }
             this.applyFilters();
         };

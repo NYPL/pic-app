@@ -41,6 +41,7 @@ module PIC {
         minScale = 1;
         maxScale = 4;
         generalMargin = 10;
+        defaultValue = "*";
 
         minYear = 1700;
         maxYear = new Date().getFullYear();
@@ -756,7 +757,6 @@ module PIC {
             this.disableFacets();
             this.removePoints();
             var facetList = this.buildFacetList();
-            $("#facets-clear").hide();
             if (facetList.length === 0) {
                 this.displayBaseData();
                 return;
@@ -780,7 +780,11 @@ module PIC {
             this.resetDateQuery();
             for (var i = 0; i < this.facets.length; i++) {
                 var facet = this.facets[i];
-                this.updateFilter(facet[0], "*");
+                var f = facet[0];
+                this.updateFilter(f, this.defaultValue);
+                var widget = this.facetWidgets[f];
+                if (widget === undefined) continue;
+                widget.setValue(this.defaultValue);
             }
             this.applyFilters();
         }

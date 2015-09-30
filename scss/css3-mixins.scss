@@ -4,12 +4,12 @@ $fontPath:              "../font/";
 $iconFontFamily:        "nyplicons";
 
 @mixin font-face($fontFamily, $path, $fontFilename) {
-  font-family: $fontFamily;
-  src: url('#{$path}#{$fontFilename}.eot');
-  src: url('#{$path}#{$fontFilename}.eot?#iefix') format('embedded-opentype'),
-       url('#{$path}#{$fontFilename}.svg##{$fontFilename}') format('svg'),
-       url('#{$path}#{$fontFilename}.woff') format('woff'),
-       url('#{$path}#{$fontFilename}.ttf') format('truetype');
+    font-family: $fontFamily;
+    src: url('#{$path}#{$fontFilename}.eot');
+    src: url('#{$path}#{$fontFilename}.eot?#iefix') format('embedded-opentype'),
+        url('#{$path}#{$fontFilename}.svg##{$fontFilename}') format('svg'),
+        url('#{$path}#{$fontFilename}.woff') format('woff'),
+        url('#{$path}#{$fontFilename}.ttf') format('truetype');
 }
 
 @font-face {

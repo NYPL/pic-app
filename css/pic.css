@@ -63,14 +63,19 @@
 /* TRANSFORM  */
 /* TRANSITION */
 /* TRIPLE BORDERS */
+@font-face {
+  font-family: "Milo Web";
+  font-style: normal;
+  font-weight: 800;
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-light/MiloSlabWebPro-Light.woff") format("woff"); }
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family: "Milo Web", Helvetica, Arial, sans-serif;
+  font-size: 16px;
   background: #444; }
 
 p {
@@ -173,8 +178,8 @@ p {
     display: block;
     clear: both; }
   #facets span, #facets input {
-    font-size: 14px;
-    font-family: Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    font-family: "Milo Web", Helvetica, Arial, sans-serif;
     width: 270px; }
   #facets .facet-header {
     cursor: pointer; }

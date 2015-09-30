@@ -461,6 +461,9 @@ var PIC;
             var id = point.id;
             var latlon = point.primitive.originalLatlon;
             var realID = id.substr(2);
+            var txtValue = '<span class="hl">' + latlon + '</span>';
+            var txt = "Location: " + txtValue;
+            $("#locationFacet .facet-header").html(txt);
             this.updateFilter("location", realID + "|" + latlon);
             this.applyFilters();
         };
@@ -844,6 +847,7 @@ var PIC;
         PIC.prototype.clearFilters = function () {
             this.resetNameQuery();
             this.resetDateQuery();
+            this.resetLocationQuery();
             for (var i = 0; i < this.facets.length; i++) {
                 var facet = this.facets[i];
                 var f = facet[0];
@@ -1002,6 +1006,10 @@ var PIC;
             var el = $("#" + this.nameQueryElement);
             el.val("");
             this.updateFilter(this.nameQueryElement, "*");
+        };
+        PIC.prototype.resetLocationQuery = function () {
+            var txt = "Location: Any";
+            $("#locationFacet .facet-header").html(txt);
         };
         PIC.prototype.validateYear = function (element, defaultValue) {
             var el = $("#" + element);

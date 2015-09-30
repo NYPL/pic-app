@@ -710,6 +710,7 @@ module PIC {
         }
 
         disableFacets () {
+            $("#facets-clear").hide();
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].disable();
             }
@@ -720,6 +721,7 @@ module PIC {
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].enable();
             }
+            $("#facets-clear").show();
         }
 
         buildFacetList () {

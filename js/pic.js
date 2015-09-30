@@ -737,6 +737,7 @@ var PIC;
             return -1;
         };
         PIC.prototype.disableFacets = function () {
+            $("#facets-clear").hide();
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].disable();
             }
@@ -746,6 +747,7 @@ var PIC;
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].enable();
             }
+            $("#facets-clear").show();
         };
         PIC.prototype.buildFacetList = function () {
             var facetList = [];

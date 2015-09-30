@@ -1,7 +1,7 @@
 // Icon
 // -------------------------
-$fontPath:              "/font/";
-$iconFontFamily:        "Icomoon";
+$fontPath:              "../font/";
+$iconFontFamily:        "nyplicons";
 
 @mixin font-face($fontFamily, $path, $fontFilename) {
   font-family: $fontFamily;

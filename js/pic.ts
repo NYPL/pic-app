@@ -43,6 +43,8 @@ module PIC {
         generalMargin = 10;
         defaultValue = "*";
 
+        nullIsland: Cesium.GeoJsonDataSource;
+
         minYear = 1700;
         maxYear = new Date().getFullYear();
 
@@ -98,6 +100,7 @@ module PIC {
         diedColor = new Cesium.Color(0.21, 0.49, 0.72, 1);
         activeColor = new Cesium.Color(0.89, 0.10, 0.10, 1);
         unknownColor = new Cesium.Color(1, 0.01, 1, 1);
+        invisibleColor = new Cesium.Color(1, 1, 1, 0);
 
         addressTypePalette = {
             "2": this.bizColor, // biz
@@ -146,6 +149,8 @@ module PIC {
             this.scene = this.viewer.scene;
             this.canvas = this.viewer.canvas;
 
+            this.addNullIsland();
+
             this.points = this.scene.primitives.add(new Cesium.PointPrimitiveCollection());
             this.points._rs = Cesium.RenderState.fromCache({
               depthTest : {
@@ -158,6 +163,15 @@ module PIC {
             this.lines = new Cesium.Primitive();
 
             this.scene.primitives.add(this.lines);
+        }
+
+        addNullIsland () {
+            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('js/null-island.geojson', {
+                stroke: this.unknownColor,
+                strokeWidth: 6,
+                fill: this.invisibleColor,
+                markerSymbol: '?'
+            }));
         }
 
         loadBaseData () {

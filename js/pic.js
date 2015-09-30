@@ -156,6 +156,7 @@ var PIC;
             this.diedColor = new Cesium.Color(0.21, 0.49, 0.72, 1);
             this.activeColor = new Cesium.Color(0.89, 0.10, 0.10, 1);
             this.unknownColor = new Cesium.Color(1, 0.01, 1, 1);
+            this.invisibleColor = new Cesium.Color(1, 1, 1, 0);
             this.addressTypePalette = {
                 "2": this.bizColor,
                 "5": this.birthColor,
@@ -196,6 +197,7 @@ var PIC;
             });
             this.scene = this.viewer.scene;
             this.canvas = this.viewer.canvas;
+            this.addNullIsland();
             this.points = this.scene.primitives.add(new Cesium.PointPrimitiveCollection());
             this.points._rs = Cesium.RenderState.fromCache({
                 depthTest: {
@@ -206,6 +208,14 @@ var PIC;
             });
             this.lines = new Cesium.Primitive();
             this.scene.primitives.add(this.lines);
+        };
+        PIC.prototype.addNullIsland = function () {
+            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('js/null-island.geojson', {
+                stroke: this.unknownColor,
+                strokeWidth: 6,
+                fill: this.invisibleColor,
+                markerSymbol: '?'
+            }));
         };
         PIC.prototype.loadBaseData = function () {
             this.loadTextFile("csv/latlons.txt?i=" + Math.random() * 100000, function (responseText) {

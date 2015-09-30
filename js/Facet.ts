@@ -60,6 +60,12 @@ module PIC {
             this.element = $(this.IDPrefix);
         }
 
+        reset() {
+            this.setValue("*");
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+        }
+
         setValue(value) {
             this.value = value;
             var txtValue = this.data[this.value];

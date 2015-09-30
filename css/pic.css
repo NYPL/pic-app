@@ -1,3 +1,10 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "Icomoon";
+  src: url("/font/nypl-icon-pak-8-2015.eot");
+  src: url("/font/nypl-icon-pak-8-2015.eot?#iefix") format("embedded-opentype"), url("/font/nypl-icon-pak-8-2015.svg#nypl-icon-pak-8-2015") format("svg"), url("/font/nypl-icon-pak-8-2015.woff") format("woff"), url("/font/nypl-icon-pak-8-2015.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
 /* -------------------------------------------------------------
   Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
   By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets
@@ -170,17 +177,30 @@ p {
   #facets .facet-header {
     cursor: pointer; }
     #facets .facet-header:before {
-      content: ' ';
-      background: url("../svg/arrow.svg") no-repeat;
+      content: attr(data-icon);
+      content: " ";
+      font-family: "Icomoon";
+      display: inline-block;
+      width: auto;
+      height: auto;
+      vertical-align: baseline;
+      background: none;
+      margin-top: 0;
+      speak: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-transform: none;
+      font-weight: normal;
+      font-variant: normal;
       width: 10px;
       height: 10px;
       display: inline-block;
       background-size: 100%;
       margin-right: 5px; }
     #facets .facet-header.open:before {
-      -webkit-transform: rotateZ(90deg);
-      -moz-transform: rotateZ(90deg);
-      transform: rotateZ(90deg); }
+      -webkit-transform: rotateZ(90deg) translateY(-5px);
+      -moz-transform: rotateZ(90deg) translateY(-5px);
+      transform: rotateZ(90deg) translateY(-5px); }
   #facets .facet-group {
     display: none; }
     #facets .facet-group.open {
@@ -191,7 +211,7 @@ p {
     white-space: nowrap; }
   #facets .facet-item {
     padding: 5px;
-    padding-left: 10px; }
+    padding-left: 20px; }
     #facets .facet-item:hover {
       background: #444;
       color: #efefef; }

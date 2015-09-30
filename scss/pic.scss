@@ -171,8 +171,7 @@ p {
         cursor: pointer;
 
         &:before {
-            content: ' ';
-            background: url('../svg/arrow.svg') no-repeat;
+            @include drr-icon(' ');
             width: 10px;
             height: 10px;
             display: inline-block;
@@ -181,7 +180,7 @@ p {
         }
 
         &.open:before {
-            @include transform(rotateZ(90deg));
+            @include transform(rotateZ(90deg) translateY(-1 * $facetMargin));
         }
 
     }
@@ -202,7 +201,7 @@ p {
 
     .facet-item {
         padding: $facetMargin;
-        padding-left: $generalMargin;
+        padding-left: $generalMargin*2;
 
         &:hover {
             background: $black;

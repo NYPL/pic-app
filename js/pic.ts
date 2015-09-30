@@ -788,7 +788,7 @@ module PIC {
                 this.updateFilter(f, this.defaultValue);
                 var widget = this.facetWidgets[f];
                 if (widget === undefined) continue;
-                widget.setValue(this.defaultValue);
+                widget.reset();
             }
             this.applyFilters();
         }

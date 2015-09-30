@@ -35,6 +35,11 @@ var PIC;
             this.parentElement.append(str);
             this.element = $(this.IDPrefix);
         };
+        Facet.prototype.reset = function () {
+            this.setValue("*");
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+        };
         Facet.prototype.setValue = function (value) {
             this.value = value;
             var txtValue = this.data[this.value];
@@ -806,7 +811,7 @@ var PIC;
                 var widget = this.facetWidgets[f];
                 if (widget === undefined)
                     continue;
-                widget.setValue(this.defaultValue);
+                widget.reset();
             }
             this.applyFilters();
         };

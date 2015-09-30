@@ -1,3 +1,44 @@
+// Icon
+// -------------------------
+$fontPath:              "/font/";
+$iconFontFamily:        "Icomoon";
+
+@mixin font-face($fontFamily, $path, $fontFilename) {
+  font-family: $fontFamily;
+  src: url('#{$path}#{$fontFilename}.eot');
+  src: url('#{$path}#{$fontFilename}.eot?#iefix') format('embedded-opentype'),
+       url('#{$path}#{$fontFilename}.svg##{$fontFilename}') format('svg'),
+       url('#{$path}#{$fontFilename}.woff') format('woff'),
+       url('#{$path}#{$fontFilename}.ttf') format('truetype');
+}
+
+@font-face {
+  @include font-face($iconFontFamily, $fontPath, 'nypl-icon-pak-8-2015');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@mixin drr-icon($content: "none") {
+  content: attr(data-icon);
+  @if ( $content != "none") {
+    content: "#{$content}";
+  }
+  font-family: $iconFontFamily;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  vertical-align: baseline;
+  background: none;
+  margin-top: 0;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-transform: none;
+  // line-height: 1;
+  font-weight: normal;
+  font-variant: normal;
+}
+
 /* -------------------------------------------------------------
   Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
   By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets

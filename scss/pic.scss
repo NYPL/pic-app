@@ -2,12 +2,12 @@
 @import "css3-mixins.scss";
 
 @font-face{
-    font-family:"Milo Web";
+    font-family:"nypl font";
     font-style:normal;
     font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-light/MiloSlabWebPro-Light.woff") format('woff');}
+    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format('woff');}
 
-$font: "Milo Web", Helvetica, Arial, sans-serif;
+$font: "nypl font", Helvetica, Arial, sans-serif;
 $columnWidth: 300px;
 $columnMmargin: 30px;
 $generalMargin: 10px;
@@ -182,16 +182,16 @@ p {
         cursor: pointer;
 
         &:before {
-            @include drr-icon(' ');
+            @include drr-icon('');
             width: 10px;
             height: 10px;
             display: inline-block;
             background-size: 100%;
-            margin-right: $facetMargin;
+            margin-right: $facetMargin*2;
         }
 
         &.open:before {
-            @include transform(rotateZ(90deg) translateY(-1 * $facetMargin));
+            @include transform(rotateZ(90deg) translateY(-9px) translateX(2px));
         }
 
     }

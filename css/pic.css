@@ -64,17 +64,17 @@
 /* TRANSITION */
 /* TRIPLE BORDERS */
 @font-face {
-  font-family: "Milo Web";
+  font-family: "nypl font";
   font-style: normal;
   font-weight: 800;
-  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-light/MiloSlabWebPro-Light.woff") format("woff"); }
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format("woff"); }
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: "Milo Web", Helvetica, Arial, sans-serif;
+  font-family: "nypl font", Helvetica, Arial, sans-serif;
   font-size: 16px;
   background: #444; }
 
@@ -179,13 +179,13 @@ p {
     clear: both; }
   #facets span, #facets input {
     font-size: 1em;
-    font-family: "Milo Web", Helvetica, Arial, sans-serif;
+    font-family: "nypl font", Helvetica, Arial, sans-serif;
     width: 270px; }
   #facets .facet-header {
     cursor: pointer; }
     #facets .facet-header:before {
       content: attr(data-icon);
-      content: " ";
+      content: "";
       font-family: "nyplicons";
       display: inline-block;
       width: auto;
@@ -203,11 +203,11 @@ p {
       height: 10px;
       display: inline-block;
       background-size: 100%;
-      margin-right: 5px; }
+      margin-right: 10px; }
     #facets .facet-header.open:before {
-      -webkit-transform: rotateZ(90deg) translateY(-5px);
-      -moz-transform: rotateZ(90deg) translateY(-5px);
-      transform: rotateZ(90deg) translateY(-5px); }
+      -webkit-transform: rotateZ(90deg) translateY(-9px) translateX(2px);
+      -moz-transform: rotateZ(90deg) translateY(-9px) translateX(2px);
+      transform: rotateZ(90deg) translateY(-9px) translateX(2px); }
   #facets .facet-group {
     display: none; }
     #facets .facet-group.open {

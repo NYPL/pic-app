@@ -145,7 +145,8 @@ var PIC;
                 ["biographies", "Source", "TermID", "Term", "biography"],
                 ["collections", "Collections", "TermID", "Term", "collection"],
                 [this.nameQueryElement, "", "DisplayName", "", ""],
-                ["date", "", "Date", "", ""]
+                ["date", "", "Date", "", ""],
+                ["location", "", "Location", "", ""]
             ];
             this.facetValues = {};
             this.filters = {};
@@ -262,6 +263,7 @@ var PIC;
             this.updateTotals(this.allIDs.length);
             this.enableFacets();
             this.updateBounds();
+            this.showTooltip();
         };
         PIC.prototype.loadTextFile = function (url, callback, parameter) {
             if (parameter === void 0) { parameter = undefined; }
@@ -457,14 +459,10 @@ var PIC;
                 return;
             this.maximize();
             var id = point.id;
-            var originalLatlon = point.primitive.originalLatlon;
+            var latlon = point.primitive.originalLatlon;
             var realID = id.substr(2);
-            this.lastID = realID;
-            this.lastLatlon = originalLatlon;
-            var facetList = this.buildFacetList();
-            var query = this.buildConstituentQuery(realID, originalLatlon, facetList, 0);
-            // console.log(query);
-            this.getData("constituent", query, this.updateTooltip);
+            this.updateFilter("location", realID + "|" + latlon);
+            this.applyFilters();
         };
         PIC.prototype.closeFacets = function () {
             for (var key in this.facetWidgets) {
@@ -474,19 +472,13 @@ var PIC;
                 widget.closeGroup();
             }
         };
-        PIC.prototype.buildConstituentQuery = function (id, latlon, facetList, start) {
-            var facetQuery = "";
-            if (facetList.length > 0)
-                facetQuery = " AND " + this.buildFacetQuery(facetList);
-            return "filter_path=hits.total,hits.hits._source&_source_exclude=address&from=" + start + "&size=" + this.tooltipLimit + "&q=((ConstituentID:" + id + " OR (address.Remarks:\"" + latlon + "\")) " + facetQuery + ")";
-        };
         PIC.prototype.updateTooltip = function (responseText) {
             this.clearTooltip();
             var data = JSON.parse(responseText);
             var constituents = data.hits.hits;
             if (data.hits.total > this.tooltipLimit) {
-                var string = "<p>Found " + data.hits.total + " photographers in this location. Showing first " + this.tooltipLimit + ".</p>";
-                this.tooltipElement.find(".results").prepend(string);
+                var str = "<p>Found " + data.hits.total + " photographers. Showing first " + this.tooltipLimit + ".</p>";
+                this.tooltipElement.find(".results").prepend(str);
             }
             this.addTooltipResults(constituents, 0, data.hits.total);
         };
@@ -506,15 +498,20 @@ var PIC;
         };
         PIC.prototype.loadMoreResults = function (start) {
             this.tooltipElement.find(".more").empty();
+            var filters = this.buildBaseQueryFilters(start);
             var facetList = this.buildFacetList();
-            var query = this.buildConstituentQuery(this.lastID, this.lastLatlon, facetList, start);
-            // console.log(query);
-            var pic = this;
+            var facetQuery = "";
+            if (facetList.length > 0)
+                facetQuery = "&q=" + this.buildFacetQuery(facetList);
+            var query = filters + facetQuery;
+            console.log(start, query);
             this.getData("constituent", query, function (responseText) {
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
                 this.addTooltipResults(constituents, start, data.hits.total);
             });
+        };
+        PIC.prototype.addResults = function (results) {
         };
         PIC.prototype.buildTooltipConstituent = function (p) {
             var _this = this;
@@ -782,11 +779,17 @@ var PIC;
             var facetList = [];
             for (var k in this.filters) {
                 if (this.filters[k] != "*") {
-                    if (k.indexOf("Date") === -1) {
-                        facetList.push("(" + k + ":" + this.filters[k] + ")");
+                    if (k === "Date") {
+                        facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + " OR BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
+                    }
+                    else if (k === "Location") {
+                        var id_latlon = this.filters[k].split("|");
+                        var id = id_latlon[0];
+                        var latlon = id_latlon[1];
+                        facetList.push("(ConstituentID: " + id + " OR (address.Remarks:\"" + latlon + "\"))");
                     }
                     else {
-                        facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + " OR BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
+                        facetList.push("(" + k + ":" + this.filters[k] + ")");
                     }
                 }
             }
@@ -795,6 +798,9 @@ var PIC;
         PIC.prototype.buildFacetQuery = function (facetList) {
             var facetQuery = facetList.length > 0 ? "(" + facetList.join(" AND ") + ")" : "";
             return facetQuery;
+        };
+        PIC.prototype.buildBaseQueryFilters = function (start) {
+            return "filter_path=hits.total,hits.hits._source&_source_exclude=address&from=" + start + "&size=" + this.tooltipLimit;
         };
         PIC.prototype.clearTooltip = function () {
             this.tooltipElement.find(".results").empty();
@@ -831,6 +837,7 @@ var PIC;
                 total: 0
             };
             this.start = new Date().getTime();
+            console.log(query);
             this.getData("constituent", query, this.getNextSet);
             this.updateTotals(-1);
         };
@@ -864,6 +871,7 @@ var PIC;
                 var time = end - this.start;
                 console.log("took:", time, "ms");
                 this.enableFacets();
+                this.showTooltip();
             }
             if (results.hits.hits)
                 this.addressesToPoints(results.hits.hits);
@@ -871,6 +879,16 @@ var PIC;
                 this.updateBounds();
             }
             this.updateTotals(-1);
+        };
+        PIC.prototype.showTooltip = function () {
+            var facetList = this.buildFacetList();
+            var facetQuery = "";
+            if (facetList.length > 0)
+                facetQuery = "&q=" + this.buildFacetQuery(facetList);
+            var filters = this.buildBaseQueryFilters(0);
+            var query = filters + facetQuery;
+            console.log(query);
+            this.getData("constituent", query, this.updateTooltip);
         };
         PIC.prototype.addressesForID = function (id) {
             var i;

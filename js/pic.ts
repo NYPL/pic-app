@@ -47,6 +47,7 @@ module PIC {
         maxYear = new Date().getFullYear();
 
         debug = false;
+        minimized = false;
 
         pickedEntity;
         mousePosition;
@@ -251,15 +252,19 @@ module PIC {
         }
 
         minimize () {
+            this.minimized = true;
             $("#overlays").addClass("minimized");
             $(".legend").addClass("minimized");
-            document.getElementById("acronym").addEventListener("click", this.maximize, false);
+            $("#acronym").click( () => this.maximize() );
+            this.fixOverlayHeight();
         }
 
         maximize () {
+            this.minimized = false;
             $("#overlays").removeClass("minimized");
             $(".legend").removeClass("minimized");
-            document.getElementById("acronym").removeEventListener("click", this.maximize);
+            $("#acronym").off("click");
+            this.fixOverlayHeight();
         }
 
         initMouseHandler () {
@@ -417,6 +422,14 @@ module PIC {
             var query = this.buildConstituentQuery(realID, originalLatlon, facetList, 0);
             // console.log(query);
             this.getData("constituent", query, this.updateTooltip);
+        }
+
+        closeFacets () {
+            for (var key in this.facetWidgets) {
+                var widget = this.facetWidgets[key];
+                if (widget === undefined) continue;
+                widget.closeGroup();
+            }
         }
 
         buildConstituentQuery (id, latlon, facetList, start) {
@@ -760,6 +773,7 @@ module PIC {
 
         applyFilters () {
             this.pickedEntity = undefined;
+            this.closeFacets();
             this.disableFacets();
             this.removePoints();
             var facetList = this.buildFacetList();
@@ -779,6 +793,7 @@ module PIC {
             };
             this.start = new Date().getTime();
             this.getData("constituent", query, this.getNextSet);
+            this.updateTotals(-1);
         }
 
         clearFilters () {
@@ -907,10 +922,11 @@ module PIC {
 
         fixOverlayHeight () {
             var h = window.innerHeight - (this.generalMargin*2);
-            h -= $("#header").outerHeight(true);
-            h -= $("#facets").outerHeight(true);
-            h -= this.generalMargin;
-            $("#tooltip").height(h);
+            if (!this.minimized) {
+                $("#overlays").height(h);
+            } else {
+                $("#overlays").attr("style", "");
+            }
         }
 
         resetDateQuery () {
@@ -1143,6 +1159,8 @@ module PIC {
             name.blur(() => this.updateNameFilter());
             $("#facets-clear").click(() => this.clearFilters());
             $("#overlay-minimize").click(() => this.minimize());
+            window.onresize = this.fixOverlayHeight.bind(this);
+            this.fixOverlayHeight();
         }
     }
 }

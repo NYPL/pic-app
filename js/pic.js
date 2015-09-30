@@ -4,15 +4,16 @@ var PIC;
         function Facet(id, parent, description) {
             this.data = {};
             this.enabled = false;
+            this.defaultValue = "*";
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
             this.description = description;
             this.buildHTML();
-            this.addFacetItem("Any", "*");
+            this.addFacetItem("Any", this.defaultValue);
         }
         Facet.prototype.init = function () {
-            this.setValue("*");
+            this.setValue(this.defaultValue);
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
             this.applyListeners();
             this.enable();
@@ -36,16 +37,20 @@ var PIC;
             this.element = $(this.IDPrefix);
         };
         Facet.prototype.reset = function () {
-            this.setValue("*");
+            this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+            this.closeGroup();
         };
         Facet.prototype.setValue = function (value) {
             this.value = value;
             var txtValue = this.data[this.value];
+            if (this.value !== this.defaultValue) {
+                txtValue = '<span class="hl">' + txtValue + '</span>';
+            }
             var txt = this.description + ": " + txtValue;
             $(this.IDPrefix).data("value", value);
-            $(this.IDPrefix + ".facet-header").text(txt);
+            $(this.IDPrefix + ".facet-header").html(txt);
             this.closeGroup();
         };
         Facet.prototype.addFacetItem = function (name, value) {
@@ -68,8 +73,8 @@ var PIC;
             $(this.IDPrefix + ".facet-group").toggleClass("open");
         };
         Facet.prototype.closeGroup = function () {
-            $(".facet-header").removeClass("open");
-            $(".facet-group").removeClass("open");
+            $(this.IDPrefix + ".facet-header").removeClass("open");
+            $(this.IDPrefix + ".facet-group").removeClass("open");
         };
         Facet.prototype.applyListeners = function () {
             var _this = this;
@@ -117,6 +122,7 @@ var PIC;
             this.minYear = 1700;
             this.maxYear = new Date().getFullYear();
             this.debug = false;
+            this.minimized = false;
             this.tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
             this.mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
             this.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
@@ -287,14 +293,19 @@ var PIC;
             });
         };
         PIC.prototype.minimize = function () {
+            var _this = this;
+            this.minimized = true;
             $("#overlays").addClass("minimized");
             $(".legend").addClass("minimized");
-            document.getElementById("acronym").addEventListener("click", this.maximize, false);
+            $("#acronym").click(function () { return _this.maximize(); });
+            this.fixOverlayHeight();
         };
         PIC.prototype.maximize = function () {
+            this.minimized = false;
             $("#overlays").removeClass("minimized");
             $(".legend").removeClass("minimized");
-            document.getElementById("acronym").removeEventListener("click", this.maximize);
+            $("#acronym").off("click");
+            this.fixOverlayHeight();
         };
         PIC.prototype.initMouseHandler = function () {
             var _this = this;
@@ -444,6 +455,14 @@ var PIC;
             var query = this.buildConstituentQuery(realID, originalLatlon, facetList, 0);
             // console.log(query);
             this.getData("constituent", query, this.updateTooltip);
+        };
+        PIC.prototype.closeFacets = function () {
+            for (var key in this.facetWidgets) {
+                var widget = this.facetWidgets[key];
+                if (widget === undefined)
+                    continue;
+                widget.closeGroup();
+            }
         };
         PIC.prototype.buildConstituentQuery = function (id, latlon, facetList, start) {
             var facetQuery = "";
@@ -783,6 +802,7 @@ var PIC;
         };
         PIC.prototype.applyFilters = function () {
             this.pickedEntity = undefined;
+            this.closeFacets();
             this.disableFacets();
             this.removePoints();
             var facetList = this.buildFacetList();
@@ -802,6 +822,7 @@ var PIC;
             };
             this.start = new Date().getTime();
             this.getData("constituent", query, this.getNextSet);
+            this.updateTotals(-1);
         };
         PIC.prototype.clearFilters = function () {
             this.resetNameQuery();
@@ -935,10 +956,12 @@ var PIC;
         };
         PIC.prototype.fixOverlayHeight = function () {
             var h = window.innerHeight - (this.generalMargin * 2);
-            h -= $("#header").outerHeight(true);
-            h -= $("#facets").outerHeight(true);
-            h -= this.generalMargin;
-            $("#tooltip").height(h);
+            if (!this.minimized) {
+                $("#overlays").height(h);
+            }
+            else {
+                $("#overlays").attr("style", "");
+            }
         };
         PIC.prototype.resetDateQuery = function () {
             var from = $("#" + this.fromDateElement);
@@ -1147,6 +1170,8 @@ var PIC;
             name.blur(function () { return _this.updateNameFilter(); });
             $("#facets-clear").click(function () { return _this.clearFilters(); });
             $("#overlay-minimize").click(function () { return _this.minimize(); });
+            window.onresize = this.fixOverlayHeight.bind(this);
+            this.fixOverlayHeight();
         };
         return PIC;
     })();

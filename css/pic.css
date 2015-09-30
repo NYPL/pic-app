@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @font-face {
-  font-family: "nyplicon";
+  font-family: "nyplicons";
   src: url("../font/nypl-icon-pak-8-2015.eot");
   src: url("../font/nypl-icon-pak-8-2015.eot?#iefix") format("embedded-opentype"), url("../font/nypl-icon-pak-8-2015.svg#nypl-icon-pak-8-2015") format("svg"), url("../font/nypl-icon-pak-8-2015.woff") format("woff"), url("../font/nypl-icon-pak-8-2015.ttf") format("truetype");
   font-weight: normal;
@@ -93,11 +93,11 @@ p {
   width: 300px;
   top: 10px;
   left: 10px;
-  bottom: 10px;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch; }
   #overlays.minimized {
     width: 70px;
+    height: 70px;
     cursor: pointer;
     overflow-y: hidden; }
     #overlays.minimized #slogan, #overlays.minimized #facets, #overlays.minimized #tooltip, #overlays.minimized #overlay-minimize {
@@ -155,9 +155,11 @@ p {
 .hidden {
   display: none; }
 
-.link {
-  cursor: pointer;
+.hl, .link {
   color: #900; }
+
+.link {
+  cursor: pointer; }
 
 #facets, #tooltip {
   margin: 10px; }
@@ -179,7 +181,7 @@ p {
     #facets .facet-header:before {
       content: attr(data-icon);
       content: " ";
-      font-family: "nyplicon";
+      font-family: "nyplicons";
       display: inline-block;
       width: auto;
       height: auto;
@@ -228,6 +230,8 @@ p {
   #facets .date-field {
     float: left;
     margin-right: 10px; }
+    #facets .date-field label {
+      display: inline-block; }
   #facets .date-text {
     width: 60px; }
 

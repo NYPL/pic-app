@@ -10,6 +10,8 @@ $white: #efefef;
 $gray: #aaa;
 $black: #444;
 $linkColor: #900;
+$minimizedWidth: 70px;
+$minimizedHeight: 70px;
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
@@ -41,12 +43,12 @@ p {
     width: $columnWidth;
     top: $generalMargin;
     left: $generalMargin;
-    bottom: $generalMargin;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 
     &.minimized {
-        width: 70px;
+        width: $minimizedWidth;
+        height: $minimizedHeight;
         cursor: pointer;
         overflow-y: hidden;
 
@@ -140,9 +142,12 @@ p {
     display: none;
 }
 
+.hl, .link {
+    color: $linkColor;
+}
+
 .link {
     cursor: pointer;
-    color: $linkColor;
 }
 
 #facets, #tooltip {
@@ -228,6 +233,10 @@ p {
     .date-field {
         float: left;
         margin-right: $generalMargin;
+
+        label {
+            display: inline-block;
+        }
     }
 
     .date-text {

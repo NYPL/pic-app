@@ -22,6 +22,7 @@ module PIC {
         description: string;
         value: string;
         enabled = false;
+        defaultValue = "*";
 
         constructor(id, parent, description) {
             this.parentElement = parent;
@@ -29,11 +30,11 @@ module PIC {
             this.IDPrefix = "#" + this.ID + " ";
             this.description = description;
             this.buildHTML();
-            this.addFacetItem("Any", "*");
+            this.addFacetItem("Any", this.defaultValue);
         }
 
         init() {
-            this.setValue("*");
+            this.setValue(this.defaultValue);
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
             this.applyListeners();
             this.enable();
@@ -61,17 +62,21 @@ module PIC {
         }
 
         reset() {
-            this.setValue("*");
+            this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+            this.closeGroup();
         }
 
         setValue(value) {
             this.value = value;
             var txtValue = this.data[this.value];
+            if (this.value !== this.defaultValue) {
+                txtValue = '<span class="hl">' + txtValue + '</span>';
+            }
             var txt = this.description + ": " + txtValue;
             $(this.IDPrefix).data("value",value);
-            $(this.IDPrefix + ".facet-header").text(txt);
+            $(this.IDPrefix + ".facet-header").html(txt);
             this.closeGroup();
         }
 
@@ -97,8 +102,8 @@ module PIC {
         }
 
         closeGroup() {
-            $(".facet-header").removeClass("open");
-            $(".facet-group").removeClass("open");
+            $(this.IDPrefix + ".facet-header").removeClass("open");
+            $(this.IDPrefix + ".facet-group").removeClass("open");
         }
 
         applyListeners () {

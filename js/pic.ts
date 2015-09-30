@@ -168,7 +168,7 @@ module PIC {
         addNullIsland () {
             this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('js/null-island.geojson', {
                 stroke: this.unknownColor,
-                strokeWidth: 6,
+                strokeWidth: 3,
                 fill: this.invisibleColor,
                 markerSymbol: '?'
             }));

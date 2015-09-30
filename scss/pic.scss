@@ -9,7 +9,7 @@
 
 $font: "nypl font", Helvetica, Arial, sans-serif;
 $columnWidth: 300px;
-$columnMmargin: 30px;
+$columnMargin: 30px;
 $generalMargin: 10px;
 $facetMargin: 5px;
 $white: #efefef;
@@ -175,7 +175,7 @@ p {
     span, input {
         font-size: 1em;
         font-family: $font;
-        width: $columnWidth - $columnMmargin;
+        width: $columnWidth - $columnMargin;
     }
 
     .facet-header {
@@ -221,6 +221,13 @@ p {
 
         &.active {
             font-weight: bold;
+
+            &:before {
+                content: "✓";
+                display: inline-block;
+                margin-left: -1 * $columnMargin * .5;
+                width: $columnMargin * .5;
+            }
         }
     }
 

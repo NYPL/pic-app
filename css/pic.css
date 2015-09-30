@@ -224,6 +224,11 @@ p {
       color: #efefef; }
     #facets .facet-item.active {
       font-weight: bold; }
+      #facets .facet-item.active:before {
+        content: "✓";
+        display: inline-block;
+        margin-left: -15px;
+        width: 15px; }
   #facets .facet {
     margin-bottom: 10px; }
     #facets .facet.disabled {

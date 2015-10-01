@@ -24,10 +24,11 @@ module PIC {
         enabled = false;
         defaultValue = "*";
 
-        constructor(id, parent, description) {
+        constructor(id, parent, description, type) {
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
+            this.type = type;
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
@@ -65,33 +66,67 @@ module PIC {
             this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+            if (this.ID === "locations") this.cleanFacets();
             this.closeGroup();
         }
 
         setValue(value) {
             this.value = value;
-            var txtValue = this.data[this.value];
-            if (this.value !== this.defaultValue) {
-                txtValue = '<span class="hl">' + txtValue + '</span>';
-            }
-            var txt = this.description + ": " + txtValue;
-            $(this.IDPrefix).data("value",value);
-            $(this.IDPrefix + ".facet-header").html(txt);
-            this.closeGroup();
+            $(this.IDPrefix).data("value", value);
+
+            var txtValue = this.data[value];
+            this.setHeaderText(txtValue);
         }
 
         addFacetItem(name, value) {
-            this.data[value] = name;
-            var str = '<div class="link facet-item" data-value="' + value + '">' + name + '</div>';
+            var strName;
+            var strValue;
+            if (name !== "location") {
+                this.data[value] = name;
+                strName = name;
+                strValue = value.replace(/[\.,\s\*]/g, '_');
+            } else {
+                // hack for locations
+                strName = value;
+                value = value.replace(/[\.,\s\*]/g, '_');
+                strValue = value;
+            }
+            var str = '<div id="' + this.ID + '-' + strValue + '" class="link facet-item" data-value="' + value + '">' + strName + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         }
 
-        handleItemClick (e: JQueryEventObject) {
+        cleanFacets() {
+            $(this.IDPrefix + ".facet-item").each(
+                function(index) {
+                    if ($(this).data("value") !== "*") {
+                        $(this).remove();
+                    }
+                }
+            );
+        }
+
+        selectItem(value) {
+            value = value.replace(/[\.,\s\*]/g, '_');
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            $(this.IDPrefix + "#" + this.ID + '-' + value).addClass("active");
+            this.closeGroup();
+        }
+
+        setHeaderText(text) {
+            if (text !== this.data[this.defaultValue]) {
+                text = '<span class="hl">' + text + '</span>';
+            }
+            text = this.description + ": " + text;
+            $(this.IDPrefix + ".facet-header").html(text);
+        }
+
+        handleItemClick(e: JQueryEventObject) {
+            var oldValue = this.value;
             var el = $(e.currentTarget);
             var value = el.data("value").toString();
-            $(this.IDPrefix + ".facet-item").removeClass("active");
-            el.addClass("active");
-            if (value === this.value) return;
+            var id = el.attr("id");
+            this.selectItem(value);
+            if (value === oldValue) return;
             this.setValue(value);
             $(this.IDPrefix).trigger("facet:change", this);
         }

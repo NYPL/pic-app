@@ -85,7 +85,7 @@ module PIC {
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
             ["date", "", "Date", "", ""],
-            ["location", "", "Location", "", ""]
+            ["locations", "Location", "Location", "", ""]
         ];
 
         facetValues = {};
@@ -432,12 +432,13 @@ module PIC {
             var latlon = point.primitive.originalLatlon;
             var realID = id.substr(2);
 
-            var txtValue = '<span class="hl">' + latlon + '</span>';
-            var txt = "Location: " + txtValue;
-            $("#locationFacet .facet-header").html(txt);
-
-
-            this.updateFilter("location", realID + "|" + latlon);
+            var widget = this.facetWidgets["locations"];
+            widget.cleanFacets();
+            widget.addFacetItem("location", latlon);
+            widget.setValue(latlon);
+            widget.selectItem(latlon.replace(/[\.,\s\*]/g, '_'));
+            widget.setHeaderText(latlon);
+            this.updateFilter("locations", realID + "|" + latlon);
             this.applyFilters();
         }
 
@@ -694,6 +695,8 @@ module PIC {
             for (var i=0; i < this.facets.length; i++) {
                 if (this.facets[i][1] != "") this.getFacet(i);
             }
+            // hack for locations facet
+            // this.createFacet(this.facets.length-1);
         }
 
         getFacet (index) {
@@ -715,7 +718,6 @@ module PIC {
 
         updateFacet (responseText, facet) {
             var data = responseText.csvToArray({trim:true, rSep: '\n'});
-            if (data.length <= 1) return;
             var widget = this.facetWidgets[facet[0]];
             var idColumn = data[0].indexOf(facet[2]);
             var nameColumn = data[0].indexOf(facet[3]);
@@ -1018,6 +1020,7 @@ module PIC {
             0  Birth
                places
             1  in Australia
+            11 in Australia
                for
             2  English
             3  , Female
@@ -1054,6 +1057,14 @@ module PIC {
             key = this.filters[facetKey];
             if (key !== "*") {
                 subject += "in " + this.facetValues[facet[0]][key] + " ";
+            }
+
+            // location
+            facet = this.facets[11];
+            facetKey = facet[2];
+            key = this.filters[facetKey];
+            if (key !== "*") {
+                subject += "in latitude,longitude equal to " + this.filters[facetKey].split("|")[1] + " ";
             }
 
             predicate = "for ";
@@ -1185,6 +1196,11 @@ module PIC {
         }
 
         onFacetChanged (widget:Facet) {
+            console.log(widget);
+            if (widget.ID === "locations") {
+                widget.cleanFacets();
+                widget.selectItem(widget.defaultValue);
+            }
             this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         }

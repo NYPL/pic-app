@@ -1,13 +1,14 @@
 var PIC;
 (function (PIC) {
     var Facet = (function () {
-        function Facet(id, parent, description) {
+        function Facet(id, parent, description, type) {
             this.data = {};
             this.enabled = false;
             this.defaultValue = "*";
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
+            this.type = type;
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
@@ -40,30 +41,60 @@ var PIC;
             this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+            if (this.ID === "locations")
+                this.cleanFacets();
             this.closeGroup();
         };
         Facet.prototype.setValue = function (value) {
             this.value = value;
-            var txtValue = this.data[this.value];
-            if (this.value !== this.defaultValue) {
-                txtValue = '<span class="hl">' + txtValue + '</span>';
-            }
-            var txt = this.description + ": " + txtValue;
             $(this.IDPrefix).data("value", value);
-            $(this.IDPrefix + ".facet-header").html(txt);
-            this.closeGroup();
+            var txtValue = this.data[value];
+            this.setHeaderText(txtValue);
         };
         Facet.prototype.addFacetItem = function (name, value) {
-            this.data[value] = name;
-            var str = '<div class="link facet-item" data-value="' + value + '">' + name + '</div>';
+            var strName;
+            var strValue;
+            if (name !== "location") {
+                this.data[value] = name;
+                strName = name;
+                strValue = value.replace(/[\.,\s\*]/g, '_');
+            }
+            else {
+                // hack for locations
+                strName = value;
+                value = value.replace(/[\.,\s\*]/g, '_');
+                strValue = value;
+            }
+            var str = '<div id="' + this.ID + '-' + strValue + '" class="link facet-item" data-value="' + value + '">' + strName + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         };
+        Facet.prototype.cleanFacets = function () {
+            $(this.IDPrefix + ".facet-item").each(function (index) {
+                if ($(this).data("value") !== "*") {
+                    $(this).remove();
+                }
+            });
+        };
+        Facet.prototype.selectItem = function (value) {
+            value = value.replace(/[\.,\s\*]/g, '_');
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            $(this.IDPrefix + "#" + this.ID + '-' + value).addClass("active");
+            this.closeGroup();
+        };
+        Facet.prototype.setHeaderText = function (text) {
+            if (text !== this.data[this.defaultValue]) {
+                text = '<span class="hl">' + text + '</span>';
+            }
+            text = this.description + ": " + text;
+            $(this.IDPrefix + ".facet-header").html(text);
+        };
         Facet.prototype.handleItemClick = function (e) {
+            var oldValue = this.value;
             var el = $(e.currentTarget);
             var value = el.data("value").toString();
-            $(this.IDPrefix + ".facet-item").removeClass("active");
-            el.addClass("active");
-            if (value === this.value)
+            var id = el.attr("id");
+            this.selectItem(value);
+            if (value === oldValue)
                 return;
             this.setValue(value);
             $(this.IDPrefix).trigger("facet:change", this);
@@ -146,7 +177,7 @@ var PIC;
                 ["collections", "Collections", "TermID", "Term", "collection"],
                 [this.nameQueryElement, "", "DisplayName", "", ""],
                 ["date", "", "Date", "", ""],
-                ["location", "", "Location", "", ""]
+                ["locations", "Location", "Location", "", ""]
             ];
             this.facetValues = {};
             this.filters = {};
@@ -461,10 +492,13 @@ var PIC;
             var id = point.id;
             var latlon = point.primitive.originalLatlon;
             var realID = id.substr(2);
-            var txtValue = '<span class="hl">' + latlon + '</span>';
-            var txt = "Location: " + txtValue;
-            $("#locationFacet .facet-header").html(txt);
-            this.updateFilter("location", realID + "|" + latlon);
+            var widget = this.facetWidgets["locations"];
+            widget.cleanFacets();
+            widget.addFacetItem("location", latlon);
+            widget.setValue(latlon);
+            widget.selectItem(latlon.replace(/[\.,\s\*]/g, '_'));
+            widget.setHeaderText(latlon);
+            this.updateFilter("locations", realID + "|" + latlon);
             this.applyFilters();
         };
         PIC.prototype.closeFacets = function () {
@@ -725,6 +759,8 @@ var PIC;
                 if (this.facets[i][1] != "")
                     this.getFacet(i);
             }
+            // hack for locations facet
+            // this.createFacet(this.facets.length-1);
         };
         PIC.prototype.getFacet = function (index) {
             var facet = this.facets[index];
@@ -741,8 +777,6 @@ var PIC;
         PIC.prototype.updateFacet = function (responseText, facet) {
             var _this = this;
             var data = responseText.csvToArray({ trim: true, rSep: '\n' });
-            if (data.length <= 1)
-                return;
             var widget = this.facetWidgets[facet[0]];
             var idColumn = data[0].indexOf(facet[2]);
             var nameColumn = data[0].indexOf(facet[3]);
@@ -1040,6 +1074,7 @@ var PIC;
             0  Birth
                places
             1  in Australia
+            11 in Australia
                for
             2  English
             3  , Female
@@ -1073,6 +1108,13 @@ var PIC;
             key = this.filters[facetKey];
             if (key !== "*") {
                 subject += "in " + this.facetValues[facet[0]][key] + " ";
+            }
+            // location
+            facet = this.facets[11];
+            facetKey = facet[2];
+            key = this.filters[facetKey];
+            if (key !== "*") {
+                subject += "in latitude,longitude equal to " + this.filters[facetKey].split("|")[1] + " ";
             }
             predicate = "for ";
             // nationality
@@ -1188,6 +1230,11 @@ var PIC;
             }
         };
         PIC.prototype.onFacetChanged = function (widget) {
+            console.log(widget);
+            if (widget.ID === "locations") {
+                widget.cleanFacets();
+                widget.selectItem(widget.defaultValue);
+            }
             this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         };

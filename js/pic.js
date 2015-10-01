@@ -338,16 +338,14 @@ var PIC;
         PIC.prototype.minimize = function () {
             var _this = this;
             this.minimized = true;
-            $("#overlays").addClass("minimized");
-            $(".legend").addClass("minimized");
+            $(".legend, #total-points, #overlays").addClass("minimized");
             $(".facets-clear").addClass("hidden");
             $("#acronym").click(function () { return _this.maximize(); });
             this.fixOverlayHeight();
         };
         PIC.prototype.maximize = function () {
             this.minimized = false;
-            $("#overlays").removeClass("minimized");
-            $(".legend").removeClass("minimized");
+            $(".legend, #total-points, #overlays").removeClass("minimized");
             $(".facets-clear").removeClass("hidden");
             $("#acronym").off("click");
             this.fixOverlayHeight();

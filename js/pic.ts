@@ -269,8 +269,7 @@ module PIC {
 
         minimize () {
             this.minimized = true;
-            $("#overlays").addClass("minimized");
-            $(".legend").addClass("minimized");
+            $(".legend, #total-points, #overlays").addClass("minimized");
             $(".facets-clear").addClass("hidden");
             $("#acronym").click( () => this.maximize() );
             this.fixOverlayHeight();
@@ -278,8 +277,7 @@ module PIC {
 
         maximize () {
             this.minimized = false;
-            $("#overlays").removeClass("minimized");
-            $(".legend").removeClass("minimized");
+            $(".legend, #total-points, #overlays").removeClass("minimized");
             $(".facets-clear").removeClass("hidden");
             $("#acronym").off("click");
             this.fixOverlayHeight();

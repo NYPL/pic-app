@@ -109,6 +109,10 @@ p {
     @include text-shadow(-1px, 1px, 0px, $black);
     // text-transform: uppercase;
 
+    @include transition-property(left);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
     &.minimized {
         left: $generalMargin;
     }
@@ -136,6 +140,14 @@ p {
     color: $white;
     font-size: 1em;
     margin-bottom: $generalMargin;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    &.minimized {
+        left: $generalMargin + $minimizedWidth + $generalMargin;
+    }
 
     .number {
         font-size: 3em;

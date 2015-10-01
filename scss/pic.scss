@@ -17,7 +17,7 @@ $gray: #aaa;
 $black: #444;
 $linkColor: #900;
 $minimizedWidth: 70px;
-$minimizedHeight: 70px;
+$minimizedHeight: 50px;
 $iconSize: 30px;
 
 html, body {
@@ -61,6 +61,11 @@ p {
     left: $generalMargin;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    border-radius: 3px;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
 
     &.minimized {
         width: $minimizedWidth;
@@ -288,7 +293,7 @@ p {
         margin: 0 0 ($generalMargin * 2) 0;
 
         h3 {
-            margin-bottom: 1em;
+            margin-bottom: 0;
             cursor: pointer;
             color: $linkColor;
 

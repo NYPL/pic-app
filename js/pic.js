@@ -340,6 +340,7 @@ var PIC;
             this.minimized = true;
             $("#overlays").addClass("minimized");
             $(".legend").addClass("minimized");
+            $(".facets-clear").addClass("hidden");
             $("#acronym").click(function () { return _this.maximize(); });
             this.fixOverlayHeight();
         };
@@ -347,6 +348,7 @@ var PIC;
             this.minimized = false;
             $("#overlays").removeClass("minimized");
             $(".legend").removeClass("minimized");
+            $(".facets-clear").removeClass("hidden");
             $("#acronym").off("click");
             this.fixOverlayHeight();
         };
@@ -552,8 +554,6 @@ var PIC;
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
             });
-        };
-        PIC.prototype.addResults = function (results) {
         };
         PIC.prototype.buildTooltipConstituent = function (p) {
             var _this = this;
@@ -1134,7 +1134,7 @@ var PIC;
             if (key !== "*") {
                 subject += "in latitude,longitude equal to " + this.filters[facetKey].split("|")[1] + " ";
             }
-            predicate = "for ";
+            predicate = "for " + this.totalPhotographers + " ";
             // nationality
             facet = this.facets[2];
             facetKey = facet[2];
@@ -1147,9 +1147,9 @@ var PIC;
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += (predicate !== "for " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
+                predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
-            predicate += this.totalPhotographers + " photographers ";
+            predicate += " photographers ";
             // name
             facet = this.facets[9];
             facetKey = facet[2];

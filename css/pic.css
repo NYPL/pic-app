@@ -106,10 +106,20 @@ p {
   top: 10px;
   left: 10px;
   overflow-y: scroll;
-  -webkit-overflow-scrolling: touch; }
+  -webkit-overflow-scrolling: touch;
+  border-radius: 3px;
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease-in;
+  -moz-transition-timing-function: ease-in;
+  transition-timing-function: ease-in; }
   #overlays.minimized {
     width: 70px;
-    height: 70px;
+    height: 50px;
     cursor: pointer;
     overflow-y: hidden; }
     #overlays.minimized #slogan, #overlays.minimized #facets, #overlays.minimized #tooltip, #overlays.minimized #overlay-minimize {
@@ -285,7 +295,7 @@ p {
   #tooltip .tooltip-item {
     margin: 0 0 20px 0; }
     #tooltip .tooltip-item h3 {
-      margin-bottom: 1em;
+      margin-bottom: 0;
       cursor: pointer;
       color: #900; }
       #tooltip .tooltip-item h3:before {

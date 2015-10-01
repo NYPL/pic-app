@@ -30,6 +30,7 @@ module PIC {
         lines;
 
         bounds;
+        totalPhotographers = 0;
 
         elasticSize = 1500;
         padding = 0.01; // to extend the boundary a bit
@@ -454,11 +455,13 @@ module PIC {
             this.clearTooltip();
             var data = JSON.parse(responseText);
             var constituents = data.hits.hits;
+            this.totalPhotographers = data.hits.total;
             if (data.hits.total > this.tooltipLimit) {
-                var str = "<p>Found " + data.hits.total + " photographers. Showing first " + this.tooltipLimit + ".</p>";
+                var str = "<p>Found " + this.totalPhotographers + " photographers. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
             this.addTooltipResults(constituents, 0, data.hits.total);
+            this.updateTotals(-1);
         }
 
         addTooltipResults (results, start, total) {
@@ -486,6 +489,7 @@ module PIC {
             this.getData("constituent", query, function(responseText) {
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
+                this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
             });
         }
@@ -766,7 +770,7 @@ module PIC {
                         var id_latlon = this.filters[k].split("|");
                         var id = id_latlon[0];
                         var latlon = id_latlon[1]; 
-                        facetList.push("(ConstituentID: " + id + " OR (address.Remarks:\"" + latlon + "\"))");
+                        facetList.push("(address.Remarks:\"" + latlon + "\")");
                     } else {
                         facetList.push("(" + k + ":" + this.filters[k] + ")");
                     }
@@ -820,7 +824,7 @@ module PIC {
                 total : 0,
             };
             this.start = new Date().getTime();
-            console.log(query);
+            console.log("apply", query);
             this.getData("constituent", query, this.getNextSet);
             this.updateTotals(-1);
         }
@@ -844,6 +848,7 @@ module PIC {
             var results = JSON.parse(re);
             // console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
+            this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var query = this.elasticResults.query;
@@ -870,7 +875,7 @@ module PIC {
             if (facetList.length > 0) facetQuery = "&q=" + this.buildFacetQuery(facetList);
             var filters = this.buildBaseQueryFilters(0);
             var query = filters + facetQuery;
-            console.log(query);
+            console.log("tooltip", query);
             this.getData("constituent", query, this.updateTooltip);
         }
 
@@ -902,7 +907,8 @@ module PIC {
             // if (newPoints.length === 0) return;
             // console.log(newPoints);
             var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
-            var country = $("#"+this.facetWithName("countries")[0]).data("value").toString();
+            var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
+            var latlon = $("#" + this.facetWithName("locations")[0]).data("value").toString();
             var i, l = newPoints.length;
             for (i=0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -925,8 +931,10 @@ module PIC {
                 // hack, because elastic returns all addresses of a given id
                 var tid = p[4];
                 var cid = p[5];
-                if (addressType != "*" && tid != addressType) continue;
-                if (country != "*" && cid != country) continue;
+                var loc = p[0] + "," + p[1];
+                if (addressType !== "*" && tid !== addressType) continue;
+                if (country !== "*" && cid !== country) continue;
+                if (latlon !== "*" && loc !== latlon) continue;
                 // end hack
                 this.elasticResults.total++;
                 this.expandBounds(p);
@@ -1085,7 +1093,7 @@ module PIC {
                 predicate += (predicate !== "for " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
 
-            predicate += " photographers ";
+            predicate += this.totalPhotographers + " photographers ";
 
             // name
             facet = this.facets[9];

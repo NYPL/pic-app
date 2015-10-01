@@ -1,14 +1,13 @@
 var PIC;
 (function (PIC) {
     var Facet = (function () {
-        function Facet(id, parent, description, type) {
+        function Facet(id, parent, description) {
             this.data = {};
             this.enabled = false;
             this.defaultValue = "*";
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
-            this.type = type;
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
@@ -70,7 +69,7 @@ var PIC;
         };
         Facet.prototype.cleanFacets = function () {
             $(this.IDPrefix + ".facet-item").each(function (index) {
-                if ($(this).data("value") !== "*") {
+                if ($(this).data("value").toString() !== "*") {
                     $(this).remove();
                 }
             });
@@ -139,6 +138,7 @@ var PIC;
             this.latlonHeightHash = {};
             this.heightHash = {};
             this.allIDs = [];
+            this.totalPhotographers = 0;
             this.elasticSize = 1500;
             this.padding = 0.01; // to extend the boundary a bit
             this.tooltipLimit = 20;
@@ -513,11 +513,13 @@ var PIC;
             this.clearTooltip();
             var data = JSON.parse(responseText);
             var constituents = data.hits.hits;
+            this.totalPhotographers = data.hits.total;
             if (data.hits.total > this.tooltipLimit) {
-                var str = "<p>Found " + data.hits.total + " photographers. Showing first " + this.tooltipLimit + ".</p>";
+                var str = "<p>Found " + this.totalPhotographers + " photographers. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
             this.addTooltipResults(constituents, 0, data.hits.total);
+            this.updateTotals(-1);
         };
         PIC.prototype.addTooltipResults = function (results, start, total) {
             var _this = this;
@@ -545,6 +547,7 @@ var PIC;
             this.getData("constituent", query, function (responseText) {
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
+                this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
             });
         };
@@ -823,7 +826,7 @@ var PIC;
                         var id_latlon = this.filters[k].split("|");
                         var id = id_latlon[0];
                         var latlon = id_latlon[1];
-                        facetList.push("(ConstituentID: " + id + " OR (address.Remarks:\"" + latlon + "\"))");
+                        facetList.push("(address.Remarks:\"" + latlon + "\")");
                     }
                     else {
                         facetList.push("(" + k + ":" + this.filters[k] + ")");
@@ -874,7 +877,7 @@ var PIC;
                 total: 0
             };
             this.start = new Date().getTime();
-            console.log(query);
+            console.log("apply", query);
             this.getData("constituent", query, this.getNextSet);
             this.updateTotals(-1);
         };
@@ -897,6 +900,7 @@ var PIC;
             var results = JSON.parse(re);
             // console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
+            this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var query = this.elasticResults.query;
@@ -925,7 +929,7 @@ var PIC;
                 facetQuery = "&q=" + this.buildFacetQuery(facetList);
             var filters = this.buildBaseQueryFilters(0);
             var query = filters + facetQuery;
-            console.log(query);
+            console.log("tooltip", query);
             this.getData("constituent", query, this.updateTooltip);
         };
         PIC.prototype.addressesForID = function (id) {
@@ -957,6 +961,7 @@ var PIC;
             // console.log(newPoints);
             var addressType = $("#" + this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
+            var latlon = $("#" + this.facetWithName("locations")[0]).data("value").toString();
             var i, l = newPoints.length;
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -982,9 +987,12 @@ var PIC;
                 // hack, because elastic returns all addresses of a given id
                 var tid = p[4];
                 var cid = p[5];
-                if (addressType != "*" && tid != addressType)
+                var loc = p[0] + "," + p[1];
+                if (addressType !== "*" && tid !== addressType)
                     continue;
-                if (country != "*" && cid != country)
+                if (country !== "*" && cid !== country)
+                    continue;
+                if (latlon !== "*" && loc !== latlon)
                     continue;
                 // end hack
                 this.elasticResults.total++;
@@ -1131,7 +1139,7 @@ var PIC;
             if (key !== "*") {
                 predicate += (predicate !== "for " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
-            predicate += " photographers ";
+            predicate += this.totalPhotographers + " photographers ";
             // name
             facet = this.facets[9];
             facetKey = facet[2];

@@ -24,11 +24,10 @@ module PIC {
         enabled = false;
         defaultValue = "*";
 
-        constructor(id, parent, description, type) {
+        constructor(id, parent, description) {
             this.parentElement = parent;
             this.ID = id;
             this.IDPrefix = "#" + this.ID + " ";
-            this.type = type;
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
@@ -98,7 +97,7 @@ module PIC {
         cleanFacets() {
             $(this.IDPrefix + ".facet-item").each(
                 function(index) {
-                    if ($(this).data("value") !== "*") {
+                    if ($(this).data("value").toString() !== "*") {
                         $(this).remove();
                     }
                 }

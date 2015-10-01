@@ -669,9 +669,15 @@ var PIC;
                     var add = addresses[i];
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
-                    addstring += this.facetValues["addresstypes"][add.AddressTypeID] + "<br />";
+                    addstring += "<div class=\"address-item-type\">";
+                    addstring += this.facetValues["addresstypes"][add.AddressTypeID];
                     if (add.DisplayName2 != "NULL")
-                        addstring += add.DisplayName2 + "<br />";
+                        addstring += " (" + add.DisplayName2 + ")";
+                    addstring += "</div>";
+                    if (add.Remarks != "NULL") {
+                        addstring += ' <div class="link tooltip-address" id="tooltip-address-' + add.ConAddressID + '" data-id="' + add.ConAddressID + '">Go</div>';
+                    }
+                    addstring += "<div class=\"address-item-content\">";
                     if (add.StreetLine1 != "NULL")
                         addstring += add.StreetLine1 + "<br />";
                     if (add.StreetLine2 != "NULL")
@@ -684,9 +690,8 @@ var PIC;
                         addstring += add.State + "<br />";
                     if (add.CountryID != "NULL")
                         addstring += this.facetValues["countries"][add.CountryID] + "<br />";
-                    if (add.Remarks != "NULL") {
-                        addstring += '<span class="link tooltip-address" id="tooltip-address-' + add.ConAddressID + '" data-id="' + add.ConAddressID + '">Go</span><br />';
-                    }
+                    // addstring += add.Remarks + "<br />";
+                    addstring += "</div>";
                     addstring += "</div>";
                 }
                 var str = '<span class="link address-header"><strong>';

@@ -177,10 +177,12 @@ p {
   #facets label {
     display: block;
     clear: both; }
-  #facets span, #facets input {
+  #facets span, #facets .text {
     font-size: 1em;
     font-family: "nypl font", Helvetica, Arial, sans-serif;
     width: 270px; }
+  #facets .date.text {
+    width: 60px; }
   #facets .facet-header {
     cursor: pointer; }
     #facets .facet-header:before {
@@ -242,8 +244,6 @@ p {
     margin-right: 10px; }
     #facets .date-field label {
       display: inline-block; }
-  #facets .date-text {
-    width: 60px; }
 
 #tooltip {
   border-top: 2px solid #444;
@@ -260,11 +260,13 @@ p {
         display: block; }
 
 .addresses {
-  background: white;
+  background: #efefef;
   padding: 10px;
   margin: 0 -10px; }
   .addresses .address-item {
     margin-bottom: 10px; }
+  .addresses .address-item-content {
+    margin-left: 10px; }
 
 #hover {
   width: 300px;

@@ -172,10 +172,14 @@ p {
         clear: both;
     }
 
-    span, input {
+    span, .text {
         font-size: 1em;
         font-family: $font;
         width: $columnWidth - $columnMargin;
+    }
+
+    .date.text {
+        width: 60px;
     }
 
     .facet-header {
@@ -252,9 +256,6 @@ p {
         }
     }
 
-    .date-text {
-        width: 60px;
-    }
 }
 
 #tooltip {
@@ -280,12 +281,19 @@ p {
 }
 
 .addresses {
-    background: white;
+    background: $white;
     padding: $generalMargin;
     margin: 0 (-1 * $generalMargin);
 
     .address-item {
         margin-bottom: $generalMargin;
+    }
+
+    .address-item-type {
+    }
+
+    .address-item-content {
+        margin-left: $generalMargin;
     }
 }
 

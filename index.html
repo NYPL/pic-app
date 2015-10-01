@@ -29,8 +29,10 @@
             <div id="facet-list">
                 <a id="facets-clear" class="link">Clear all filters</a>
                 <label for="nameQuery">Name</label>
-                <input type="text" class="facet text" />
-                <input type="button" class="search" name="nameQueryButton" value="search" />
+                <div class="facet">
+                    <input type="text" class="text" id="nameQuery" />
+                    <div class="icon query" title="search by name"></div>
+                </div>
                 <div class="timeline facet">
                     <label>Alive or active date</label>
                     <div class="date-field">
@@ -41,7 +43,7 @@
                         <label for="nameQuery">To</label>
                         <input type="text" class="date text" id="toDate" />
                     </div>
-                    <input type="button" class="search" name="nameQueryButton" value="search" />
+                    <div class="icon query" title="search by date range"></div>
                 </div>
             </div>
         </div>

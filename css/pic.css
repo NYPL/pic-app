@@ -78,6 +78,12 @@ html, body {
   font-size: 16px;
   background: #444; }
 
+a:link {
+  color: #900; }
+
+a:visited {
+  color: #660000; }
+
 p {
   margin-bottom: 1em; }
 
@@ -177,10 +183,33 @@ p {
   #facets label {
     display: block;
     clear: both; }
+  #facets .icon.query {
+    content: attr(data-icon);
+    content: "";
+    font-family: "nyplicons";
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: baseline;
+    background: none;
+    margin-top: 0;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: none;
+    font-weight: normal;
+    font-variant: normal;
+    display: block;
+    background-size: 100%;
+    cursor: pointer;
+    font-size: 30px;
+    float: right;
+    margin-right: 10px; }
   #facets span, #facets .text {
     font-size: 1em;
     font-family: "nypl font", Helvetica, Arial, sans-serif;
-    width: 270px; }
+    width: 210px;
+    padding: 5px; }
   #facets .date.text {
     width: 60px; }
   #facets .facet-header {
@@ -233,6 +262,10 @@ p {
         width: 15px; }
   #facets .facet {
     margin-bottom: 10px; }
+    #facets .facet::after {
+      clear: both;
+      content: "";
+      display: table; }
     #facets .facet.disabled {
       color: #777777; }
   #facets .timeline::after {

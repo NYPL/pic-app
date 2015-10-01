@@ -280,6 +280,10 @@ p {
 }
 
 .addresses {
+    background: white;
+    padding: $generalMargin;
+    margin: 0 (-1 * $generalMargin);
+
     .address-item {
         margin-bottom: $generalMargin;
     }

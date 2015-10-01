@@ -513,12 +513,14 @@ var PIC;
             this.clearTooltip();
             var data = JSON.parse(responseText);
             var constituents = data.hits.hits;
-            this.totalPhotographers = data.hits.total;
-            if (data.hits.total > this.tooltipLimit) {
+            var total = data.hits.total;
+            this.totalPhotographers = total;
+            if (total > this.tooltipLimit) {
                 var str = "<p>Found " + this.totalPhotographers + " photographers. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
-            this.addTooltipResults(constituents, 0, data.hits.total);
+            if (total > 0)
+                this.addTooltipResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
         };
         PIC.prototype.addTooltipResults = function (results, start, total) {
@@ -696,7 +698,7 @@ var PIC;
                 }
                 str += "</strong></span>";
                 str += "<p>";
-                str += "<strong>Addresses:</strong>";
+                // str += "<strong>Addresses:</strong>";
                 str += "</p>";
                 str += addstring;
                 $("#tooltip-addresslist-" + id + " .address-header").replaceWith(str);
@@ -958,11 +960,11 @@ var PIC;
         };
         PIC.prototype.addPoints = function (newPoints) {
             // if (newPoints.length === 0) return;
-            // console.log(newPoints);
             var addressType = $("#" + this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
             var latlon = $("#" + this.facetWithName("locations")[0]).data("value").toString();
             var i, l = newPoints.length;
+            console.log(addressType, country, latlon);
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
                 var p = this.pointArray[index];
@@ -988,11 +990,11 @@ var PIC;
                 var tid = p[4];
                 var cid = p[5];
                 var loc = p[0] + "," + p[1];
-                if (addressType !== "*" && tid !== addressType)
+                if (addressType != "*" && tid != addressType)
                     continue;
-                if (country !== "*" && cid !== country)
+                if (country != "*" && cid != country)
                     continue;
-                if (latlon !== "*" && loc !== latlon)
+                if (latlon != "*" && loc != latlon)
                     continue;
                 // end hack
                 this.elasticResults.total++;

@@ -259,8 +259,12 @@ p {
         font-weight: normal;
         display: block; }
 
-.addresses .address-item {
-  margin-bottom: 10px; }
+.addresses {
+  background: white;
+  padding: 10px;
+  margin: 0 -10px; }
+  .addresses .address-item {
+    margin-bottom: 10px; }
 
 #hover {
   width: 300px;

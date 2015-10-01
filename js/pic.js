@@ -564,7 +564,7 @@ var PIC;
                 str += ' (' + p.addressTotal + ')';
             str += "</span>";
             str += '</h3>';
-            str += '<div class="hidden tooltip-content-' + p.ConstituentID + '">';
+            str += '<div class="hidden tooltip-content tooltip-content-' + p.ConstituentID + '">';
             str += "<p>";
             // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
             str += "ID:" + p.ConstituentID + "<br />";
@@ -648,7 +648,10 @@ var PIC;
             }
             str += "</div>";
             this.tooltipElement.find(".results").append(str);
-            $(".tooltip-toggle-" + p.ConstituentID).click(function () { return $(".tooltip-content-" + p.ConstituentID).fadeToggle(100); });
+            $(".tooltip-toggle-" + p.ConstituentID).click(function () {
+                $(".tooltip-content-" + p.ConstituentID).fadeToggle(100);
+                $(".tooltip-toggle-" + p.ConstituentID).toggleClass("open");
+            });
             $("#tooltip-addresslist-" + p.ConstituentID + " .address-header").click(function () { return _this.getAddressList(parseInt(p.ConstituentID)); });
         };
         PIC.prototype.getAddressList = function (id) {

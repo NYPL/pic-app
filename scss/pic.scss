@@ -37,6 +37,7 @@ a:visited {
 
 p {
     margin-bottom: 1em;
+    margin-right: $generalMargin;
 }
 
 #cesiumContainer {
@@ -207,15 +208,15 @@ p {
 
         &:before {
             @include drr-icon('');
-            width: 10px;
-            height: 10px;
             display: inline-block;
             background-size: 100%;
-            margin-right: $facetMargin*2;
+            margin-right: $facetMargin;
+            position: relative;
+            top: 2px;
         }
 
         &.open:before {
-            @include transform(rotateZ(90deg) translateY(-9px) translateX(2px));
+            @include transform(rotateZ(90deg) translateY(-1px) translateX(-1px));
         }
 
     }
@@ -284,19 +285,39 @@ p {
     padding-top: $generalMargin;
 
     .tooltip-item {
-        margin: 0 0 $generalMargin 0;
+        margin: 0 0 ($generalMargin * 2) 0;
 
         h3 {
             margin-bottom: 1em;
             cursor: pointer;
             color: $linkColor;
 
+            &:before {
+                @include drr-icon('');
+                display: inline-block;
+                background-size: 100%;
+                margin-right: $facetMargin;
+                position: relative;
+                top: 2px;
+            }
+
+            &.open:before {
+                @include transform(rotateZ(90deg) translateY(-1px) translateX(-1px));
+            }
+
             span {
-                    font-size: 0.8em;
-                    font-weight: normal;
-                    display: block;
+                font-size: 0.8em;
+                font-weight: normal;
+                display: block;
+                line-height: 1.5em;
+                margin-left: 1.7em;
             }
         }
+    }
+
+    .tooltip-content {
+        margin: 0 (-1 * $generalMargin) ($generalMargin * 2);
+        padding-left: 2em;
     }
 
 }
@@ -304,10 +325,17 @@ p {
 .addresses {
     background: $white;
     padding: $generalMargin;
-    margin: 0 (-1 * $generalMargin);
+    padding-left: 2em;
+    margin-left: -2em;
 
     .address-item {
         margin-bottom: $generalMargin;
+        padding-bottom: $generalMargin;
+        border-bottom: 1px solid $gray;
+
+        &:last-child {
+            border-bottom: none;
+        }
     }
 
     .address-item-type {

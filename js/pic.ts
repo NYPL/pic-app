@@ -60,7 +60,7 @@ module PIC {
         tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
         mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
         baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
-        geonamesURL = "http://api.geonames.org/findNearbyPlaceNameJSON?username=mgiraldo";
+        geonamesURL = "http://api.geonames.org/citiesJSON?username=mgiraldo";
 
         // the way we knoe in elastic if a constituent has latlon-looking data
         latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
@@ -391,7 +391,15 @@ module PIC {
                 this.updateHoverLocation(place);
                 return;
             }
-            var reverseGeo = this.geonamesURL + "&lat=" +latlon[0]+ "&lng=" + latlon[1];
+            var lat = parseFloat(latlon[0]);
+            var lon = parseFloat(latlon[1]);
+            var north = Math.round((lat+0.02) * 100) / 100;
+            var south = Math.round((lat-0.02) * 100) / 100;
+            var east = Math.round((lon+0.02) * 100) / 100;
+            var west = Math.round((lon-0.02) * 100) / 100;
+            // var reverseGeo = this.geonamesURL + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+            var reverseGeo = this.geonamesURL + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+            console.log(reverseGeo);
             this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
 
@@ -400,7 +408,7 @@ module PIC {
             // console.log(data);
             var geo = data.geonames[0];
             if (!geo) return;
-            this.updateHoverLocation("near " + geo.name + ", " + geo.countryName);
+            this.updateHoverLocation("near " + geo.name + ", " + geo.countrycode);
         }
 
         updateHoverLocation (text) {

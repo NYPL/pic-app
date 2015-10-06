@@ -132,7 +132,7 @@ var PIC;
 (function (PIC_1) {
     var PIC = (function () {
         function PIC() {
-            this.elasticResults = { query: "", from: 0, hits: [], total: 0 };
+            this.elasticResults = { data: {}, from: 0, hits: [], total: 0 };
             this.pointArray = [];
             this.pointHash = {}; // contains the index to a given id in the pointArray
             this.latlonHeightHash = {};
@@ -313,11 +313,55 @@ var PIC;
             };
             r.send();
         };
-        PIC.prototype.getData = function (facet, query, callback, parameter) {
+        PIC.prototype.getData = function (filters, data, callback, parameter) {
             if (parameter === void 0) { parameter = undefined; }
-            var url = this.baseUrl + "/" + facet + "/_search?sort=nameSort:asc&" + query;
-            // console.log(url);
-            this.loadTextFile(url, callback, parameter);
+            var url = this.baseUrl + "/constituent/_search?sort=nameSort:asc&" + filters;
+            console.log(url, JSON.stringify(data));
+            var pic = this;
+            var r = new XMLHttpRequest();
+            r.open("POST", url, true);
+            r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            r.onreadystatechange = function () {
+                if (r.readyState != 4 || r.status != 200)
+                    return;
+                if (parameter === undefined) {
+                    callback.apply(pic, [r.responseText]);
+                }
+                else {
+                    callback.apply(pic, [r.responseText, parameter]);
+                }
+            };
+            r.send(JSON.stringify(data));
+        };
+        PIC.prototype.buildElasticQuery = function (normal, nested) {
+            var data = {
+                "query": {
+                    "filtered": {
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    { "query_string": { "query": normal } }
+                                ]
+                            }
+                        }
+                    }
+                }
+            };
+            if (nested !== "*") {
+                data["filter"] = {
+                    "nested": {
+                        "path": "address",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    { "query_string": { "query": nested } }
+                                ]
+                            }
+                        }
+                    }
+                };
+            }
+            return data;
         };
         PIC.prototype.updateTotals = function (total) {
             if (total === -1)
@@ -418,13 +462,12 @@ var PIC;
         };
         PIC.prototype.buildHover = function () {
             var position = this.pickedEntity.entity.primitive.originalLatlon;
+            var filter = "filter_path=hits.total";
+            // TODO: fix hover query
             var query = '(address.Remarks:"' + position + '")';
-            var facetList = this.buildFacetList();
-            if (facetList.length > 0) {
-                query = "(" + query + " AND " + this.buildFacetQuery(facetList) + ")";
-            }
-            query = "filter_path=hits.total&q=" + query;
-            this.getData("constituent", query, this.buildHoverContent);
+            var data = this.buildElasticQuery(query, "");
+            console.log("hover", data);
+            this.getData(filter, data, this.buildHoverContent);
         };
         PIC.prototype.buildHoverContent = function (responseText) {
             var el = $("#hover");
@@ -435,7 +478,7 @@ var PIC;
             var hits = data.hits.total;
             var str = "<div>";
             str += '<span class="hits">' + hits + '</span>';
-            str += hits === 1 ? " result" : " total results";
+            str += hits === 1 ? " result" : " total photographers";
             str += "<br /><span id='geoname'>&nbsp;</span>";
             str += "<br />click dot to view list";
             str += "</div>";
@@ -540,7 +583,7 @@ var PIC;
             this.tooltipElement.find(".results").append("<hr />");
             if (start + l < total) {
                 var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);
-                var string = '<div class="link more">Load ' + more + ' more</div>';
+                var string = '<div class="link more"><span>Load ' + more + ' more</span></div>';
                 this.tooltipElement.find(".more").replaceWith(string);
                 this.tooltipElement.find(".more").click(function () { return _this.loadMoreResults(start + l); });
             }
@@ -548,13 +591,9 @@ var PIC;
         PIC.prototype.loadMoreResults = function (start) {
             this.tooltipElement.find(".more").empty();
             var filters = this.buildBaseQueryFilters(start);
-            var facetList = this.buildFacetList();
-            var facetQuery = "";
-            if (facetList.length > 0)
-                facetQuery = "&q=" + this.buildFacetQuery(facetList);
-            var query = filters + facetQuery;
-            console.log(start, query);
-            this.getData("constituent", query, function (responseText) {
+            var data = this.buildFacetQuery();
+            console.log(start, data);
+            this.getData(filters, data, function (responseText) {
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
@@ -564,10 +603,12 @@ var PIC;
         PIC.prototype.buildTooltipConstituent = function (p) {
             var _this = this;
             var str = '<div class="tooltip-item">';
-            str += '<h3 class="tooltip-toggle-' + p.ConstituentID + '">' + p.DisplayName;
-            str += "<span>" + p.DisplayDate;
+            str += '<h3 class="tooltip-toggle-' + p.ConstituentID + '"><span class="title">' + p.DisplayName;
+            str += '</span>';
+            str += "<span class=\"subtitle\">";
+            str += p.DisplayDate;
             if (p.addressTotal)
-                str += ' (' + p.addressTotal + ')';
+                str += '<br />(' + p.addressTotal + ' location' + (p.addressTotal != 1 ? 's' : '') + ')';
             str += "</span>";
             str += '</h3>';
             str += '<div class="hidden tooltip-content tooltip-content-' + p.ConstituentID + '">';
@@ -662,8 +703,9 @@ var PIC;
         };
         PIC.prototype.getAddressList = function (id) {
             // console.log(id);
-            var query = "filter_path=hits.hits._source&q=ConstituentID:" + id;
-            this.getData("constituent", query, this.parseConstituentAddresses, id);
+            var filters = "filter_path=hits.hits._source";
+            var data = this.buildElasticQuery("ConstituentID:" + id, "");
+            this.getData(filters, data, this.parseConstituentAddresses, id);
         };
         PIC.prototype.parseConstituentAddresses = function (responseText, id) {
             var data = JSON.parse(responseText);
@@ -683,7 +725,7 @@ var PIC;
                     if (add.DisplayName2 != "NULL")
                         addstring += " (" + add.DisplayName2 + ")";
                     addstring += "</div>";
-                    if (add.Remarks != "NULL") {
+                    if (add.Remarks != "NULL" && add.Remarks != "0,0") {
                         addstring += ' <div class="link tooltip-address" id="tooltip-address-' + add.ConAddressID + '" data-id="' + add.ConAddressID + '">Go</div>';
                     }
                     addstring += "<div class=\"address-item-content\">";
@@ -851,8 +893,25 @@ var PIC;
             }
             return facetList;
         };
-        PIC.prototype.buildFacetQuery = function (facetList) {
-            var facetQuery = facetList.length > 0 ? "(" + facetList.join(" AND ") + ")" : "";
+        PIC.prototype.buildFacetQuery = function () {
+            var facetList = this.buildFacetList();
+            var normal = [];
+            var nested = [];
+            for (var k in facetList) {
+                if (facetList[k].indexOf("address.") === -1) {
+                    normal.push(facetList[k]);
+                }
+                else {
+                    nested.push(facetList[k]);
+                }
+            }
+            var normalString = "*";
+            if (normal.length > 0)
+                normalString = "(" + normal.join(" AND ") + ")";
+            var nestedString = "*";
+            if (nested.length > 0)
+                nestedString = "(" + nested.join(" AND ") + ")";
+            var facetQuery = this.buildElasticQuery(normalString, nestedString);
             return facetQuery;
         };
         PIC.prototype.buildBaseQueryFilters = function (start) {
@@ -883,18 +942,18 @@ var PIC;
                 return;
             }
             var addresses = [];
-            var query = this.buildFacetQuery(facetList);
-            query = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize + "&q=" + query;
+            var data = this.buildFacetQuery();
+            var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
             // reset elastic results to prepare for the new set
             this.elasticResults = {
-                query: query,
+                data: data,
                 from: 0,
                 hits: [],
                 total: 0
             };
             this.start = new Date().getTime();
-            console.log("apply", query);
-            this.getData("constituent", query, this.getNextSet);
+            console.log("apply", data);
+            this.getData(filters, data, this.getNextSet);
             this.updateTotals(-1);
         };
         PIC.prototype.clearFilters = function () {
@@ -919,10 +978,10 @@ var PIC;
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
-                var query = this.elasticResults.query;
+                var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
-                query = "from=" + this.elasticResults.from + "&" + query;
-                this.getData("constituent", query, this.getNextSet);
+                var filters = "from=" + this.elasticResults.from;
+                this.getData(filters, data, this.getNextSet);
             }
             else {
                 var end = new Date().getTime();
@@ -939,14 +998,10 @@ var PIC;
             this.updateTotals(-1);
         };
         PIC.prototype.showTooltip = function () {
-            var facetList = this.buildFacetList();
-            var facetQuery = "";
-            if (facetList.length > 0)
-                facetQuery = "&q=" + this.buildFacetQuery(facetList);
+            var data = this.buildFacetQuery();
             var filters = this.buildBaseQueryFilters(0);
-            var query = filters + facetQuery;
-            console.log("tooltip", query);
-            this.getData("constituent", query, this.updateTooltip);
+            console.log("tooltip", data);
+            this.getData(filters, data, this.updateTooltip);
         };
         PIC.prototype.addressesForID = function (id) {
             var i;
@@ -978,7 +1033,6 @@ var PIC;
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
             var latlon = $("#" + this.facetWithName("locations")[0]).data("value").toString();
             var i, l = newPoints.length;
-            console.log(addressType, country, latlon);
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
                 var p = this.pointArray[index];

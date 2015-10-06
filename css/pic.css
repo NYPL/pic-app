@@ -203,6 +203,14 @@ p {
 .link {
   cursor: pointer; }
 
+.more span {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background: #900;
+  color: #efefef;
+  border-radius: 3px; }
+
 #facets, #tooltip {
   margin: 10px; }
 
@@ -343,7 +351,11 @@ p {
         -webkit-transform: rotateZ(90deg) translateY(-1px) translateX(-1px);
         -moz-transform: rotateZ(90deg) translateY(-1px) translateX(-1px);
         transform: rotateZ(90deg) translateY(-1px) translateX(-1px); }
-      #tooltip .tooltip-item h3 span {
+      #tooltip .tooltip-item h3 .title {
+        display: block;
+        float: right;
+        width: 255px; }
+      #tooltip .tooltip-item h3 .subtitle {
         font-size: 0.8em;
         font-weight: normal;
         display: block;

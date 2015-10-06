@@ -183,6 +183,15 @@ p {
     cursor: pointer;
 }
 
+.more span {
+    display: block;
+    text-align: center;
+    padding: $generalMargin;
+    background: $linkColor;
+    color: $white;
+    border-radius: 3px;
+}
+
 #facets, #tooltip {
     margin: $generalMargin;
 }
@@ -322,7 +331,13 @@ p {
                 @include transform(rotateZ(90deg) translateY(-1px) translateX(-1px));
             }
 
-            span {
+            .title {
+                display: block;
+                float: right;
+                width: $columnWidth - $columnMargin - $generalMargin - $facetMargin;
+            }
+
+            .subtitle {
                 font-size: 0.8em;
                 font-weight: normal;
                 display: block;

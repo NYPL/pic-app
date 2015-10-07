@@ -405,7 +405,9 @@ module PIC {
             var filter = "filter_path=hits.total";
             // TODO: fix hover query
             var query = '(address.Remarks:"' + position + '")';
-            var data = this.buildElasticQuery(query, "");
+            var facetList = this.buildFacetList();
+            facetList.push(query);
+            var data = this.buildFacetQuery(facetList);
             console.log("hover", data);
             this.getData(filter, data, this.buildHoverContent);
         }
@@ -644,7 +646,7 @@ module PIC {
         getAddressList (id) {
             // console.log(id);
             var filters = "filter_path=hits.hits._source";
-            var data = this.buildElasticQuery("ConstituentID:" + id, "");
+            var data = this.buildElasticQuery("ConstituentID:" + id, "*");
             this.getData(filters, data, this.parseConstituentAddresses, id);
         }
 
@@ -835,8 +837,8 @@ module PIC {
             return facetList;
         }
 
-        buildFacetQuery () {
-            var facetList = this.buildFacetList();
+        buildFacetQuery (facetList=undefined) {
+            if (facetList === undefined) facetList = this.buildFacetList();
             var normal = [];
             var nested = [];
             for (var k in facetList) {

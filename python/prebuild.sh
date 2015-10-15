@@ -8,11 +8,6 @@ REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 git config user.name "travis-bot"
 git config user.email "travis"
 
-# echo ""
-# echo "Moving to csv"
-
-# git checkout csv
-
 python ./python/index_builder.py
 
 echo ""

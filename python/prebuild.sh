@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo ""
-echo "### Pushing to $GH_REPO [via travis]"
+echo "### STARTED TRAVIS MAGIC ON $GH_REPO"
 
 REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
@@ -27,12 +27,12 @@ git commit -m ":rocket: new deploy from travis-ci"
 echo ""
 echo "Pulling latest gh-pages..."
 
-git pull origin gh-pages -m ":rocket: merge from travis-ci"
+git pull $REPO_URL mgiraldo/pic:gh-pages -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "Pushing..."
 
-git push $REPO_URL gh-pages
+git push $REPO_URL mgiraldo/pic:gh-pages
 
 echo ""
 echo "### DEPLOY COMPLETE"

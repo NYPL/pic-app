@@ -8,6 +8,8 @@ git clone $REPO_URL
 
 cd pic
 
+git pull origin csv
+
 python ./python/index_builder.py
 
 echo "STATUS"

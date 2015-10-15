@@ -1,4 +1,9 @@
 language: python
+branches:
+  except:
+    - gh-pages
+  only:
+    - csv
 python:
 - '2.7'
 before_install:

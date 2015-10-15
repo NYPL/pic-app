@@ -8,7 +8,7 @@ REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 git config user.name "travis-bot"
 git config user.email "travis"
 
-python ./python/index_builder.py
+# python ./python/index_builder.py
 
 echo ""
 echo "#### STATUS"

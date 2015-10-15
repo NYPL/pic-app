@@ -13,7 +13,7 @@ git config user.email "travis"
 
 git checkout csv
 
-git pull origin csv
+git pull origin csv -m ":rocket: merge from travis-ci"
 
 python ./python/index_builder.py
 

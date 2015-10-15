@@ -3,7 +3,6 @@
 import csv
 import os
 import re
-import urllib2
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 from elasticsearch_dsl import connections, Index, DocType, Nested, String, GeoPoint, Integer

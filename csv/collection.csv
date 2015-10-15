@@ -1423,9 +1423,6 @@
 338911,2028014,http://www.getty.edu/art/collection/
 339888,2028014,http://www.getty.edu/art/collection/
 340717,2028014,http://www.getty.edu/art/collection/
-269299,2028037,http://norman.hrc.utexas.edu/photopublic/
-326389,2028037,http://norman.hrc.utexas.edu/photopublic/
-337589,2028037,http://norman.hrc.utexas.edu/photopublic/
 520,2028241,http://www.icp.org/browse/archive/constituents/barbara-morgan
 649,2028241,http://www.icp.org/browse/archive/constituents/lorna-simpson
 960,2028241,http://www.icp.org/browse/archive/constituents/lee-friedlander
@@ -4664,6 +4661,7 @@
 4927,2028016,http://www.mfah.org/
 269299,2028016,http://www.mfah.org/
 287486,2028016,http://www.mfah.org/
+322081,2028016,http://www.mfah.org/
 337004,2028016,http://www.mfah.org/
 339448,2028016,http://www.mfah.org/
 21,2028219,http://www.moma.org//collection/artists/19?locale=en
@@ -6244,6 +6242,7 @@
 317361,2028219,http://www.moma.org/collection/artists?locale=en&utf8=%E2%9C%93&q=David+Avison
 317438,2028219,http://www.moma.org//collection/artists/264?locale=en
 317501,2028219,http://www.moma.org//collection/artists/3220?locale=en
+317503,2028219,http://www.moma.org/collection/artists/37618
 317526,2028219,http://www.moma.org/collection/artists?locale=en&utf8=%E2%9C%93&q=Fred+Korth
 317550,2028219,http://www.moma.org/collection/artists?locale=en&utf8=%E2%9C%93&q=Lewis+Kostiner
 317560,2028219,http://www.moma.org//collection/artists/8242?locale=en
@@ -10813,7 +10812,7 @@
 1697,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=G.+R.+Lambert+%26+Co.&search_field=all_fields&commit=search
 1698,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=Waldemar+Franz+Herman+Titzenthaler&search_field=all_fields&commit=search
 1699,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=Macduff+Everton&search_field=all_fields&commit=search
-1700,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=A.+G.+Wehrli&search_field=all_fields&commit=search
+1700,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=Wehrli+A.+G.&search_field=all_fields&commit=search
 1702,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=Dmitri+Constantin&search_field=all_fields&commit=search
 1703,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=Pach+Bros.&search_field=all_fields&commit=search
 1704,2028165,http://wallachprintsandphotos.nypl.org/catalog?utf8=%E2%9C%93&q=William+A.+White&search_field=all_fields&commit=search

@@ -10,8 +10,8 @@ before_install:
 - chmod 755 ./python/prebuild.sh
 install:
 - pip install -r ./python/requirements.txt
-after_success:
-- "./python/prebuild.sh"
+script:
+- ./python/prebuild.sh
 env:
   global:
   - GH_REPO="mgiraldo/pic"

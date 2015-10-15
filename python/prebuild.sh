@@ -8,6 +8,7 @@ git status
 echo "remotes pre pre-authorized remote url"
 git remote add origin $REPO_URL
 git clone $REPO_URL
-python index_builder.py
+git pull origin csv -m ":rocket: merge new csvs"
+python python/index_builder.py
 git commit -am ":rocket: new deploy from travis-ci"
 git push origin gh-pages

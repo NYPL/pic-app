@@ -23,3 +23,5 @@ git add ./csv/
 git commit -m ":rocket: new deploy from travis-ci"
 
 git push origin gh-pages
+
+echo "DEPLOY COMPLETE"

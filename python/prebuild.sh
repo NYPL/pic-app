@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo ""
-echo "### STARTED TRAVIS MAGIC ON $GH_REPO"
+echo "#### STARTED TRAVIS MAGIC ON $GH_REPO"
 
 REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
@@ -11,7 +11,7 @@ git config user.email "travis"
 python ./python/index_builder.py
 
 echo ""
-echo "### STATUS"
+echo "#### STATUS"
 
 git status
 
@@ -30,4 +30,4 @@ echo "Pushing..."
 git push $REPO_URL refs/heads/gh-pages
 
 echo ""
-echo "### DEPLOY COMPLETE"
+echo "#### DEPLOY COMPLETE"

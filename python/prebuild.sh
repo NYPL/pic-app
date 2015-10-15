@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "pushing to $GH_REPO [via travis]"
+echo "### Pushing to $GH_REPO [via travis]"
 
 REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
@@ -8,13 +8,16 @@ git clone $REPO_URL
 
 cd pic
 
+git config user.name "travis-bot"
+git config user.email "travis"
+
 git checkout csv
 
 git pull origin csv
 
 python ./python/index_builder.py
 
-echo "STATUS"
+echo "### STATUS"
 
 git status
 
@@ -24,4 +27,4 @@ git commit -m ":rocket: new deploy from travis-ci"
 
 git push origin gh-pages
 
-echo "DEPLOY COMPLETE"
+echo "### DEPLOY COMPLETE"

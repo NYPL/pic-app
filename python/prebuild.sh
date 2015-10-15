@@ -13,6 +13,7 @@ git pull $REPO_URL csv -m ":rocket: merge new csvs"
 python ./python/index_builder.py
 
 echo "STATUS"
+
 git status
 
 git commit -am ":rocket: new deploy from travis-ci"

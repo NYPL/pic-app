@@ -22,9 +22,7 @@ git commit -m ":rocket: new deploy from travis-ci"
 echo ""
 echo "Pulling latest gh-pages..."
 
-git checkout -b gh-pages origin/gh-pages
-
-git merge csv -m ":rocket: merge from travis-ci"
+git checkout origin/gh-pages -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "Pushing..."

@@ -22,12 +22,12 @@ git commit -m ":rocket: new deploy from travis-ci"
 echo ""
 echo "Pulling latest gh-pages..."
 
-git pull $REPO_URL refs/heads/gh-pages -m ":rocket: merge from travis-ci"
+git checkout -b gh-pages origin/gh-pages -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "Pushing..."
 
-git push $REPO_URL refs/heads/gh-pages
+git push origin gh-pages
 
 echo ""
 echo "#### DEPLOY COMPLETE"

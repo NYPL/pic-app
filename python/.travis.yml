@@ -1,0 +1,12 @@
+language: python
+python:
+  - '2.7'
+install:
+  - pip install -r requirements.txt
+before_script:
+  - ./prebuild.sh
+env:
+  global:
+    - 'FOO="BAR"'
+    - 'GH_REPO="mgiraldo/pic"'
+    - secure: Wy0kR4eiUldb+0O0QjPo191bMEOJo0512Bdpnpl4ShbZ1es1sJEFdpHz1L+XJlw4HuZ8U8rVySCbhEISbVg1Rn4Ey2q9403S8sCWfcj8sYqUh4IaxWLDMmV4U9+o+myYegjPE+qGGkMu1+jshcBNFaXLH7Q1bzNxqHrkYpNjWNLtQQ0W9mqgn0Qb4PaViA0dY/3Ksj2xMpVke/xAotVjWA0iTMokVAieybaez5cVwb58/Qh/UM3lVCHvZpGI5x9+iy9NILY1Y/dLCpcbkX2U2TP9GrMAdLRIut0HHLMcTLRW18AkqW4ijnyeRYMuiiJJ5S6lUzVNqBvJTqbrnLJ6T2F2R1BKtznGaugqCvrOSwiOBQq2QuxmGHNfr7X9gsvdEPyitffAI2AxF73tkshnk6HM7ZNF7JAc6pBXTlQ8Zca6rOHpvs/CCIsgZM0ay4feTtTkeT8mY6bDrEynffe5JJ6LsfaQBrd0YDr24o23+ofNutcSC6XpiJNHneHrOoBEibBSNt5LKdsRI7aOTMiD3Sel5z4I0zAdMQ7K+njqzvJlbdbuJ/QFK4k2Ia9RRkgShSO0gOQg3jm64A7NPmI4S2KY5YGXjwQw4bsJidQdOpumzlB2xABGJaj4GubTMKgnDm7AeLY2J+g2px8UA78gLQ4D/pbvJ7RouZvSAg5TNgY=

@@ -57,10 +57,10 @@ def compress_address(remarks):
     return temp
 
 def process_csv(filename):
-    baseurl = os.environ['BASEURL']
-    readpath = baseurl+filename
+    basepath = os.environ['BASEPATH']
+    readpath = basepath+filename
     print "loaded " + readpath
-    response = urllib2.urlopen(readpath)
+    response = open(readpath)
     reader = csv.DictReader(response)
     return reader
 
@@ -69,10 +69,9 @@ def generate_base_locations():
     Gets all locations/heights for photographers
     Saves in latlons.txt and heights.txt
     """
-    baseurl = os.environ['BASEURL']
     basepath = os.environ['BASEPATH']
-    response = urllib2.urlopen(baseurl+'address.csv')
-    print "loaded " + baseurl + "address.csv"
+    response = open(basepath+'address.csv')
+    print "loaded " + basepath + "address.csv"
     reader = csv.DictReader(response)
     location_pattern = re.compile("(\-?\d+(\.\d+)?)\s*,\s*(\-?\d+(\.\d+)?).*")
     places = []
@@ -159,7 +158,6 @@ def process_constituents():
     """
     Consolidates all constituent data into a single dictionary. Pushes each dictionary as a document to Elastic.
     """
-    baseurl = os.environ['BASEURL']
     endpoint = os.environ['ENDPOINT']
     constituents = create_base_constituents()
     tables = ["format","biography","address","gender","process","role","collection"]

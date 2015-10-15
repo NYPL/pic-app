@@ -6,13 +6,13 @@ REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
 git clone $REPO_URL
 
-git pull $REPO_URL csv -m ":rocket: merge new csvs"
+cd pic
 
 python ./python/index_builder.py
 
 echo "STATUS"
 
-git config --global user.email "mauriciogiraldo+travis@nypl.org"
+git config --global user.email "$GH_EMAIL"
 
 git config --global user.name "Travis CI Bot"
 
@@ -22,4 +22,4 @@ git add ./csv/
 
 git commit -m ":rocket: new deploy from travis-ci"
 
-git push $REPO_URL gh-pages
+git push origin gh-pages

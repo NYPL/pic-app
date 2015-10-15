@@ -34,7 +34,7 @@ echo "Pushing..."
 
 git push $REPO_URL gh-pages
 
-git push --branch=gh-pages $REPO_URL
+git push $REPO_URL gh-pages
 
 echo ""
 echo "### DEPLOY COMPLETE"

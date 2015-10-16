@@ -26,14 +26,14 @@ echo "Pulling latest gh-pages..."
 
 git branch $BRANCH origin/$BRANCH
 echo "  Checkout"
-git checkout $BRANCH
+git checkout :$BRANCH
 echo "  Merge"
 git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "  Push"
 
-git push $REPO_URL $BRANCH
+git push $REPO_URL :$BRANCH
 
 echo ""
 echo "#### DEPLOY COMPLETE"

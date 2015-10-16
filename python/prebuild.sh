@@ -35,7 +35,7 @@ git checkout origin/csv
 
 echo ""
 echo "Run the index"
-# python ./python/index_builder.py
+python ./python/index_builder.py
 
 echo ""
 echo "Adding csv"

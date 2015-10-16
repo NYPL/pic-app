@@ -28,7 +28,7 @@ git remote rename origin old
 echo ""
 echo "new origin"
 git remote add origin $REPO_URL
-git checkout -b $BRANCH origin/$BRANCH
+git checkout origin/$BRANCH
 
 echo ""
 echo "new branches:"

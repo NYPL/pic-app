@@ -14,10 +14,6 @@ echo "#### STATUS"
 echo "Branch"
 git branch -a
 
-echo ""
-echo "Status"
-git status
-
 # echo ""
 # echo "rename"
 # git remote rename origin old
@@ -27,28 +23,30 @@ git status
 # git remote add origin $REPO_URL
 # git config remote.origin.url $REPO_URL
 
+echo "Getting csv branch"
 git checkout origin/csv
-
-# echo ""
-# echo "new branches:"
-# git branch -a
 
 echo ""
 echo "Run the index"
 python ./python/index_builder.py
 
+
 echo ""
-echo "Adding csv"
+echo "Status"
+git status
+
+echo ""
+echo "Adding new files"
 git add csv
 
 git commit -m ":rocket: new deploy from travis-ci"
 
 echo ""
-echo "Checkout"
+echo "Checkout of gh-pages"
 git checkout origin/gh-pages
 
 echo ""
-echo "Merge"
+echo "Merging"
 git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""

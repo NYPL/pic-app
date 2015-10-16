@@ -30,11 +30,11 @@ git pull origin csv
 
 echo ""
 echo "Checkout of gh-pages"
-git checkout -b gh-pages origin/gh-pages -m ":rocket: merge from travis-ci"
+git checkout -b gh-pages origin/gh-pages
 
 echo ""
 echo "Merging"
-git merge csv
+git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "Run the index"

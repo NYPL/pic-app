@@ -24,12 +24,14 @@ git commit -m ":rocket: new deploy from travis-ci"
 echo ""
 echo "Pulling latest gh-pages..."
 
+git branch $BRANCH origin/$BRANCH
+echo "  Checkout"
 git checkout $BRANCH
-
+echo "  Merge"
 git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""
-echo "Pushing..."
+echo "  Push"
 
 git push $REPO_URL $BRANCH
 

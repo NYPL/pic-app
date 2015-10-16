@@ -28,15 +28,12 @@ git remote rename origin old
 echo ""
 echo "new origin"
 git remote add origin $REPO_URL
+git config remote.origin.url $REPO_URL
 git checkout origin/$BRANCH
 
 echo ""
 echo "new branches:"
 git branch -a
-
-echo ""
-echo "config"
-git config remote.origin.url $REPO_URL
 
 echo ""
 echo "adding csv"

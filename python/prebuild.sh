@@ -7,8 +7,8 @@ REPO=$(git config remote.origin.url)
 BRANCH="gh-pages"
 REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
-git config user.name "travis-bot"
-git config user.email "travis"
+git config --global user.name "travis-bot"
+git config --global user.email "travis"
 
 # python ./python/index_builder.py
 
@@ -28,6 +28,7 @@ git remote rename origin old
 echo ""
 echo "new origin"
 git remote add origin $REPO_URL
+git checkout -b $BRANCH origin/$BRANCH
 
 echo ""
 echo "new branches:"

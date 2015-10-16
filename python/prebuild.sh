@@ -14,9 +14,25 @@ git config user.email "travis"
 
 echo ""
 echo "#### STATUS"
+echo "branch"
+git branch -a
 
+echo "status"
 git status
 
+echo "rename"
+git remote rename origin old
+
+echo "-v"
+git remote -v
+
+echo "new origin"
+git remote add origin $REPO_URL
+
+echo "config"
+git config remote.origin.url $REPO_URL
+
+echo "adding csv"
 git add csv
 
 git commit -m ":rocket: new deploy from travis-ci"
@@ -26,14 +42,14 @@ echo "Pulling latest gh-pages..."
 
 git branch $BRANCH origin/$BRANCH
 echo "  Checkout"
-git checkout :$BRANCH
+git checkout $BRANCH
 echo "  Merge"
 git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "  Push"
 
-git push $REPO_URL :$BRANCH
+git push origin $BRANCH
 
 echo ""
 echo "#### DEPLOY COMPLETE"

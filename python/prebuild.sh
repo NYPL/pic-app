@@ -1,29 +1,60 @@
 #!/bin/bash
 
-echo "pushing to $GH_REPO [via travis]"
+echo ""
+echo "#### STARTED TRAVIS MAGIC ON $GH_REPO"
 
-REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
+export REPO=$(git config remote.origin.url)
+export REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
-git clone $REPO_URL
+git config --global user.name "travis-bot"
+git config --global user.email "travis"
 
-cd pic
+echo ""
+echo "#### STATUS"
+echo "Branch"
+git branch -a
 
-git pull origin csv
-
-python ./python/index_builder.py
-
-echo "STATUS"
-
-git config --global user.email "$GH_EMAIL"
-
-git config --global user.name "Travis CI Bot"
-
+echo ""
+echo "Status"
 git status
 
-git add ./csv/
+# echo ""
+# echo "rename"
+# git remote rename origin old
+
+# echo ""
+# echo "new origin"
+# git remote add origin $REPO_URL
+# git config remote.origin.url $REPO_URL
+
+git checkout origin/csv
+
+# echo ""
+# echo "new branches:"
+# git branch -a
+
+echo ""
+echo "Run the index"
+# python ./python/index_builder.py
+
+echo ""
+echo "Adding csv"
+git add csv
 
 git commit -m ":rocket: new deploy from travis-ci"
 
-git push origin gh-pages
+echo ""
+echo "Checkout"
+git checkout origin/gh-pages
 
-echo "DEPLOY COMPLETE"
+echo ""
+echo "Merge"
+git merge csv -m ":rocket: merge from travis-ci"
+
+echo ""
+echo "Push"
+
+git push $REPO_URL gh-pages
+
+echo ""
+echo "#### DEPLOY COMPLETE"

@@ -31,7 +31,7 @@ git merge csv -m ":rocket: merge from travis-ci"
 echo ""
 echo "Pushing..."
 
-git push $REPO $BRANCH
+git push $REPO_URL $BRANCH
 
 echo ""
 echo "#### DEPLOY COMPLETE"

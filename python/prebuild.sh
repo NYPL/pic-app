@@ -30,7 +30,7 @@ git pull origin csv
 
 echo ""
 echo "Checkout of gh-pages"
-git checkout origin gh-pages
+git checkout -b gh-pages origin/gh-pages
 
 echo ""
 echo "Merging"

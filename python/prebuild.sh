@@ -26,12 +26,12 @@ echo "rename"
 git remote rename origin old
 
 echo ""
-echo "-v"
-git remote -v
-
-echo ""
 echo "new origin"
 git remote add origin $REPO_URL
+
+echo ""
+echo "new branches:"
+git branch -a
 
 echo ""
 echo "config"

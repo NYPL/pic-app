@@ -30,15 +30,15 @@ git pull origin csv
 
 echo ""
 echo "Checkout of gh-pages"
-git checkout -b gh-pages origin/gh-pages
+git checkout -b gh-pages origin/gh-pages -m ":rocket: merge from travis-ci"
 
 echo ""
 echo "Merging"
-git merge csv -m ":rocket: merge from travis-ci"
+git merge csv
 
 echo ""
 echo "Run the index"
-# python ./python/index_builder.py
+python ./python/index_builder.py
 
 echo ""
 echo "Status"

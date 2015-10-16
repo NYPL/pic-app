@@ -1,8 +1,8 @@
 language: python
 branches:
   except:
-  only:
   - gh-pages
+  only:
   - csv
 python:
 - '2.7'

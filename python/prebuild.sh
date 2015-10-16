@@ -54,7 +54,7 @@ git merge csv -m ":rocket: merge from travis-ci"
 echo ""
 echo "Push"
 
-git push $REPO_URL/gh-pages
+git push $REPO_URL gh-pages
 
 echo ""
 echo "#### DEPLOY COMPLETE"

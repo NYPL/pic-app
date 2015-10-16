@@ -3,9 +3,9 @@
 echo ""
 echo "#### STARTED TRAVIS MAGIC ON $GH_REPO"
 
-REPO=$(git config remote.origin.url)
-BRANCH="gh-pages"
-REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
+export REPO=$(git config remote.origin.url)
+export BRANCH="gh-pages"
+export REPO_URL="https://$GH_TOKEN@github.com/$GH_REPO.git"
 
 git config --global user.name "travis-bot"
 git config --global user.email "travis"

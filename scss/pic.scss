@@ -352,6 +352,16 @@ p {
         padding-left: 2em;
     }
 
+    .link-list li {
+
+        &:after {
+            @include drr-icon('');
+            font-size: 0.7em;
+            margin-left: 3px;
+            vertical-align: super;
+        }
+    }
+
 }
 
 .addresses {

@@ -231,13 +231,13 @@ var PIC;
             this.canvas = this.viewer.canvas;
             this.addNullIsland();
             this.points = this.scene.primitives.add(new Cesium.PointPrimitiveCollection());
-            this.points._rs = Cesium.RenderState.fromCache({
-                depthTest: {
-                    enabled: true
-                },
-                depthMask: false,
-                blending: Cesium.BlendingState.ADDITIVE_BLEND
-            });
+            // this.points._rs = Cesium.RenderState.fromCache({
+            //   depthTest : {
+            //     enabled : true
+            //   },
+            //   depthMask : false,
+            //   blending : Cesium.BlendingState.ADDITIVE_BLEND
+            // });
             this.lines = new Cesium.Primitive();
             this.scene.primitives.add(this.lines);
         };
@@ -658,29 +658,33 @@ var PIC;
                     if (p.collection[i].URL == "") {
                         continue;
                     }
-                    var link = '<a target="_blank" class="external" href="' + p.collection[i].URL + '">';
+                    var link = '<li><a target="_blank" class="external" href="' + p.collection[i].URL + '">';
                     link += this.facetValues["collections"][p.collection[i].TermID];
-                    link += '</a>';
+                    link += '</a></li>';
                     links.push(link);
                 }
                 if (links.length > 0) {
                     str += "<p>";
-                    str += "<strong>Included in collections:</strong><br />(links open in new window)<br />";
-                    str += links.join(", ");
+                    str += "<strong>Included in collections:</strong>";
+                    str += "<ul class=\"link-list\">";
+                    str += links.join("");
+                    str += "</ul>";
                     str += "</p>";
                 }
             }
             if (p.biography) {
                 str += "<p>";
-                str += "<strong>Data found in:</strong><br />(links open in new window)<br />";
+                str += "<strong>Data found in:</strong>";
+                str += "<ul class=\"link-list\">";
                 var links = [];
                 for (var i in p.biography) {
-                    var link = '<a target="_blank" class="external" href="' + p.biography[i].URL + '">';
+                    var link = '<li><a target="_blank" class="external" href="' + p.biography[i].URL + '">';
                     link += this.facetValues["biographies"][p.biography[i].TermID];
-                    link += '</a>';
+                    link += '</a></li>';
                     links.push(link);
                 }
-                str += links.join(", ");
+                str += links.join("");
+                str += "</ul>";
                 str += "</p>";
             }
             if (p.addressTotal > 0) {

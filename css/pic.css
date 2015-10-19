@@ -79,7 +79,8 @@ html, body {
   background: #444; }
 
 a:link {
-  color: #900; }
+  color: #900;
+  text-decoration: none; }
 
 a:visited {
   color: #660000; }

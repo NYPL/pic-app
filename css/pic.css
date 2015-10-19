@@ -364,25 +364,29 @@ p {
   #tooltip .tooltip-content {
     margin: 0 -10px 20px;
     padding-left: 2em; }
-  #tooltip .link-list li:after {
-    content: attr(data-icon);
-    content: "";
-    font-family: "nyplicons";
-    display: inline-block;
-    width: auto;
-    height: auto;
-    vertical-align: baseline;
-    background: none;
-    margin-top: 0;
-    speak: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: none;
-    font-weight: normal;
-    font-variant: normal;
-    font-size: 0.7em;
-    margin-left: 3px;
-    vertical-align: super; }
+  #tooltip .link-list {
+    margin-bottom: 1em; }
+    #tooltip .link-list li {
+      margin-bottom: 0.5em; }
+      #tooltip .link-list li:after {
+        content: attr(data-icon);
+        content: "";
+        font-family: "nyplicons";
+        display: inline-block;
+        width: auto;
+        height: auto;
+        vertical-align: baseline;
+        background: none;
+        margin-top: 0;
+        speak: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-transform: none;
+        font-weight: normal;
+        font-variant: normal;
+        font-size: 0.7em;
+        margin-left: 3px;
+        vertical-align: super; }
 
 .addresses {
   background: #efefef;

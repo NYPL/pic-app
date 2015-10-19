@@ -664,18 +664,17 @@ var PIC;
                     links.push(link);
                 }
                 if (links.length > 0) {
-                    str += "<p>";
-                    str += "<strong>Included in collections:</strong>";
+                    // str += "<p>";
                     str += "<ul class=\"link-list\">";
+                    str += "<strong>Included in collections:</strong>";
                     str += links.join("");
                     str += "</ul>";
-                    str += "</p>";
                 }
             }
             if (p.biography) {
-                str += "<p>";
-                str += "<strong>Data found in:</strong>";
+                // str += "<p>";
                 str += "<ul class=\"link-list\">";
+                str += "<strong>Data found in:</strong>";
                 var links = [];
                 for (var i in p.biography) {
                     var link = '<li><a target="_blank" class="external" href="' + p.biography[i].URL + '">';
@@ -685,7 +684,6 @@ var PIC;
                 }
                 str += links.join("");
                 str += "</ul>";
-                str += "</p>";
             }
             if (p.addressTotal > 0) {
                 str += '<div class="addresses">';

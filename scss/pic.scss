@@ -352,14 +352,20 @@ p {
         padding-left: 2em;
     }
 
-    .link-list li {
+    .link-list {
+        margin-bottom: 1em;
 
-        &:after {
-            @include drr-icon('');
-            font-size: 0.7em;
-            margin-left: 3px;
-            vertical-align: super;
+        li {
+            margin-bottom: 0.5em;
+
+            &:after {
+                @include drr-icon('');
+                font-size: 0.7em;
+                margin-left: 3px;
+                vertical-align: super;
+            }
         }
+
     }
 
 }

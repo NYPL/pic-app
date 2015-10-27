@@ -16,6 +16,7 @@ class Constituent(DocType):
     ConstituentTypeID = String()
     addressTotal = Integer()
     nameSort = String()
+    TextEntry = String()
 
     address = Nested(
         include_in_parent=True,

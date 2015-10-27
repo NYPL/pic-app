@@ -123,6 +123,9 @@ def create_base_constituents():
     constituents = {}
     for row in reader:
         row = remove_bom(row)
+        if (row['AlphaSort'] == None):
+            print "No AlphaSort in: " + row['ConstituentID']
+            row['AlphaSort'] = ''
         row['nameSort'] = row['AlphaSort'].split(" ")[0]
         constituents[row['ConstituentID']] = row
     return constituents

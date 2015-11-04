@@ -16,8 +16,8 @@ $white: #efefef;
 $gray: #aaa;
 $black: #444;
 $linkColor: #900;
-$minimizedWidth: 70px;
-$minimizedHeight: 50px;
+$minimizedWidth: 100px;
+$minimizedHeight: 60px;
 $iconSize: 30px;
 
 html, body {
@@ -99,6 +99,15 @@ p {
 
 #acronym {
     display: inline-block;
+
+    &:before {
+        @include drr-icon('N');
+        vertical-align: bottom;
+    }
+}
+
+#slogan {
+    margin-left: 35px;
 }
 
 .legend {

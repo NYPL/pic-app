@@ -942,24 +942,28 @@ var PIC;
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
-            var facetList = this.buildFacetList();
-            if (facetList.length === 0) {
-                this.displayBaseData();
-                return;
-            }
             var addresses = [];
             var data = this.buildFacetQuery();
             var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
-            // reset elastic results to prepare for the new set
+            this.start = new Date().getTime();
+            console.log("apply", data);
+            // clear
+            this.totalPhotographers = 0;
             this.elasticResults = {
                 data: data,
                 from: 0,
                 hits: [],
-                total: 0
+                total: 0,
+                filters: filters
             };
-            this.start = new Date().getTime();
-            console.log("apply", data);
-            this.getData(filters, data, this.getNextSet);
+            // end clear
+            var facetList = this.buildFacetList();
+            if (facetList.length === 0) {
+                this.displayBaseData();
+            }
+            else {
+                this.getData(filters, data, this.getNextSet);
+            }
             this.updateTotals(-1);
         };
         PIC.prototype.clearFilters = function () {
@@ -979,14 +983,14 @@ var PIC;
         };
         PIC.prototype.getNextSet = function (re) {
             var results = JSON.parse(re);
-            // console.log(results);
+            console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
-                var filters = "from=" + this.elasticResults.from;
+                var filters = this.elasticResults.filters + "&from=" + this.elasticResults.from;
                 this.getData(filters, data, this.getNextSet);
             }
             else {
@@ -1215,7 +1219,7 @@ var PIC;
             if (key !== "*") {
                 predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
-            predicate += " photographers ";
+            predicate += " constituents ";
             // name
             facet = this.facets[9];
             facetKey = facet[2];
@@ -1344,4 +1348,3 @@ var PIC;
     })();
     PIC_1.PIC = PIC;
 })(PIC || (PIC = {}));
-//# sourceMappingURL=pic.js.map

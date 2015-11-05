@@ -13,7 +13,7 @@ $iconFontFamily:        "nyplicons";
 }
 
 @font-face {
-  @include font-face($iconFontFamily, $fontPath, 'nypl-icon-pak-8-2015');
+  @include font-face($iconFontFamily, $fontPath, 'icomoon');
   font-weight: normal;
   font-style: normal;
 }

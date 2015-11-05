@@ -125,14 +125,16 @@ var PIC;
     PIC.Facet = Facet;
 })(PIC || (PIC = {}));
 ///<reference path='lib/jquery.d.ts' />
+///<reference path='lib/history.d.ts' />
 ///<reference path='lib/csvToArray.d.ts' />
 ///<reference path='lib/cesium.d.ts' />
 ///<reference path='Facet.ts' />
+var Historyjs = History;
 var PIC;
 (function (PIC_1) {
     var PIC = (function () {
         function PIC() {
-            this.elasticResults = { data: {}, from: 0, hits: [], total: 0 };
+            this.elasticResults = { data: {}, from: 0, hits: [], total: 0, filters: "" };
             this.pointArray = [];
             this.pointHash = {}; // contains the index to a given id in the pointArray
             this.latlonHeightHash = {};
@@ -197,13 +199,84 @@ var PIC;
                 "1": this.unknownColor
             };
         }
+        PIC.prototype.processStateChange = function () {
+            this.historyState = Historyjs.getState();
+            var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/") + 2));
+            console.log("str:", filterString, "hist:", this.historyState);
+            var keyVals = filterString.split("&");
+            for (var filter in keyVals) {
+                var pair = keyVals[filter].split("=");
+                // find the facet this belongs to
+                var key = pair[0] + ".";
+                var key1 = key.substring(0, key.indexOf("."));
+                var key2 = key.substring(key.indexOf(".") + 1, key.lastIndexOf(".")).replace(".", "");
+                if (key2 == "") {
+                    key2 = key1;
+                    key1 = "";
+                }
+                var facet = this.facetWithKeyPair(key1, key2);
+                if (facet === -1)
+                    continue;
+                // update the filter itself
+                this.filters[pair[0]] = pair[1];
+                // now update the widget
+                var widget = this.facetWidgets[facet[0]];
+                // console.log(key, key1, key2, facet, widget);
+                if (widget) {
+                    widget.setValue(pair[1]);
+                }
+                else {
+                    // date or name
+                    if (pair[0] == "DisplayName") {
+                        var str = "";
+                        if (pair[1] != "*") {
+                            var rawName = pair[1];
+                            rawName = rawName.replace(/[~1\(\)]/ig, "");
+                            var names = rawName.split(" AND ");
+                            str = names.join(" ");
+                        }
+                        $("#" + this.nameQueryElement).val(str);
+                    }
+                    else if (pair[0] == "Date") {
+                        var from = this.minYear.toString();
+                        var to = this.maxYear.toString();
+                        if (pair[1] != "*") {
+                            var rawDate = pair[1];
+                            rawDate = rawDate.replace(/[\[\]]/ig, "");
+                            var dates = rawDate.split(" TO ");
+                            from = dates[0];
+                            to = dates[1];
+                        }
+                        $("#" + this.fromDateElement).val(from);
+                        $("#" + this.toDateElement).val(to);
+                    }
+                }
+            }
+            this.changeState();
+        };
         PIC.prototype.init = function () {
+            var _this = this;
             this.getFacets();
             this.resetBounds();
             this.initWorld();
             this.loadBaseData();
             this.initMouseHandler();
             this.initListeners();
+            // url history management
+            $("#overlays").on("overlays:ready", function (e) {
+                var state = Historyjs.getState();
+                if (state.hash == "/") {
+                    _this.displayBaseData();
+                    _this.applyFilters();
+                }
+                else {
+                    _this.processStateChange();
+                }
+            });
+            Historyjs.Adapter.bind(window, 'statechange', function () {
+                _this.processStateChange();
+            });
+            // window.onstatechange = this.processStateChange.bind(this);
         };
         PIC.prototype.resetBounds = function () {
             this.bounds = [-180, -90, 180, 90];
@@ -287,7 +360,7 @@ var PIC;
                     continue;
                 this.pointArray[index][6] = heightData[i + 1];
             }
-            this.displayBaseData();
+            $("#overlays").trigger("overlays:ready");
         };
         PIC.prototype.displayBaseData = function () {
             this.addPoints(this.allIDs);
@@ -664,18 +737,17 @@ var PIC;
                     links.push(link);
                 }
                 if (links.length > 0) {
-                    str += "<p>";
-                    str += "<strong>Included in collections:</strong>";
+                    // str += "<p>";
                     str += "<ul class=\"link-list\">";
+                    str += "<strong>Included in collections:</strong>";
                     str += links.join("");
                     str += "</ul>";
-                    str += "</p>";
                 }
             }
             if (p.biography) {
-                str += "<p>";
-                str += "<strong>Data found in:</strong>";
+                // str += "<p>";
                 str += "<ul class=\"link-list\">";
+                str += "<strong>Data found in:</strong>";
                 var links = [];
                 for (var i in p.biography) {
                     var link = '<li><a target="_blank" class="external" href="' + p.biography[i].URL + '">';
@@ -685,7 +757,6 @@ var PIC;
                 }
                 str += links.join("");
                 str += "</ul>";
-                str += "</p>";
             }
             if (p.addressTotal > 0) {
                 str += '<div class="addresses">';
@@ -866,6 +937,13 @@ var PIC;
             }
             return -1;
         };
+        PIC.prototype.facetWithKeyPair = function (key1, key2) {
+            for (var i = 0; i < this.facets.length; i++) {
+                if (this.facets[i][2] == key2 && this.facets[i][4] == key1)
+                    return this.facets[i];
+            }
+            return -1;
+        };
         PIC.prototype.disableFacets = function () {
             $("#facets-clear").hide();
             for (var widget in this.facetWidgets) {
@@ -940,28 +1018,41 @@ var PIC;
             }
         };
         PIC.prototype.applyFilters = function () {
+            var url = "?";
+            var keyVals = [];
+            for (var filter in this.filters) {
+                keyVals.push(filter + "=" + this.filters[filter]);
+            }
+            url += keyVals.join("&");
+            Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+        };
+        PIC.prototype.changeState = function () {
             this.pickedEntity = undefined;
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
-            var facetList = this.buildFacetList();
-            if (facetList.length === 0) {
-                this.displayBaseData();
-                return;
-            }
             var addresses = [];
             var data = this.buildFacetQuery();
             var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
-            // reset elastic results to prepare for the new set
+            this.start = new Date().getTime();
+            console.log("apply", data);
+            // clear
+            this.totalPhotographers = 0;
             this.elasticResults = {
                 data: data,
                 from: 0,
                 hits: [],
-                total: 0
+                total: 0,
+                filters: filters
             };
-            this.start = new Date().getTime();
-            console.log("apply", data);
-            this.getData(filters, data, this.getNextSet);
+            // end clear
+            var facetList = this.buildFacetList();
+            if (facetList.length === 0) {
+                this.displayBaseData();
+            }
+            else {
+                this.getData(filters, data, this.getNextSet);
+            }
             this.updateTotals(-1);
         };
         PIC.prototype.clearFilters = function () {
@@ -981,14 +1072,14 @@ var PIC;
         };
         PIC.prototype.getNextSet = function (re) {
             var results = JSON.parse(re);
-            // console.log(results);
+            console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
-                var filters = "from=" + this.elasticResults.from;
+                var filters = this.elasticResults.filters + "&from=" + this.elasticResults.from;
                 this.getData(filters, data, this.getNextSet);
             }
             else {
@@ -1217,7 +1308,7 @@ var PIC;
             if (key !== "*") {
                 predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
-            predicate += " photographers ";
+            predicate += " constituents ";
             // name
             facet = this.facets[9];
             facetKey = facet[2];
@@ -1277,7 +1368,7 @@ var PIC;
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
                 str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
-                str = str.trim().replace(" ", "~1 ");
+                str = str.trim().replace(/\s/g, "~1 ");
                 str = str + "~1";
                 var f = str.split(" ");
                 var legit = [];
@@ -1316,7 +1407,6 @@ var PIC;
             }
         };
         PIC.prototype.onFacetChanged = function (widget) {
-            console.log(widget);
             if (widget.ID === "locations") {
                 widget.cleanFacets();
                 widget.selectItem(widget.defaultValue);

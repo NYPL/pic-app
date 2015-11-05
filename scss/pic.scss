@@ -16,8 +16,8 @@ $white: #efefef;
 $gray: #aaa;
 $black: #444;
 $linkColor: #900;
-$minimizedWidth: 70px;
-$minimizedHeight: 50px;
+$minimizedWidth: 100px;
+$minimizedHeight: 60px;
 $iconSize: 30px;
 
 html, body {
@@ -29,6 +29,7 @@ html, body {
 
 a:link {
     color: $linkColor;
+    text-decoration: none;
 }
 
 a:visited {
@@ -98,6 +99,15 @@ p {
 
 #acronym {
     display: inline-block;
+
+    &:before {
+        @include drr-icon('N');
+        vertical-align: bottom;
+    }
+}
+
+#slogan {
+    margin-left: 33px;
 }
 
 .legend {
@@ -352,14 +362,20 @@ p {
         padding-left: 2em;
     }
 
-    .link-list li {
+    .link-list {
+        margin-bottom: 1em;
 
-        &:after {
-            @include drr-icon('');
-            font-size: 0.7em;
-            margin-left: 3px;
-            vertical-align: super;
+        li {
+            margin-bottom: 0.5em;
+
+            &:after {
+                @include drr-icon('');
+                font-size: 0.7em;
+                margin-left: 3px;
+                vertical-align: super;
+            }
         }
+
     }
 
 }

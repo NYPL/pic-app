@@ -1,7 +1,9 @@
 ///<reference path='lib/jquery.d.ts' />
+///<reference path='lib/history.d.ts' />
 ///<reference path='lib/csvToArray.d.ts' />
 ///<reference path='lib/cesium.d.ts' />
 ///<reference path='Facet.ts' />
+var Historyjs: Historyjs = <any>History;
 
 module PIC {
     interface ElasticResults {
@@ -9,6 +11,7 @@ module PIC {
         from: number;
         hits: Array<any>;
         total: number;
+        filters: String;
     }
 
     interface FacetMap {
@@ -21,7 +24,7 @@ module PIC {
         canvas;
         points;
         handler;
-        elasticResults : ElasticResults = {data: {}, from: 0, hits:[], total:0};
+        elasticResults : ElasticResults = {data: {}, from: 0, hits:[], total:0, filters:""};
         pointArray = [];
         pointHash = {}; // contains the index to a given id in the pointArray
         latlonHeightHash = {};
@@ -95,6 +98,8 @@ module PIC {
 
         start : number;
 
+        historyState : HistoryState;
+
         selectedColor = new Cesium.Color(1, 1, 0.2, 1);
         bizColor = new Cesium.Color(1, 0.50, 0.01, 1);
         birthColor = new Cesium.Color(0.30, 0.68, 0.29, 1);
@@ -114,6 +119,64 @@ module PIC {
         constructor() {
         }
 
+        processStateChange () {
+            this.historyState = Historyjs.getState();
+
+            var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2));
+
+            console.log("str:", filterString, "hist:", this.historyState);
+
+            var keyVals = filterString.split("&");
+
+            for (var filter in keyVals) {
+                var pair = keyVals[filter].split("=");
+                // find the facet this belongs to
+                var key = pair[0] + ".";
+                var key1 = key.substring(0, key.indexOf("."));
+                var key2 = key.substring(key.indexOf(".") + 1, key.lastIndexOf(".")).replace(".", "");
+                if (key2 == "") {
+                    key2 = key1;
+                    key1 = "";
+                }
+                var facet = this.facetWithKeyPair(key1, key2);
+                if (facet === -1) continue;
+                // update the filter itself
+                this.filters[pair[0]] = pair[1];
+                // now update the widget
+                var widget = this.facetWidgets[facet[0]];
+                // console.log(key, key1, key2, facet, widget);
+                if (widget) {
+                    widget.setValue(pair[1]);
+                } else {
+                    // date or name
+                    if (pair[0] == "DisplayName") {
+                        var str = "";
+                        if (pair[1] != "*") {
+                            var rawName = pair[1];
+                            rawName = rawName.replace(/[~1\(\)]/ig, "");
+                            var names = rawName.split(" AND ");
+                            str = names.join(" ");
+                        }
+                        $("#" + this.nameQueryElement).val(str);
+                    } else if (pair[0] == "Date") {
+                        var from = this.minYear.toString();
+                        var to = this.maxYear.toString();
+                        if (pair[1] != "*") {
+                            var rawDate = pair[1];
+                            rawDate = rawDate.replace(/[\[\]]/ig, "");
+                            var dates = rawDate.split(" TO ");
+                            from = dates[0];
+                            to = dates[1];
+                        }
+                        $("#" + this.fromDateElement).val(from);
+                        $("#" + this.toDateElement).val(to);
+                    }
+                }
+            }
+
+            this.changeState();
+        }
+
         init() {
             this.getFacets();
             this.resetBounds();
@@ -121,6 +184,20 @@ module PIC {
             this.loadBaseData();
             this.initMouseHandler();
             this.initListeners();
+            // url history management
+            $("#overlays").on("overlays:ready", (e) => {
+                var state = Historyjs.getState();
+                if (state.hash == "/") {
+                    this.displayBaseData();
+                    this.applyFilters();
+                } else {
+                    this.processStateChange();
+                }
+            });
+            Historyjs.Adapter.bind(window, 'statechange', () => {
+                this.processStateChange();
+            });
+            // window.onstatechange = this.processStateChange.bind(this);
         }
 
         resetBounds () {
@@ -215,7 +292,7 @@ module PIC {
                 if (this.pointArray[index] === undefined) continue;
                 this.pointArray[index][6] = heightData[i+1];
             }
-            this.displayBaseData();
+            $("#overlays").trigger("overlays:ready");
         }
 
         displayBaseData () {
@@ -604,18 +681,18 @@ module PIC {
                     links.push(link);
                 }
                 if (links.length > 0) {
-                    str += "<p>";
-                    str += "<strong>Included in collections:</strong>";
+                    // str += "<p>";
                     str += "<ul class=\"link-list\">";
+                    str += "<strong>Included in collections:</strong>";
                     str += links.join("");
                     str += "</ul>";
-                    str += "</p>";
+                    // str += "</p>";
                 }
             }
             if (p.biography) {
-                str += "<p>";
-                str += "<strong>Data found in:</strong>";
+                // str += "<p>";
                 str += "<ul class=\"link-list\">";
+                str += "<strong>Data found in:</strong>";
                 var links = [];
                 for (var i in p.biography) {
                     var link = '<li><a target="_blank" class="external" href="'+ p.biography[i].URL +'">';
@@ -625,7 +702,7 @@ module PIC {
                 }
                 str += links.join("");
                 str += "</ul>";
-                str += "</p>";
+                // str += "</p>";
             }
             if (p.addressTotal > 0) {
                 str += '<div class="addresses">';
@@ -807,7 +884,14 @@ module PIC {
             return -1;
         }
 
-        disableFacets () {
+        facetWithKeyPair(key1, key2): Array<string> | Number {
+            for (var i = 0; i < this.facets.length; i++) {
+                if (this.facets[i][2] == key2 && this.facets[i][4] == key1) return this.facets[i];
+            }
+            return -1;
+        }
+
+        disableFacets() {
             $("#facets-clear").hide();
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].disable();
@@ -881,28 +965,41 @@ module PIC {
         }
 
         applyFilters () {
+            var url = "?";
+            var keyVals = [];
+            for (var filter in this.filters) {
+                keyVals.push(filter + "=" + this.filters[filter]);
+            }
+            url += keyVals.join("&");
+            Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+        }
+
+        changeState () {
             this.pickedEntity = undefined;
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
-            var facetList = this.buildFacetList();
-            if (facetList.length === 0) {
-                this.displayBaseData();
-                return;
-            }
             var addresses = [];
             var data = this.buildFacetQuery();
             var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
-            // reset elastic results to prepare for the new set
-            this.elasticResults = {
-                data : data,
-                from : 0,
-                hits : [],
-                total : 0,
-            };
             this.start = new Date().getTime();
             console.log("apply", data);
-            this.getData(filters, data, this.getNextSet);
+            // clear
+            this.totalPhotographers = 0;
+            this.elasticResults = {
+                data: data,
+                from: 0,
+                hits: [],
+                total: 0,
+                filters: filters,
+            };
+            // end clear
+            var facetList = this.buildFacetList();
+            if (facetList.length === 0) {
+                this.displayBaseData();
+            } else {
+                this.getData(filters, data, this.getNextSet);
+            }
             this.updateTotals(-1);
         }
 
@@ -923,14 +1020,14 @@ module PIC {
 
         getNextSet (re) {
             var results = JSON.parse(re);
-            // console.log(results);
+            console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
-                var filters = "from=" + this.elasticResults.from;
+                var filters = this.elasticResults.filters + "&from=" + this.elasticResults.from;
                 this.getData(filters, data, this.getNextSet);
             } else {
                 var end = new Date().getTime();
@@ -1166,7 +1263,7 @@ module PIC {
                 predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
 
-            predicate += " photographers ";
+            predicate += " constituents ";
 
             // name
             facet = this.facets[9];
@@ -1236,7 +1333,7 @@ module PIC {
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
                 str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,' ');
-                str = str.trim().replace(" ", "~1 ");
+                str = str.trim().replace(/\s/g, "~1 ");
                 str = str + "~1";
                 var f = str.split(" ");
                 var legit = [];
@@ -1277,7 +1374,6 @@ module PIC {
         }
 
         onFacetChanged (widget:Facet) {
-            console.log(widget);
             if (widget.ID === "locations") {
                 widget.cleanFacets();
                 widget.selectItem(widget.defaultValue);

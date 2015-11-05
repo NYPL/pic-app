@@ -1,8 +1,8 @@
 @charset "UTF-8";
 @font-face {
   font-family: "nyplicons";
-  src: url("../font/nypl-icon-pak-8-2015.eot");
-  src: url("../font/nypl-icon-pak-8-2015.eot?#iefix") format("embedded-opentype"), url("../font/nypl-icon-pak-8-2015.svg#nypl-icon-pak-8-2015") format("svg"), url("../font/nypl-icon-pak-8-2015.woff") format("woff"), url("../font/nypl-icon-pak-8-2015.ttf") format("truetype");
+  src: url("../font/icomoon.eot");
+  src: url("../font/icomoon.eot?#iefix") format("embedded-opentype"), url("../font/icomoon.svg#icomoon") format("svg"), url("../font/icomoon.woff") format("woff"), url("../font/icomoon.ttf") format("truetype");
   font-weight: normal;
   font-style: normal; }
 /* -------------------------------------------------------------
@@ -79,7 +79,8 @@ html, body {
   background: #444; }
 
 a:link {
-  color: #900; }
+  color: #900;
+  text-decoration: none; }
 
 a:visited {
   color: #660000; }
@@ -118,8 +119,8 @@ p {
   -moz-transition-timing-function: ease-in;
   transition-timing-function: ease-in; }
   #overlays.minimized {
-    width: 70px;
-    height: 50px;
+    width: 100px;
+    height: 60px;
     cursor: pointer;
     overflow-y: hidden; }
     #overlays.minimized #slogan, #overlays.minimized #facets, #overlays.minimized #tooltip, #overlays.minimized #overlay-minimize {
@@ -130,6 +131,26 @@ p {
 
 #acronym {
   display: inline-block; }
+  #acronym:before {
+    content: attr(data-icon);
+    content: "N";
+    font-family: "nyplicons";
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: baseline;
+    background: none;
+    margin-top: 0;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: none;
+    font-weight: normal;
+    font-variant: normal;
+    vertical-align: bottom; }
+
+#slogan {
+  margin-left: 33px; }
 
 .legend {
   font-size: 0.9em;
@@ -178,7 +199,7 @@ p {
   -moz-transition-timing-function: ease-in;
   transition-timing-function: ease-in; }
   #total-points.minimized {
-    left: 90px; }
+    left: 120px; }
   #total-points .number {
     font-size: 3em; }
 
@@ -364,25 +385,29 @@ p {
   #tooltip .tooltip-content {
     margin: 0 -10px 20px;
     padding-left: 2em; }
-  #tooltip .link-list li:after {
-    content: attr(data-icon);
-    content: "";
-    font-family: "nyplicons";
-    display: inline-block;
-    width: auto;
-    height: auto;
-    vertical-align: baseline;
-    background: none;
-    margin-top: 0;
-    speak: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: none;
-    font-weight: normal;
-    font-variant: normal;
-    font-size: 0.7em;
-    margin-left: 3px;
-    vertical-align: super; }
+  #tooltip .link-list {
+    margin-bottom: 1em; }
+    #tooltip .link-list li {
+      margin-bottom: 0.5em; }
+      #tooltip .link-list li:after {
+        content: attr(data-icon);
+        content: "";
+        font-family: "nyplicons";
+        display: inline-block;
+        width: auto;
+        height: auto;
+        vertical-align: baseline;
+        background: none;
+        margin-top: 0;
+        speak: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-transform: none;
+        font-weight: normal;
+        font-variant: normal;
+        font-size: 0.7em;
+        margin-left: 3px;
+        vertical-align: super; }
 
 .addresses {
   background: #efefef;

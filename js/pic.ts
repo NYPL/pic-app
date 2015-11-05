@@ -1,7 +1,10 @@
 ///<reference path='lib/jquery.d.ts' />
+///<reference path='lib/history.d.ts' />
+///<reference path='lib/history.d.ts' />
 ///<reference path='lib/csvToArray.d.ts' />
 ///<reference path='lib/cesium.d.ts' />
 ///<reference path='Facet.ts' />
+var Historyjs: Historyjs = <any>History;
 
 module PIC {
     interface ElasticResults {
@@ -9,6 +12,7 @@ module PIC {
         from: number;
         hits: Array<any>;
         total: number;
+        filters: String;
     }
 
     interface FacetMap {
@@ -21,7 +25,7 @@ module PIC {
         canvas;
         points;
         handler;
-        elasticResults : ElasticResults = {data: {}, from: 0, hits:[], total:0};
+        elasticResults : ElasticResults = {data: {}, from: 0, hits:[], total:0, filters:""};
         pointArray = [];
         pointHash = {}; // contains the index to a given id in the pointArray
         latlonHeightHash = {};
@@ -95,6 +99,8 @@ module PIC {
 
         start : number;
 
+        historyState : HistoryState;
+
         selectedColor = new Cesium.Color(1, 1, 0.2, 1);
         bizColor = new Cesium.Color(1, 0.50, 0.01, 1);
         birthColor = new Cesium.Color(0.30, 0.68, 0.29, 1);
@@ -114,6 +120,64 @@ module PIC {
         constructor() {
         }
 
+        processStateChange () {
+            this.historyState = Historyjs.getState();
+
+            var filterString = this.historyState.hash.substr(2);
+
+            console.log("str:", filterString, "hist:", this.historyState);
+
+            var keyVals = filterString.split("&");
+
+            for (var filter in keyVals) {
+                var pair = keyVals[filter].split("=");
+                // find the facet this belongs to
+                var key = pair[0] + ".";
+                var key1 = key.substring(0, key.indexOf("."));
+                var key2 = key.substring(key.indexOf(".") + 1, key.lastIndexOf(".")).replace(".", "");
+                if (key2 == "") {
+                    key2 = key1;
+                    key1 = "";
+                }
+                var facet = this.facetWithKeyPair(key1, key2);
+                if (facet === -1) continue;
+                // update the filter itself
+                this.filters[pair[0]] = pair[1];
+                // now update the widget
+                var widget = this.facetWidgets[facet[0]];
+                // console.log(key, key1, key2, facet, widget);
+                if (widget) {
+                    widget.setValue(pair[1]);
+                } else {
+                    // date or name
+                    if (pair[0] == "DisplayName") {
+                        var str = "";
+                        if (pair[1] != "*") {
+                            var rawName = pair[1];
+                            rawName = rawName.replace(/[~1\(\)]/ig, "");
+                            var names = rawName.split(" AND ");
+                            str = names.join(" ");
+                        }
+                        $("#" + this.nameQueryElement).val(str);
+                    } else if (pair[0] == "Date") {
+                        var from = this.minYear.toString();
+                        var to = this.maxYear.toString();
+                        if (pair[1] != "*") {
+                            var rawDate = pair[1];
+                            rawDate = rawDate.replace(/[\[\]]/ig, "");
+                            var dates = rawDate.split(" TO ");
+                            from = dates[0];
+                            to = dates[1];
+                        }
+                        $("#" + this.fromDateElement).val(from);
+                        $("#" + this.toDateElement).val(to);
+                    }
+                }
+            }
+
+            this.changeState();
+        }
+
         init() {
             this.getFacets();
             this.resetBounds();
@@ -121,6 +185,20 @@ module PIC {
             this.loadBaseData();
             this.initMouseHandler();
             this.initListeners();
+            // url history management
+            $("#overlays").on("overlays:ready", (e) => {
+                var state = Historyjs.getState();
+                if (state.hash == "/") {
+                    this.displayBaseData();
+                    this.applyFilters();
+                } else {
+                    this.processStateChange();
+                }
+            });
+            Historyjs.Adapter.bind(window, 'statechange', () => {
+                this.processStateChange();
+            });
+            // window.onstatechange = this.processStateChange.bind(this);
         }
 
         resetBounds () {
@@ -215,7 +293,7 @@ module PIC {
                 if (this.pointArray[index] === undefined) continue;
                 this.pointArray[index][6] = heightData[i+1];
             }
-            this.displayBaseData();
+            $("#overlays").trigger("overlays:ready");
         }
 
         displayBaseData () {
@@ -807,7 +885,14 @@ module PIC {
             return -1;
         }
 
-        disableFacets () {
+        facetWithKeyPair(key1, key2): Array<string> | Number {
+            for (var i = 0; i < this.facets.length; i++) {
+                if (this.facets[i][2] == key2 && this.facets[i][4] == key1) return this.facets[i];
+            }
+            return -1;
+        }
+
+        disableFacets() {
             $("#facets-clear").hide();
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].disable();
@@ -881,6 +966,16 @@ module PIC {
         }
 
         applyFilters () {
+            var url = "?";
+            var keyVals = [];
+            for (var filter in this.filters) {
+                keyVals.push(filter + "=" + this.filters[filter]);
+            }
+            url += keyVals.join("&");
+            Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+        }
+
+        changeState () {
             this.pickedEntity = undefined;
             this.closeFacets();
             this.disableFacets();
@@ -1280,7 +1375,6 @@ module PIC {
         }
 
         onFacetChanged (widget:Facet) {
-            console.log(widget);
             if (widget.ID === "locations") {
                 widget.cleanFacets();
                 widget.selectItem(widget.defaultValue);

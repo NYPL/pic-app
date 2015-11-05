@@ -2,7 +2,7 @@ from elasticsearch_dsl import analyzer, DocType, Object, Nested, String, Integer
 
 accent_analyzer = analyzer('accent_analyzer',
     tokenizer='standard',
-    filter = ['asciifolding']
+    filter = ['lowercase', 'asciifolding']
 )
 
 class Constituent(DocType):

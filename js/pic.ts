@@ -1333,7 +1333,7 @@ module PIC {
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
                 str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,' ');
-                str = str.trim().replace(" ", "~1 ");
+                str = str.trim().replace(/\s/g, "~1 ");
                 str = str + "~1";
                 var f = str.split(" ");
                 var legit = [];

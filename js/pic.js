@@ -553,7 +553,7 @@ var PIC;
             var hits = data.hits.total;
             var str = "<div>";
             str += '<span class="hits">' + hits + '</span>';
-            str += hits === 1 ? " result" : " total photographers";
+            str += hits === 1 ? " result" : " total constituents";
             str += "<br /><span id='geoname'>&nbsp;</span>";
             str += "<br />click dot to view list";
             str += "</div>";
@@ -1284,14 +1284,14 @@ var PIC;
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                subject += "in " + this.facetValues[facet[0]][key] + " ";
+                subject += "in <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             // location
             facet = this.facets[11];
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                subject += "in latitude,longitude equal to " + this.filters[facetKey].split("|")[1] + " ";
+                subject += "in latitude,longitude equal to <em>" + this.filters[facetKey].split("|")[1] + "</em> ";
             }
             predicate = "for " + this.totalPhotographers + " ";
             // nationality
@@ -1299,7 +1299,7 @@ var PIC;
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += " " + this.facetValues[facet[0]][key];
+                predicate += " <em>" + this.facetValues[facet[0]][key] + "</em>";
             }
             // gender
             facet = this.facets[3];
@@ -1308,42 +1308,42 @@ var PIC;
             if (key !== "*") {
                 predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
             }
-            predicate += " constituents ";
+            predicate += this.totalPhotographers != 1 ? " constituents " : " constituent ";
             // name
             facet = this.facets[9];
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
                 var name = $("#" + this.nameQueryElement).val();
-                predicate += "named " + name + " ";
+                predicate += "named <em>" + name + "</em> ";
             }
             // process
             facet = this.facets[4];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += "who created " + this.facetValues[facet[0]][key] + " ";
+                predicate += "who created <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             // role
             facet = this.facets[5];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += "who worked as " + this.facetValues[facet[0]][key] + " ";
+                predicate += "who worked as <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             // format
             facet = this.facets[6];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += "producing " + this.facetValues[facet[0]][key] + " ";
+                predicate += "producing <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             // collections
             facet = this.facets[8];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += "whose work is collected by " + this.facetValues[facet[0]][key] + " ";
+                predicate += "whose work is collected by <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             // dates
             facet = this.facets[10];
@@ -1352,14 +1352,14 @@ var PIC;
             if (key !== "*") {
                 var dates = $("#" + this.fromDateElement).val();
                 dates += " to " + $("#" + this.toDateElement).val();
-                predicate += "who were alive or active from " + dates + " ";
+                predicate += "who were alive or active from <em>" + dates + "</em> ";
             }
             // biography
             facet = this.facets[7];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += "whose data came in part from " + this.facetValues[facet[0]][key] + " ";
+                predicate += "whose data came in part from <em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
             text = subject + predicate;
             return text;

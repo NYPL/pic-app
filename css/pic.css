@@ -186,7 +186,7 @@ p {
   top: 10px;
   max-width: 500px;
   text-shadow: -1px 1px 0px #444;
-  color: #efefef;
+  color: #aaa;
   font-size: 1em;
   margin-bottom: 10px;
   -webkit-transition-property: all;
@@ -200,7 +200,11 @@ p {
   transition-timing-function: ease-in; }
   #total-points.minimized {
     left: 120px; }
+  #total-points em {
+    font-style: normal;
+    color: #efefef; }
   #total-points .number {
+    color: #efefef;
     font-size: 3em; }
 
 .biz.color {

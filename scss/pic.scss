@@ -147,7 +147,7 @@ p {
     top: $generalMargin;
     max-width: 500px;
     @include text-shadow(-1px, 1px, 0px, $black);
-    color: $white;
+    color: $gray;
     font-size: 1em;
     margin-bottom: $generalMargin;
 
@@ -159,7 +159,13 @@ p {
         left: $generalMargin + $minimizedWidth + $generalMargin;
     }
 
+    em {
+        font-style: normal;
+        color: $white;
+    }
+
     .number {
+        color: $white;
         font-size: 3em;
     }
 }

@@ -142,6 +142,8 @@ module PIC {
                 if (facet === -1) continue;
                 // update the filter itself
                 pair[1] = pair[1].replace(/%20/g, " ");
+                pair[1] = pair[1].replace(/%29/g, ")");
+                pair[1] = pair[1].replace(/%28/g, "(");
                 this.filters[pair[0]] = pair[1];
                 // now update the widget
                 var widget = this.facetWidgets[facet[0]];

@@ -141,6 +141,7 @@ module PIC {
                 var facet = this.facetWithKeyPair(key1, key2);
                 if (facet === -1) continue;
                 // update the filter itself
+                pair[1] = pair[1].replace(/%20/g, " ");
                 this.filters[pair[0]] = pair[1];
                 // now update the widget
                 var widget = this.facetWidgets[facet[0]];

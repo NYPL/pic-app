@@ -122,7 +122,7 @@ module PIC {
         processStateChange () {
             this.historyState = Historyjs.getState();
 
-            var filterString = this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2);
+            var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2));
 
             console.log("str:", filterString, "hist:", this.historyState);
 
@@ -141,9 +141,6 @@ module PIC {
                 var facet = this.facetWithKeyPair(key1, key2);
                 if (facet === -1) continue;
                 // update the filter itself
-                pair[1] = pair[1].replace(/%20/g, " ");
-                pair[1] = pair[1].replace(/%29/g, ")");
-                pair[1] = pair[1].replace(/%28/g, "(");
                 this.filters[pair[0]] = pair[1];
                 // now update the widget
                 var widget = this.facetWidgets[facet[0]];

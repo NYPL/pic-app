@@ -126,7 +126,6 @@ var PIC;
 })(PIC || (PIC = {}));
 ///<reference path='lib/jquery.d.ts' />
 ///<reference path='lib/history.d.ts' />
-///<reference path='lib/history.d.ts' />
 ///<reference path='lib/csvToArray.d.ts' />
 ///<reference path='lib/cesium.d.ts' />
 ///<reference path='Facet.ts' />

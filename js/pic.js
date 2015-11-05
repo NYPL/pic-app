@@ -535,13 +535,13 @@ var PIC;
         };
         PIC.prototype.buildHover = function () {
             var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var filter = "filter_path=hits.total";
+            var filter = "filter_path=hits.total,hits.hits._source&_source=DisplayName&size=3";
             // TODO: fix hover query
             var query = '(address.Remarks:"' + position + '")';
             var facetList = this.buildFacetList();
             facetList.push(query);
             var data = this.buildFacetQuery(facetList);
-            console.log("hover", data);
+            // console.log("hover", data);
             this.getData(filter, data, this.buildHoverContent);
         };
         PIC.prototype.buildHoverContent = function (responseText) {
@@ -550,10 +550,15 @@ var PIC;
                 return;
             var position = this.pickedEntity.entity.primitive.originalLatlon;
             var data = JSON.parse(responseText);
+            console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
             str += '<span class="hits">' + hits + '</span>';
             str += hits === 1 ? " result" : " total constituents";
+            if (hits > 1)
+                str += " including";
+            if (hits > 0)
+                str += " " + data.hits.hits.map(function (ob) { return ob._source.DisplayName; }).join(", ");
             str += "<br /><span id='geoname'>&nbsp;</span>";
             str += "<br />click dot to view list";
             str += "</div>";

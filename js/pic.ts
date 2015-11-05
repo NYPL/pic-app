@@ -122,7 +122,7 @@ module PIC {
         processStateChange () {
             this.historyState = Historyjs.getState();
 
-            var filterString = this.historyState.hash.substr(2);
+            var filterString = this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2);
 
             console.log("str:", filterString, "hist:", this.historyState);
 

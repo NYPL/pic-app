@@ -201,7 +201,7 @@ var PIC;
         }
         PIC.prototype.processStateChange = function () {
             this.historyState = Historyjs.getState();
-            var filterString = this.historyState.hash.substr(2);
+            var filterString = this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/") + 2);
             console.log("str:", filterString, "hist:", this.historyState);
             var keyVals = filterString.split("&");
             for (var filter in keyVals) {

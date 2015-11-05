@@ -1224,7 +1224,7 @@ module PIC {
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                subject += this.facetValues[facet[0]][key] + " ";
+                subject += "<em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
 
             subject += "locations ";
@@ -1260,7 +1260,7 @@ module PIC {
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + this.facetValues[facet[0]][key] + " ";
+                predicate += (predicate !== "for " + this.totalPhotographers + " " ? ", " : "") + "<em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
 
             predicate += this.totalPhotographers != 1 ? " constituents " : " constituent ";

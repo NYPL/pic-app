@@ -201,8 +201,8 @@ def process_constituents():
     # except:
     #     pass
     myindex.settings(
-        number_of_shards=3,
-        number_of_replicas=5
+        number_of_shards=5,
+        number_of_replicas=2
     )
     myindex.create()
     actions = [build_action(value, index, document_type) for key, value in constituents.iteritems()]

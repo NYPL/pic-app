@@ -146,7 +146,13 @@ module PIC {
                 var widget = this.facetWidgets[facet[0]];
                 // console.log(key, key1, key2, facet, widget);
                 if (widget) {
-                    widget.setValue(pair[1]);
+                    if (pair[0] != "Location") {
+                        widget.setValue(pair[1]);
+                    } else {
+                        if (pair[1] == "*") continue;
+                        var latlon = pair[1].split("|")[1];
+                        this.setLatlonWidget(latlon);
+                    }
                 } else {
                     // date or name
                     if (pair[0] == "DisplayName") {
@@ -566,15 +572,18 @@ module PIC {
             var id = point.id;
             var latlon = point.primitive.originalLatlon;
             var realID = id.substr(2);
+            this.setLatlonWidget(latlon);
+            this.updateFilter("locations", realID + "|" + latlon);
+            this.applyFilters();
+        }
 
+        setLatlonWidget (latlon) {
             var widget = this.facetWidgets["locations"];
             widget.cleanFacets();
             widget.addFacetItem("location", latlon);
             widget.setValue(latlon);
             widget.selectItem(latlon.replace(/[\.,\s\*]/g, '_'));
             widget.setHeaderText(latlon);
-            this.updateFilter("locations", realID + "|" + latlon);
-            this.applyFilters();
         }
 
         closeFacets () {

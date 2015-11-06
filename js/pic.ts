@@ -236,13 +236,13 @@ module PIC {
             this.addNullIsland();
 
             this.points = this.scene.primitives.add(new Cesium.PointPrimitiveCollection());
-            // this.points._rs = Cesium.RenderState.fromCache({
-            //   depthTest : {
-            //     enabled : true
-            //   },
-            //   depthMask : false,
-            //   blending : Cesium.BlendingState.ADDITIVE_BLEND
-            // });
+            this.points._rs = Cesium.RenderState.fromCache({
+              depthTest : {
+                enabled : true
+              },
+              depthMask : false,
+              // blending : Cesium.BlendingState.ADDITIVE_BLEND
+            });
 
             this.lines = new Cesium.Primitive();
 
@@ -844,6 +844,10 @@ module PIC {
             }
 
             this.updateBounds();
+        }
+
+        dimPoints () {
+            // TODO: dim points function
         }
 
         getFacets () {

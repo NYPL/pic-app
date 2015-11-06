@@ -601,7 +601,7 @@ module PIC {
             var total = data.hits.total;
             this.totalPhotographers = total;
             if (total > this.tooltipLimit) {
-                var str = "<p>Found " + this.totalPhotographers + " photographers. Showing first " + this.tooltipLimit + ".</p>";
+                var str = "<p>Found " + this.totalPhotographers + " constituents. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);

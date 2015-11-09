@@ -74,7 +74,7 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: "nypl font", Helvetica, Arial, sans-serif;
+  font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   background: #444; }
 
@@ -271,7 +271,7 @@ p {
     margin-right: 10px; }
   #facets span, #facets .text {
     font-size: 1em;
-    font-family: "nypl font", Helvetica, Arial, sans-serif;
+    font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
     width: 210px;
     padding: 5px; }
   #facets .date.text {
@@ -445,5 +445,122 @@ p {
     white-space: nowrap; }
   #hover .hits {
     font-weight: bold; }
+
+#feedback {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 11111;
+  background: white;
+  width: 300px;
+  right: -301px;
+  font-size: 16px;
+  border: 1px solid #aaa;
+  border-right: none;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  -webkit-transition: all 0.2s ease-out;
+  -ms-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out; }
+  @media print {
+    #feedback {
+      display: none; } }
+  @media screen and (min-width: 0px) and (max-width: 525px) {
+    #feedback {
+      position: fixed;
+      width: 100%;
+      right: auto;
+      bottom: -275px; } }
+  #feedback.preload {
+    right: -500px; }
+    @media screen and (min-width: 0px) and (max-width: 525px) {
+      #feedback.preload {
+        right: auto;
+        bottom: -325px; } }
+  #feedback.open {
+    right: 0; }
+    @media screen and (min-width: 0px) and (max-width: 525px) {
+      #feedback.open {
+        right: auto;
+        bottom: 0; } }
+  #feedback #feedback-toggle {
+    position: absolute;
+    right: 300px;
+    bottom: -1px;
+    background-color: #aaa;
+    color: #efefef; }
+    @media screen and (min-width: 0px) and (max-width: 525px) {
+      #feedback #feedback-toggle {
+        position: static;
+        width: 100%;
+        text-align: center;
+        bottom: -275px; } }
+    #feedback #feedback-toggle a {
+      display: none;
+      padding: 10px 30px; }
+      #feedback #feedback-toggle a.visible {
+        display: block; }
+      #feedback #feedback-toggle a.close {
+        padding: 10px 50px;
+        white-space: nowrap; }
+      @media screen and (min-width: 0px) and (max-width: 525px) {
+        #feedback #feedback-toggle a {
+          font-size: 14px;
+          padding: 3px; } }
+  #feedback #feedback-form {
+    margin: 10px; }
+    #feedback #feedback-form h2 {
+      font-size: 20px;
+      margin: 0; }
+    #feedback #feedback-form ul {
+      margin-bottom: 5px; }
+      #feedback #feedback-form ul li {
+        display: inline-block;
+        margin-right: 10px; }
+    #feedback #feedback-form .button {
+      padding: 10px 20px;
+      margin: 5px 0;
+      display: inline-block;
+      background-color: #900;
+      color: #efefef; }
+    #feedback #feedback-form textarea {
+      font-size: 1em;
+      resize: none;
+      padding: 10px 10px 0 10px;
+      width: 258px;
+      height: 90px;
+      border: 1px solid #aaa;
+      border-bottom: none;
+      margin-bottom: 0;
+      font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+      #feedback #feedback-form textarea.error {
+        color: #900; }
+    #feedback #feedback-form #feedback-counter {
+      color: #aaa;
+      text-align: right;
+      padding: 0 10px 10px 10px;
+      width: 258px;
+      border: 1px solid #aaa;
+      border-top: none; }
+    #feedback #feedback-form .controls {
+      text-align: right; }
+  #feedback #feedback-wait {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #efefef;
+    text-align: center;
+    line-height: 260px; }
+    #feedback #feedback-wait .spinner {
+      left: 50%;
+      top: -100px; }
+  #feedback #feedback-thanks {
+    height: 100px; }
+  #feedback .step2 {
+    display: none; }
 
 /*# sourceMappingURL=pic.css.map */

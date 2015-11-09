@@ -7,7 +7,7 @@
     font-weight:800;
     src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format('woff');}
 
-$font: "nypl font", Helvetica, Arial, sans-serif;
+$font: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $columnWidth: 300px;
 $columnMargin: 30px;
 $generalMargin: 10px;
@@ -19,6 +19,12 @@ $linkColor: #900;
 $minimizedWidth: 100px;
 $minimizedHeight: 60px;
 $iconSize: 30px;
+$feedback-width: 300px;
+$feedback-height: 275px;
+$feedback-bottom: 0;
+$mobile-breakpoint: 525px;
+$button-width: 200px;
+$button-height: 50px;
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
@@ -433,5 +439,176 @@ p {
 
     .hits {
         font-weight: bold;
+    }
+}
+
+#feedback {
+    position: fixed;
+    bottom: $feedback-bottom;
+    right: 0;
+    z-index: 11111;
+    background: white;
+    width: $feedback-width;
+    right: -($feedback-width+1);
+    font-size: 16px;
+    // line-height: 24px;
+    border: 1px solid $gray;
+    border-right: none;
+
+    @media print {
+        display: none;
+    }
+
+    @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+        position: fixed;
+        width: 100%;
+        right: auto;
+        bottom: -$feedback-height;
+    }
+
+    &.preload {
+        right: -($feedback-width + $button-width);
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            right: auto;
+            bottom: -($feedback-height + $button-height);
+        }
+    }
+
+    @include transition(all, .2s, ease-out);
+
+    &.open {
+        right: 0;
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            right: auto;
+            bottom: 0;
+        }
+    }
+
+    #feedback-toggle {
+        position: absolute;
+        right: 300px;
+        bottom: -1px;
+        background-color: $gray;
+        color: $white;
+
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            position: static;
+            width: 100%;
+            text-align: center;
+            bottom: -$feedback-height;
+        }
+
+        a {
+            display: none;
+            padding: 10px 30px;
+            // color: $white;
+
+            &.visible {
+                display: block;
+            }
+
+            // &.open {
+            // }
+
+            &.close {
+                padding: 10px 50px;
+                white-space: nowrap;
+            }
+
+            // &:hover {
+            //  text-decoration: none;
+            //  background-color: $white;
+            //  color: $gray;
+            // }
+            @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+             font-size: 14px;
+             padding: 3px; 
+            }
+        }
+    }
+
+    #feedback-form {
+        margin: 10px;
+
+        h2 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        ul {
+            margin-bottom: 5px;
+
+            li {
+                display: inline-block;
+                margin-right: 10px;
+            }
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px 0;
+            display: inline-block;
+            background-color: $linkColor;
+            color: $white;
+            // text-transform: uppercase;
+        }
+
+        textarea {
+            font-size: 1em;
+            resize: none;
+            padding: 10px 10px 0 10px;
+            width: $feedback-width - 42;
+            height: 90px;
+            border: 1px solid $gray;
+            border-bottom: none;
+            margin-bottom: 0;
+            font-family: $font;
+
+            &.error {
+                color: $linkColor;
+            }
+        }
+
+        #feedback-counter {
+            color: $gray;
+            text-align: right;
+            padding: 0 10px 10px 10px;
+            width: $feedback-width - 42;
+            border: 1px solid $gray;
+            border-top: none;
+        }
+
+        .controls {
+            text-align: right;
+        }
+    }
+
+    #feedback-wait {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0,0,0,0.75);
+        color: $white;
+        text-align: center;
+        line-height: 260px;
+
+        .spinner {
+            left: 50%;
+            top: -100px;
+        }
+    }
+
+    #feedback-thanks {
+        height: 100px;
+    }
+
+    .step2 {
+        display: none;
     }
 }

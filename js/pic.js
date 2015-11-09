@@ -1155,6 +1155,17 @@ var PIC;
                 var p = this.pointArray[index];
                 if (!p)
                     continue;
+                // hack, because elastic returns all addresses of a given id
+                var tid = p[4];
+                var cid = p[5];
+                var loc = p[0] + "," + p[1];
+                if (addressType != "*" && tid != addressType)
+                    continue;
+                if (country != "*" && cid != country)
+                    continue;
+                if (latlon != "*" && loc != latlon)
+                    continue;
+                // end hack
                 var height;
                 // point has no real height
                 if (p[6] === undefined) {
@@ -1171,17 +1182,6 @@ var PIC;
                 else {
                     height = p[6];
                 }
-                // hack, because elastic returns all addresses of a given id
-                var tid = p[4];
-                var cid = p[5];
-                var loc = p[0] + "," + p[1];
-                if (addressType != "*" && tid != addressType)
-                    continue;
-                if (country != "*" && cid != country)
-                    continue;
-                if (latlon != "*" && loc != latlon)
-                    continue;
-                // end hack
                 this.elasticResults.total++;
                 this.expandBounds(p);
                 var pt = this.points.add({

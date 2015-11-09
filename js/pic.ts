@@ -380,7 +380,7 @@ module PIC {
 
         updateTotals (total) {
             if (total === -1) total = this.elasticResults.total;
-            $("#total-points").html("<span class=\"number\">" + total + "</span><br />" + this.humanizeFilters());
+            $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
         }
 
         updateBounds () {
@@ -503,7 +503,7 @@ module PIC {
             console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
-            str += '<span class="hits">' + hits + '</span>';
+            str += '<span class="hits">' + hits.toLocaleString() + '</span>';
             str += hits === 1 ? " result" : " total constituents";
             if (hits > 1) str += " including";
             if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
@@ -601,7 +601,7 @@ module PIC {
             var total = data.hits.total;
             this.totalPhotographers = total;
             if (total > this.tooltipLimit) {
-                var str = "<p>Found " + this.totalPhotographers + " constituents. Showing first " + this.tooltipLimit + ".</p>";
+                var str = "<p>Found " + this.totalPhotographers.toLocaleString() + " constituents. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
@@ -1261,7 +1261,7 @@ module PIC {
                 subject += "in latitude,longitude equal to <em>" + this.filters[facetKey].split("|")[1] + "</em> ";
             }
 
-            predicate = "for " + this.totalPhotographers + " ";
+            predicate = "for " + this.totalPhotographers.toLocaleString() + " ";
 
             // nationality
             facet = this.facets[2];

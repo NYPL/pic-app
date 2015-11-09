@@ -446,7 +446,7 @@ var PIC;
         PIC.prototype.updateTotals = function (total) {
             if (total === -1)
                 total = this.elasticResults.total;
-            $("#total-points").html("<span class=\"number\">" + total + "</span><br />" + this.humanizeFilters());
+            $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
         };
         PIC.prototype.updateBounds = function () {
             // console.log(bounds);
@@ -560,7 +560,7 @@ var PIC;
             console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
-            str += '<span class="hits">' + hits + '</span>';
+            str += '<span class="hits">' + hits.toLocaleString() + '</span>';
             str += hits === 1 ? " result" : " total constituents";
             if (hits > 1)
                 str += " including";
@@ -657,7 +657,7 @@ var PIC;
             var total = data.hits.total;
             this.totalPhotographers = total;
             if (total > this.tooltipLimit) {
-                var str = "<p>Found " + this.totalPhotographers + " constituents. Showing first " + this.tooltipLimit + ".</p>";
+                var str = "<p>Found " + this.totalPhotographers.toLocaleString() + " constituents. Showing first " + this.tooltipLimit + ".</p>";
                 this.tooltipElement.find(".results").prepend(str);
             }
             if (total > 0)
@@ -1311,7 +1311,7 @@ var PIC;
             if (key !== "*") {
                 subject += "in latitude,longitude equal to <em>" + this.filters[facetKey].split("|")[1] + "</em> ";
             }
-            predicate = "for " + this.totalPhotographers + " ";
+            predicate = "for " + this.totalPhotographers.toLocaleString() + " ";
             // nationality
             facet = this.facets[2];
             facetKey = facet[2];

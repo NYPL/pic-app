@@ -21,6 +21,7 @@ module PIC {
     export class PIC {
         viewer : Cesium.Viewer;
         scene : Cesium.Scene;
+        camera : Cesium.Camera;
         canvas;
         points;
         handler;
@@ -139,17 +140,20 @@ module PIC {
                     key1 = "";
                 }
                 var facet = this.facetWithKeyPair(key1, key2);
-                if (facet === -1) continue;
-                // update the filter itself
-                this.filters[pair[0]] = pair[1];
-                // now update the widget
-                var widget = this.facetWidgets[facet[0]];
-                // console.log(key, key1, key2, facet, widget);
+                if (facet === -1) {
+                    // some other thing such as camera view
+                    console.log("other", pair[0], pair[1]);
+                } else {
+                    // update the filter itself
+                    this.filters[pair[0]] = pair[1];
+                    // now update the widget
+                    var widget = this.facetWidgets[facet[0]];
+                    // console.log(key, key1, key2, facet, widget);
+                }
                 if (widget) {
                     if (pair[0] != "Location") {
                         widget.setValue(pair[1]);
                     } else {
-                        console.log(pair);
                         if (pair[1] == "*") {
                             widget.reset();
                         } else {
@@ -236,6 +240,7 @@ module PIC {
 
             this.scene = this.viewer.scene;
             this.canvas = this.viewer.canvas;
+            this.camera = this.viewer.camera;
 
             this.addNullIsland();
 
@@ -333,7 +338,7 @@ module PIC {
 
         getData(filters, data, callback, parameter = undefined) {
             var url = this.baseUrl+"/constituent/_search?sort=nameSort:asc&"+filters;
-            console.log(url, JSON.stringify(data));
+            // console.log(url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -504,7 +509,7 @@ module PIC {
             if (this.pickedEntity === undefined) return;
             var position = this.pickedEntity.entity.primitive.originalLatlon;
             var data = JSON.parse(responseText);
-            console.log("hover", data);
+            // console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
             str += '<span class="hits">' + hits.toLocaleString() + '</span>';
@@ -630,7 +635,7 @@ module PIC {
             this.tooltipElement.find(".more").empty();
             var filters = this.buildBaseQueryFilters(start);
             var data = this.buildFacetQuery();
-            console.log(start, data);
+            // console.log(start, data);
             this.getData(filters, data, function(responseText) {
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
@@ -1003,7 +1008,7 @@ module PIC {
             var data = this.buildFacetQuery();
             var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
             this.start = new Date().getTime();
-            console.log("apply", data);
+            // console.log("apply", data);
             // clear
             this.totalPhotographers = 0;
             this.elasticResults = {
@@ -1040,7 +1045,7 @@ module PIC {
 
         getNextSet (re) {
             var results = JSON.parse(re);
-            console.log(results);
+            // console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
@@ -1066,7 +1071,7 @@ module PIC {
         showTooltip () {
             var data = this.buildFacetQuery();
             var filters = this.buildBaseQueryFilters(0);
-            console.log("tooltip", data);
+            // console.log("tooltip", data);
             this.getData(filters, data, this.updateTooltip);
         }
 
@@ -1402,6 +1407,10 @@ module PIC {
             this.applyFilters();
         }
 
+        onCameraMoved (event:Cesium.Event) {
+            console.log("moved",this.camera.position);
+        }
+
         initListeners () {
             this.resetNameQuery();
             this.resetDateQuery();
@@ -1418,6 +1427,7 @@ module PIC {
             $("#overlay-minimize").click(() => this.minimize());
             window.onresize = this.fixOverlayHeight.bind(this);
             this.fixOverlayHeight();
+            this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }
     }
 }

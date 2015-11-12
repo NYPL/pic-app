@@ -36,7 +36,7 @@ class FeedbackController < ApplicationController
             string = request.env['HTTP_USER_AGENT']
             user_agent = UserAgent.parse(string)
             param_array = []
-            param_array << type[params[:type].to_i].to_s << params[:feedback_text].to_s << Time.new.to_s[0..19].to_s << params[:frompage] << request.env["HTTP_X_FORWARDED_FOR"].to_s << user_agent.platform << user_agent.browser << user_agent.version
+            param_array << type[params[:type].to_i].to_s << params[:feedback_id].to_s << params[:feedback_text].to_s << Time.new.to_s[0..19].to_s << params[:frompage] << request.env["HTTP_X_FORWARDED_FOR"].to_s << user_agent.platform << user_agent.browser << user_agent.version
             param_array.each_with_index do |item, i|
             ws[row,i+1] = item
             end

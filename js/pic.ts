@@ -149,9 +149,13 @@ module PIC {
                     if (pair[0] != "Location") {
                         widget.setValue(pair[1]);
                     } else {
-                        if (pair[1] == "*") continue;
-                        var latlon = pair[1].split("|")[1];
-                        this.setLatlonWidget(latlon);
+                        console.log(pair);
+                        if (pair[1] == "*") {
+                            widget.reset();
+                        } else {
+                            var latlon = pair[1].split("|")[1];
+                            this.setLatlonWidget(latlon);
+                        }
                     }
                 } else {
                     // date or name

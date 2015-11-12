@@ -227,10 +227,14 @@ var PIC;
                         widget.setValue(pair[1]);
                     }
                     else {
-                        if (pair[1] == "*")
-                            continue;
-                        var latlon = pair[1].split("|")[1];
-                        this.setLatlonWidget(latlon);
+                        console.log(pair);
+                        if (pair[1] == "*") {
+                            widget.reset();
+                        }
+                        else {
+                            var latlon = pair[1].split("|")[1];
+                            this.setLatlonWidget(latlon);
+                        }
                     }
                 }
                 else {

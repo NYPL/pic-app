@@ -556,6 +556,16 @@ p {
             // text-transform: uppercase;
         }
 
+        input.textfield {
+            font-size: 1em;
+            font-family: $font;
+            border: 1px solid $gray;
+            padding: 10px;
+            margin: 5px 0;
+            width: $feedback-width - 42;
+            display: inline-block;
+        }
+
         textarea {
             font-size: 1em;
             resize: none;

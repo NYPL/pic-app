@@ -123,8 +123,9 @@
     };
 
     Feedback.prototype.submit = function(e) {
-      var msg;
+      var form, msg;
       msg = this.txt_el.val().trim();
+      form = document.forms[1];
       if (msg === this.txt_el.data("placeholder") || msg === this.txt_el.data("error")) {
         this.txt_el.addClass("error");
         return this.txt_el.val(this.txt_el.data("error"));
@@ -133,13 +134,13 @@
         this.form_el.attr('action', 'http://picfeedback.herokuapp.com/save');
         this.form_el.submit((function(_this) {
           return function(e) {
-            var form;
             e.preventDefault();
             form = $(e.target);
             return $.getJSON(form.attr("action") + '.json', {
               frompage: document.location.href,
               feedback_text: msg,
-              type: document.forms[1].type.value
+              feedback_id: form.feedback_id.value,
+              type: form.type.value
             }, function(data) {
               return _this.changeStep();
             }).done(function() {

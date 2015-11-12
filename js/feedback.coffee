@@ -113,6 +113,7 @@ class Feedback
 
     submit: (e) =>
         msg = @txt_el.val().trim()
+        form = document.forms[1]
         if msg is @txt_el.data("placeholder") || msg is @txt_el.data("error")
             @txt_el.addClass("error")
             @txt_el.val( @txt_el.data("error") )
@@ -126,7 +127,8 @@ class Feedback
                     form.attr("action") + '.json',
                         frompage:document.location.href
                         feedback_text:msg
-                        type: document.forms[1].type.value
+                        feedback_id:form.feedback_id.value
+                        type: form.type.value
                     , (data) =>
                         # console.log "done", data
                         @changeStep()

@@ -523,6 +523,14 @@ p {
       display: inline-block;
       background-color: #900;
       color: #efefef; }
+    #feedback #feedback-form input.textfield {
+      font-size: 1em;
+      font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      border: 1px solid #aaa;
+      padding: 10px;
+      margin: 5px 0;
+      width: 258px;
+      display: inline-block; }
     #feedback #feedback-form textarea {
       font-size: 1em;
       resize: none;

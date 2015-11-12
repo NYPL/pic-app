@@ -5,9 +5,6 @@ class FeedbackController < ApplicationController
 
     def save_spreadsheet
         type = ["none","Suggest", "Like", "Dislike", "Bug"]
-        params[:type] = 2
-        params[:feedback_text] = "hey"
-        params[:frompage] = "index.html"
         if !params.nil?
             #require "rubygems"
             require "google/api_client"

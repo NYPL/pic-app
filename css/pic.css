@@ -567,7 +567,8 @@ p {
       left: 50%;
       top: -100px; }
   #feedback #feedback-thanks {
-    height: 100px; }
+    height: 100px;
+    margin-top: 10px; }
   #feedback .step2 {
     display: none; }
 

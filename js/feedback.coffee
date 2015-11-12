@@ -1,5 +1,7 @@
 class Feedback
 
+    tabletop: undefined
+
     constructor: (options) ->
         #element shortcuts
         @el = $("#feedback")
@@ -110,17 +112,29 @@ class Feedback
         @el.find("#feedback-1").prop('checked', true)
 
     submit: (e) =>
-        msg = @txt_el.val()
+        msg = @txt_el.val().trim()
         if msg is @txt_el.data("placeholder") || msg is @txt_el.data("error")
             @txt_el.addClass("error")
             @txt_el.val( @txt_el.data("error") )
         else
             @wait_el.show()
-            @form_el.trigger('submit.rails')
-            @form_el.bind 'ajax:success', () =>
-                # _gaq.push(['_trackEvent', 'Feedback', 'Success']) # analytics
-                # window.analytics.event 'Feedback', 'Success'
-                @changeStep()
+            @form_el.attr('action','http://picfeedback.herokuapp.com/save')
+            @form_el.submit((e) =>
+                e.preventDefault()
+                form  = $(e.target)
+                $.getJSON(
+                    form.attr("action") + '.json',
+                        frompage:document.location.href
+                        feedback_text:msg
+                        type: document.forms[0].type.value
+                    , (data) =>
+                        # console.log "done", data
+                        @changeStep()
+                ).done(()=>
+                    @changeStep()
+                )
+            )
+            @form_el.trigger('submit')
 
     changeStep: (e) =>
         @el.find(".step1").hide()
@@ -141,4 +155,4 @@ class Feedback
         @reset()
 
 $ ->
-    new Feedback()
+    window._fb = new Feedback()

@@ -4,6 +4,8 @@
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Feedback = (function() {
+    Feedback.prototype.tabletop = void 0;
+
     function Feedback(options) {
       this.close = bind(this.close, this);
       this.open = bind(this.open, this);
@@ -122,18 +124,30 @@
 
     Feedback.prototype.submit = function(e) {
       var msg;
-      msg = this.txt_el.val();
+      msg = this.txt_el.val().trim();
       if (msg === this.txt_el.data("placeholder") || msg === this.txt_el.data("error")) {
         this.txt_el.addClass("error");
         return this.txt_el.val(this.txt_el.data("error"));
       } else {
         this.wait_el.show();
-        this.form_el.trigger('submit.rails');
-        return this.form_el.bind('ajax:success', (function(_this) {
-          return function() {
-            return _this.changeStep();
+        this.form_el.attr('action', 'http://picfeedback.herokuapp.com/save');
+        this.form_el.submit((function(_this) {
+          return function(e) {
+            var form;
+            e.preventDefault();
+            form = $(e.target);
+            return $.getJSON(form.attr("action") + '.json', {
+              frompage: document.location.href,
+              feedback_text: msg,
+              type: document.forms[0].type.value
+            }, function(data) {
+              return _this.changeStep();
+            }).done(function() {
+              return _this.changeStep();
+            });
           };
         })(this));
+        return this.form_el.trigger('submit');
       }
     };
 
@@ -161,7 +175,7 @@
   })();
 
   $(function() {
-    return new Feedback();
+    return window._fb = new Feedback();
   });
 
 }).call(this);

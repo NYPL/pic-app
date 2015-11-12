@@ -139,7 +139,7 @@
             return $.getJSON(form.attr("action") + '.json', {
               frompage: document.location.href,
               feedback_text: msg,
-              type: document.forms[0].type.value
+              type: document.forms[1].type.value
             }, function(data) {
               return _this.changeStep();
             }).done(function() {

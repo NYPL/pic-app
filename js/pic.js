@@ -323,7 +323,8 @@ var PIC;
                 depthTest: {
                     enabled: true
                 },
-                depthMask: false
+                depthMask: false,
+                blending: Cesium.BlendingState.ADDITIVE_BLEND
             });
             this.lines = new Cesium.Primitive();
             this.scene.primitives.add(this.lines);

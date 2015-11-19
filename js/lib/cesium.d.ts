@@ -1,4 +1,3 @@
-
 declare module Cesium {
 
   export function defined(any): boolean;
@@ -14,6 +13,10 @@ declare module Cesium {
 
   interface Proxy {
       getURL(resource: string): string;
+  }
+
+  class BingMapsApi {
+      static defaultKey: string;
   }
 
   class ArcGisImageServerTerrainProvider {

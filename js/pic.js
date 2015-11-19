@@ -160,6 +160,7 @@ var PIC;
             this.mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
             this.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
             this.geonamesURL = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+            this.bingMapsKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
             // the way we knoe in elastic if a constituent has latlon-looking data
             this.latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
             this.tooltipElement = $("#tooltip");
@@ -296,7 +297,7 @@ var PIC;
             this.bounds = [-180, -90, 180, 90];
         };
         PIC.prototype.initWorld = function () {
-            Cesium.BingMapsApi.defaultKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
+            Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: new Cesium.OpenStreetMapImageryProvider({
                     url: this.tileUrl,
@@ -1461,7 +1462,7 @@ var PIC;
             $("#overlay-minimize").click(function () { return _this.minimize(); });
             window.onresize = this.fixOverlayHeight.bind(this);
             this.fixOverlayHeight();
-            this.camera.moveEnd.addEventListener(function () { return _this.onCameraMoved(); });
+            // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         };
         return PIC;
     })();

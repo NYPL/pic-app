@@ -65,6 +65,7 @@ module PIC {
         mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
         baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
         geonamesURL = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+        bingMapsKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
 
         // the way we knoe in elastic if a constituent has latlon-looking data
         latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
@@ -219,7 +220,7 @@ module PIC {
         }
 
         initWorld () {
-            Cesium.BingMapsApi.defaultKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
+            Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider : new Cesium.OpenStreetMapImageryProvider({
                     url : this.tileUrl, // nypllabs.7f17c2d1
@@ -1428,7 +1429,7 @@ module PIC {
             $("#overlay-minimize").click(() => this.minimize());
             window.onresize = this.fixOverlayHeight.bind(this);
             this.fixOverlayHeight();
-            this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
+            // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }
     }
 }

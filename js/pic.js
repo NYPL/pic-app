@@ -296,6 +296,7 @@ var PIC;
             this.bounds = [-180, -90, 180, 90];
         };
         PIC.prototype.initWorld = function () {
+            Cesium.BingMapsApi.defaultKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: new Cesium.OpenStreetMapImageryProvider({
                     url: this.tileUrl,

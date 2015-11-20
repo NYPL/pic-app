@@ -61,6 +61,8 @@ module PIC {
         startMousePosition;
         lastQuery;
 
+        rootPath = '../';
+
         tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
         mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
         baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
@@ -261,7 +263,7 @@ module PIC {
         }
 
         addNullIsland () {
-            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('js/null-island.geojson', {
+            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(this.rootPath + 'js/null-island.geojson', {
                 stroke: this.unknownColor,
                 strokeWidth: 3,
                 fill: this.invisibleColor,
@@ -270,7 +272,7 @@ module PIC {
         }
 
         loadBaseData () {
-            this.loadTextFile("csv/latlons.txt?i=" + Math.random()*100000, function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.random()*100000, function (responseText) {
                 var baseData = JSON.parse(responseText)[1];
                 this.parseBaseData(baseData);
             });
@@ -295,7 +297,7 @@ module PIC {
                 this.allIDs.push(id);
             }
 
-            this.loadTextFile("csv/heights.txt?i=" + Math.random()*100000, function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/heights.txt?i=" + Math.random() * 100000, function(responseText) {
                 var heightData = JSON.parse(responseText)[1];
                 this.parseHeightData(heightData);
             });
@@ -874,7 +876,7 @@ module PIC {
 
             this.createFacet(facet);
 
-            var url = "csv/"+facet[0]+".csv?i=" + Math.random()*100000;
+            var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.random() * 100000;
 
             this.loadTextFile(url, this.updateFacet, facet);
         }

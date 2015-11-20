@@ -156,6 +156,7 @@ var PIC;
             this.maxYear = new Date().getFullYear();
             this.debug = false;
             this.minimized = false;
+            this.rootPath = '../';
             this.tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
             this.mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
             this.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
@@ -332,7 +333,7 @@ var PIC;
             this.scene.primitives.add(this.lines);
         };
         PIC.prototype.addNullIsland = function () {
-            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load('js/null-island.geojson', {
+            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(this.rootPath + 'js/null-island.geojson', {
                 stroke: this.unknownColor,
                 strokeWidth: 3,
                 fill: this.invisibleColor,
@@ -340,7 +341,7 @@ var PIC;
             }));
         };
         PIC.prototype.loadBaseData = function () {
-            this.loadTextFile("csv/latlons.txt?i=" + Math.random() * 100000, function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.random() * 100000, function (responseText) {
                 var baseData = JSON.parse(responseText)[1];
                 this.parseBaseData(baseData);
             });
@@ -363,7 +364,7 @@ var PIC;
                 this.pointHash[id] = index;
                 this.allIDs.push(id);
             }
-            this.loadTextFile("csv/heights.txt?i=" + Math.random() * 100000, function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/heights.txt?i=" + Math.random() * 100000, function (responseText) {
                 var heightData = JSON.parse(responseText)[1];
                 this.parseHeightData(heightData);
             });
@@ -931,7 +932,7 @@ var PIC;
         PIC.prototype.getFacet = function (index) {
             var facet = this.facets[index];
             this.createFacet(facet);
-            var url = "csv/" + facet[0] + ".csv?i=" + Math.random() * 100000;
+            var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.random() * 100000;
             this.loadTextFile(url, this.updateFacet, facet);
         };
         PIC.prototype.createFacet = function (facet) {

@@ -1,21 +1,11 @@
 @import "bourbon/bourbon";
+@import "grid-settings";
+@import "neat/neat";
 @import "css3-mixins.scss";
 
-@font-face{
-    font-family:"nypl font";
-    font-style:normal;
-    font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format('woff');}
-
-$font: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $columnWidth: 300px;
 $columnMargin: 30px;
-$generalMargin: 10px;
 $facetMargin: 5px;
-$white: #efefef;
-$gray: #aaa;
-$black: #444;
-$linkColor: #900;
 $minimizedWidth: 100px;
 $minimizedHeight: 60px;
 $iconSize: 30px;
@@ -28,24 +18,10 @@ $button-height: 50px;
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-    font-family: $font;
-    font-size: 16px;
     background: $black;
 }
 
-a:link {
-    color: $linkColor;
-    text-decoration: none;
-}
-
-a:visited {
-    color: darken($linkColor, 10%);
-}
-
-p {
-    margin-bottom: 1em;
-    margin-right: $generalMargin;
-}
+/* map stuff */
 
 #cesiumContainer {
     position: absolute;
@@ -55,7 +31,7 @@ p {
     bottom: 0;
 }
 
-#header {
+#map-header {
     margin: $generalMargin;
 }
 
@@ -102,19 +78,6 @@ p {
 //   }
 // }
 // @include animation(popIn);
-
-#acronym {
-    display: inline-block;
-
-    &:before {
-        @include drr-icon('N');
-        vertical-align: bottom;
-    }
-}
-
-#slogan {
-    margin-left: 33px;
-}
 
 .legend {
     font-size: 0.9em;

@@ -1,5 +1,16 @@
 @charset "UTF-8";
 @font-face {
+  font-family: "nypl font";
+  font-style: normal;
+  font-weight: 800;
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format("woff"); }
+html {
+  box-sizing: border-box; }
+
+*, *::after, *::before {
+  box-sizing: inherit; }
+
+@font-face {
   font-family: "nyplicons";
   src: url("../font/icomoon.eot");
   src: url("../font/icomoon.eot?#iefix") format("embedded-opentype"), url("../font/icomoon.svg#icomoon") format("svg"), url("../font/icomoon.woff") format("woff"), url("../font/icomoon.ttf") format("truetype");
@@ -63,32 +74,15 @@
 /* TRANSFORM  */
 /* TRANSITION */
 /* TRIPLE BORDERS */
-@font-face {
-  font-family: "nypl font";
-  font-style: normal;
-  font-weight: 800;
-  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format("woff"); }
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
   background: #444; }
 
-a:link {
-  color: #900;
-  text-decoration: none; }
-
-a:visited {
-  color: #660000; }
-
-p {
-  margin-bottom: 1em;
-  margin-right: 10px; }
-
+/* map stuff */
 #cesiumContainer {
   position: absolute;
   left: 0;
@@ -96,7 +90,7 @@ p {
   right: 0;
   bottom: 0; }
 
-#header {
+#map-header {
   margin: 10px; }
 
 #overlays {
@@ -128,29 +122,6 @@ p {
 
 #overlay-minimize {
   cursor: pointer; }
-
-#acronym {
-  display: inline-block; }
-  #acronym:before {
-    content: attr(data-icon);
-    content: "N";
-    font-family: "nyplicons";
-    display: inline-block;
-    width: auto;
-    height: auto;
-    vertical-align: baseline;
-    background: none;
-    margin-top: 0;
-    speak: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: none;
-    font-weight: normal;
-    font-variant: normal;
-    vertical-align: bottom; }
-
-#slogan {
-  margin-left: 33px; }
 
 .legend {
   font-size: 0.9em;

@@ -89,6 +89,9 @@ html, body {
   line-height: normal; }
 
 /* map stuff */
+h3 {
+  font-family: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
 #cesiumContainer {
   position: absolute;
   left: 0;

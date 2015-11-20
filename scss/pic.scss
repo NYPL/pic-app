@@ -24,6 +24,10 @@ html, body {
 
 /* map stuff */
 
+h3 {
+    font-family: $bodyFont;
+}
+
 #cesiumContainer {
     position: absolute;
     left: 0;

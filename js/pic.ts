@@ -61,7 +61,7 @@ module PIC {
         startMousePosition;
         lastQuery;
 
-        rootPath = '../';
+        rootPath = '';
 
         tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
         mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';

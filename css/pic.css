@@ -1,9 +1,14 @@
 @charset "UTF-8";
 @font-face {
-  font-family: "nypl font";
+  font-family: "kievit font";
   font-style: normal;
   font-weight: 800;
   src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format("woff"); }
+@font-face {
+  font-family: "milo font";
+  font-style: normal;
+  font-weight: 800;
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-medium/MiloSlabWebPro-Medium.woff") format("woff"); }
 html {
   box-sizing: border-box; }
 
@@ -80,7 +85,8 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #444; }
+  background: #444;
+  line-height: normal; }
 
 /* map stuff */
 #cesiumContainer {
@@ -242,7 +248,7 @@ html, body {
     margin-right: 10px; }
   #facets span, #facets .text {
     font-size: 1em;
-    font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
     width: 210px;
     padding: 5px; }
   #facets .date.text {
@@ -496,7 +502,7 @@ html, body {
       color: #efefef; }
     #feedback #feedback-form input.textfield {
       font-size: 1em;
-      font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-family: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
       border: 1px solid #aaa;
       padding: 10px;
       margin: 5px 0;
@@ -511,7 +517,7 @@ html, body {
       border: 1px solid #aaa;
       border-bottom: none;
       margin-bottom: 0;
-      font-family: "nypl font", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+      font-family: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif; }
       #feedback #feedback-form textarea.error {
         color: #900; }
     #feedback #feedback-form #feedback-counter {

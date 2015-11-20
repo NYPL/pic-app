@@ -156,7 +156,7 @@ var PIC;
             this.maxYear = new Date().getFullYear();
             this.debug = false;
             this.minimized = false;
-            this.rootPath = '../';
+            this.rootPath = '';
             this.tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
             this.mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
             this.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";

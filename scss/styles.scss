@@ -1,0 +1,56 @@
+@import "bourbon/bourbon";
+@import "grid-settings";
+@import "neat/neat";
+@import "css3-mixins.scss";
+
+html, body {
+    margin: 20px 0 100px;
+    padding: 0;
+    font-family: $bodyFont;
+    font-size: 16px;
+    line-height: 1.5em;
+    background: $white;
+}
+
+a:link {
+    color: $linkColor;
+    text-decoration: none;
+}
+
+a:visited {
+    color: darken($linkColor, 10%);
+}
+
+h3 {
+    font-family: $headerFont;
+}
+
+p {
+    margin-bottom: 1em;
+    margin-right: $generalMargin;
+}
+
+/* normal site stuff */
+
+.wrapper {
+    @include outer-container;
+}
+
+.main-header, .intro, .footer {
+    @include span-columns(12);
+}
+
+#acronym {
+    display: inline-block;
+    line-height: normal;
+
+    &:before {
+        @include drr-icon('N');
+        vertical-align: bottom;
+    }
+}
+
+#slogan {
+    margin-left: 33px;
+}
+

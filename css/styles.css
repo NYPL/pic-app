@@ -1,0 +1,145 @@
+@font-face {
+  font-family: "kievit font";
+  font-style: normal;
+  font-weight: 800;
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format("woff"); }
+@font-face {
+  font-family: "milo font";
+  font-style: normal;
+  font-weight: 800;
+  src: url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-medium/MiloSlabWebPro-Medium.woff") format("woff"); }
+html {
+  box-sizing: border-box; }
+
+*, *::after, *::before {
+  box-sizing: inherit; }
+
+@font-face {
+  font-family: "nyplicons";
+  src: url("../font/icomoon.eot");
+  src: url("../font/icomoon.eot?#iefix") format("embedded-opentype"), url("../font/icomoon.svg#icomoon") format("svg"), url("../font/icomoon.woff") format("woff"), url("../font/icomoon.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+/* -------------------------------------------------------------
+  Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
+  By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets
+
+  List of CSS3 Sass Mixins File to be @imported and @included as you need
+
+  The purpose of this library is to facilitate the use of CSS3 on different browsers avoiding HARD TO READ and NEVER
+  ENDING css files
+
+  note: All CSS3 Properties are being supported by Safari 5
+  more info: http://www.findmebyip.com/litmus/#css3-properties
+
+  Mixins available:
+    -   background-gradient     - arguments: Start Color: #3C3C3C, End Color: #999999
+    -   background-size         - arguments: Width: 100%, Height: 100%
+    -   border-radius           - arguments: Radius: 5px
+    -   border-radius-separate  - arguments: Top Left: 5px, Top Right: 5px, Bottom Left: 5px, Bottom Right: 5px
+    -   box                     - arguments: Orientation: horizontal, Pack: center, Align: center
+    -   box-rgba                - arguments: R: 60, G: 3, B: 12, Opacity: 0.23, Color: #3C3C3C
+    -   box-shadow              - arguments: X: 2px, Y: 2px, Blur: 5px, Color: rgba(0,0,0,.4)
+    -   box-sizing              - arguments: Type: border-box
+    -   columns                 - arguments: Count: 3, Gap: 10
+    -   double-borders          - arguments: Color One: #3C3C3C, Color Two: #999999, Radius: 0
+    -   flex                    - arguments: Value: 1
+    -   flip                    - arguments: ScaleX: -1
+    -   font-face               - arguments: Font Family: myFont, Eot File Src: myFont.eot, Woff File Src: myFont.woff, Ttf File Src: myFont.ttf
+    -   opacity                 - arguments: Opacity: 0.5
+    -   outline radius          - arguments: Radius: 5px
+    -   resize                  - arguments: Direction: both
+    -   rotate                  - arguments: Degree: 0, M11: 0, M12: 0, M21: 0, M22: 0
+    CSS Matrix Rotation Calculator http://www.boogdesign.com/examples/transforms/matrix-calculator.html
+    -   text-shadow             - arguments: X: 2px, Y: 2px, Blur: 5px, Color: rgba(0,0,0,.4)
+    -   transform               - arguments: Parameters: null
+    -   transition              - arguments: What: all, Length: 1s, Easing: ease-in-out
+    -   triple-borders          - arguments: Color One: #3C3C3C, Color Two: #999999, Color Three: #000000, Radius: 0
+
+------------------------------------------------------------- */
+/* BACKGROUND GRADIENT */
+/* BACKGROUND SIZE */
+/* BORDER RADIUS */
+/* BOX */
+/* BOX RGBA */
+/* BOX SHADOW */
+/* BOX SHADOW INSET */
+/* BOX SIZING */
+/* COLUMNS */
+/* DOUBLE BORDERS */
+/* FLEX */
+/* FLIP */
+/* FONT FACE */
+/* OPACITY */
+/* OUTLINE RADIUS */
+/* RESIZE */
+/* ROTATE*/
+/* TEXT SHADOW */
+/* TRANSFORM  */
+/* TRANSITION */
+/* TRIPLE BORDERS */
+html, body {
+  margin: 20px 0 100px;
+  padding: 0;
+  font-family: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5em;
+  background: #efefef; }
+
+a:link {
+  color: #900;
+  text-decoration: none; }
+
+a:visited {
+  color: #660000; }
+
+h3 {
+  font-family: "milo font", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+p {
+  margin-bottom: 1em;
+  margin-right: 10px; }
+
+/* normal site stuff */
+.wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto; }
+  .wrapper::after {
+    clear: both;
+    content: "";
+    display: table; }
+
+.main-header, .intro, .footer {
+  float: left;
+  display: block;
+  margin-right: 2.12766%;
+  width: 100%; }
+  .main-header:last-child, .intro:last-child, .footer:last-child {
+    margin-right: 0; }
+
+#acronym {
+  display: inline-block;
+  line-height: normal; }
+  #acronym:before {
+    content: attr(data-icon);
+    content: "N";
+    font-family: "nyplicons";
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: baseline;
+    background: none;
+    margin-top: 0;
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: none;
+    font-weight: normal;
+    font-variant: normal;
+    vertical-align: bottom; }
+
+#slogan {
+  margin-left: 33px; }
+
+/*# sourceMappingURL=styles.css.map */

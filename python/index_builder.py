@@ -203,7 +203,7 @@ def process_constituents():
         if 'address' in constituents[cid]:
             constituents[cid]['address'] = sort_addresses(constituents[cid]['address'])
             constituents[cid]['addressTotal'] = len(constituents[cid]['address'])
-    now on to elastic
+    # now on to elastic
     index = 'pic'
     document_type = 'constituent'
     es = Elasticsearch([endpoint])

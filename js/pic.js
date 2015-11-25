@@ -47,6 +47,7 @@ var PIC;
         Facet.prototype.setValue = function (value) {
             this.value = value;
             $(this.IDPrefix).data("value", value);
+            this.selectItem(value);
             var txtValue = this.data[value];
             this.setHeaderText(txtValue);
         };
@@ -92,7 +93,6 @@ var PIC;
             var el = $(e.currentTarget);
             var value = el.data("value").toString();
             var id = el.attr("id");
-            this.selectItem(value);
             if (value === oldValue)
                 return;
             this.setValue(value);

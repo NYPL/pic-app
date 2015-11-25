@@ -168,11 +168,14 @@ module PIC {
                     // date or name
                     if (pair[0] == "DisplayName") {
                         var str = "";
-                        if (pair[1] != "*") {
-                            var rawName = pair[1];
-                            rawName = rawName.replace(/[~1\(\)]/ig, "");
+                        var rawName = pair[1];
+                        rawName = rawName.replace(/[~1\(\)]/ig, "");
+                        var isNumeric = !isNaN(Number(rawName));
+                        if (pair[1] != "*" && !isNumeric) {
                             var names = rawName.split(" AND ");
                             str = names.join(" ");
+                        } else if (isNumeric) {
+                            str = rawName;
                         }
                         $("#" + this.nameQueryElement).val(str);
                     } else if (pair[0] == "Date") {
@@ -272,7 +275,7 @@ module PIC {
         }
 
         loadBaseData () {
-            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.random()*100000, function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.round(Math.random()*100000), function (responseText) {
                 var baseData = JSON.parse(responseText)[1];
                 this.parseBaseData(baseData);
             });
@@ -960,7 +963,19 @@ module PIC {
             var nested = [];
             for (var k in facetList) {
                 if (facetList[k].indexOf("address.") === -1) {
-                    normal.push(facetList[k]);
+                    if (facetList[k].indexOf("DisplayName") !== -1) {
+                        // deconstruct facet to convert to ID
+                        var cleaned = facetList[k].replace(/([\(\)\:]*)/g, '');
+                        cleaned = cleaned.replace('DisplayName', '');
+                        var isNumeric = !isNaN(Number(cleaned));
+                        if (!isNumeric) {
+                            normal.push(facetList[k]);
+                        } else {
+                            normal.push("(ConstituentID:"+cleaned+")");
+                        }
+                    } else {
+                        normal.push(facetList[k]);
+                    }
                 } else {
                     nested.push(facetList[k]);
                 }
@@ -988,6 +1003,8 @@ module PIC {
             var facet = this.facetWithName(facetName);
             if (facet[4] != "") {
                 this.filters[facet[4]+"."+facet[2]] = value;
+            } else if (facet[2] === "DisplayName") {
+                this.filters[facet[2]] = value;
             } else {
                 this.filters[facet[2]] = value;
             }
@@ -1300,7 +1317,12 @@ module PIC {
             key = this.filters[facetKey];
             if (key !== "*") {
                 var name = $("#" + this.nameQueryElement).val();
-                predicate += "named <em>" + name + "</em> ";
+                var isNumeric = !isNaN(Number(name));
+                if (!isNumeric) {
+                    predicate += "named <em>" + name + "</em> ";
+                } else {
+                    predicate += "with ID <em>" + name + "</em> ";
+                }
             }
 
             // process
@@ -1361,16 +1383,19 @@ module PIC {
         updateNameFilter () {
             var str = $("#" + this.nameQueryElement).val().trim();
             if (str !== "") {
-                str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g,' ');
-                str = str.trim().replace(/\s/g, "~1 ");
-                str = str + "~1";
-                var f = str.split(" ");
-                var legit = [];
-                for (var thing in f) {
-                    var trimmed = f[thing].trim();
-                    if (trimmed !== "") legit.push(trimmed);
+                var isNumeric = !isNaN(Number(str));
+                if (!isNumeric) {
+                    str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
+                    str = str.trim().replace(/\s/g, "~1 ");
+                    str = str + "~1";
+                    var f = str.split(" ");
+                    var legit = [];
+                    for (var thing in f) {
+                        var trimmed = f[thing].trim();
+                        if (trimmed !== "") legit.push(trimmed);
+                    }
+                    str = '(' + legit.join(" AND ") + ')';
                 }
-                str = '(' + legit.join(" AND ") + ')';
             } else {
                 str = "*";
             }

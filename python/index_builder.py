@@ -90,7 +90,25 @@ def generate_base_locations():
         row['Remarks'] = remarks
         every_row.append(row)
     every_row = sorted(every_row, key=lambda d: d['BeginDate'])
-    for row in every_row:
+    # put born first and died last always
+    other_addresses = []
+    born_addresses = []
+    died_addresses = []
+    for add in every_row:
+        # put the active/biz ones
+        if (add['AddressTypeID'] == '7' or add['AddressTypeID'] == '2'):
+            other_addresses.append(add)
+        # find born if any
+        if (add['AddressTypeID'] == '5'):
+            born_addresses.append(add)
+        # find died if any
+        if (add['AddressTypeID'] == '6'):
+            died_addresses.append(add)
+    for_real_sorted_every_row = []
+    for_real_sorted_every_row.extend(born_addresses)
+    for_real_sorted_every_row.extend(other_addresses)
+    for_real_sorted_every_row.extend(died_addresses)
+    for row in for_real_sorted_every_row:
         address = compress_address(row['Remarks'])
         height = 0
         if len(address) > 2:
@@ -185,7 +203,7 @@ def process_constituents():
         if 'address' in constituents[cid]:
             constituents[cid]['address'] = sort_addresses(constituents[cid]['address'])
             constituents[cid]['addressTotal'] = len(constituents[cid]['address'])
-    # now on to elastic
+    now on to elastic
     index = 'pic'
     document_type = 'constituent'
     es = Elasticsearch([endpoint])

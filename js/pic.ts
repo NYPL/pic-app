@@ -169,7 +169,8 @@ module PIC {
                     if (pair[0] == "DisplayName") {
                         var str = "";
                         var rawName = pair[1];
-                        rawName = rawName.replace(/[~1\(\)]/ig, "");
+                        rawName = rawName.replace(/[\(\)]/ig, "");
+                        rawName = rawName.replace(/~1/g, "");
                         var isNumeric = !isNaN(Number(rawName));
                         if (pair[1] != "*" && !isNumeric) {
                             var names = rawName.split(" AND ");

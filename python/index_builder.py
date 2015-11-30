@@ -178,7 +178,8 @@ def process_constituents():
     """
     Consolidates all constituent data into a single dictionary. Pushes each dictionary as a document to Elastic.
     """
-    endpoint = os.environ['ENDPOINT']
+    start = timeit.default_timer()
+    endpoint = "https://" os.environ['ELASTIC_USER'] + ":" + os.environ['ELASTIC_PASSWORD'] + "@" + os.environ['ENDPOINT']
     constituents = create_base_constituents()
     tables = ["format","biography","address","gender","process","role","collection"]
     location_pattern = re.compile("(\-?\d+(\.\d+)?)\s*,\s*(\-?\d+(\.\d+)?)")
@@ -203,10 +204,12 @@ def process_constituents():
         if 'address' in constituents[cid]:
             constituents[cid]['address'] = sort_addresses(constituents[cid]['address'])
             constituents[cid]['addressTotal'] = len(constituents[cid]['address'])
+    end = timeit.default_timer()
+    print "Processed CSVs in " + (end - start) + " seconds"
+    print "Indexing..."
     # now on to elastic
     index = 'pic'
     document_type = 'constituent'
-    es = Elasticsearch([endpoint])
     connections.connections.create_connection(hosts=[endpoint], timeout=240)
     myindex = Index(index)
     myindex.doc_type(Constituent)
@@ -224,6 +227,7 @@ def process_constituents():
     )
     myindex.create()
     actions = [build_action(value, index, document_type) for key, value in constituents.iteritems()]
+    es = Elasticsearch([endpoint])
     helpers.bulk(es, actions)
     return constituents
 

@@ -205,7 +205,7 @@ def process_constituents():
             constituents[cid]['address'] = sort_addresses(constituents[cid]['address'])
             constituents[cid]['addressTotal'] = len(constituents[cid]['address'])
     end = timeit.default_timer()
-    print "Processed CSVs in " + (end - start) + " seconds"
+    print "Processed CSVs in " + str(end - start) + " seconds"
     print "Indexing..."
     # now on to elastic
     index = 'pic'

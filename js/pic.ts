@@ -353,6 +353,7 @@ module PIC {
 
             r.open("POST", url, true);
             r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            r.setRequestHeader('Authorization', 'Basic ' + btoa('readonly:aee8wm0320m'));
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
                 if (parameter === undefined) {
@@ -525,7 +526,7 @@ module PIC {
             if (hits > 1) str += " including";
             if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
             str += "<br /><span id='geoname'>&nbsp;</span>";
-            str += "<br />click dot to view list";
+            str += "<br />click dot to zoom and view list";
             str += "</div>";
             el.html(str);
             var latlon = position.split(",");

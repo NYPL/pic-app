@@ -179,7 +179,7 @@ def process_constituents():
     Consolidates all constituent data into a single dictionary. Pushes each dictionary as a document to Elastic.
     """
     start = timeit.default_timer()
-    endpoint = "https://" os.environ['ELASTIC_USER'] + ":" + os.environ['ELASTIC_PASSWORD'] + "@" + os.environ['ENDPOINT']
+    endpoint = "https://" + os.environ['ELASTIC_USER'] + ":" + os.environ['ELASTIC_PASSWORD'] + "@" + os.environ['ENDPOINT']
     constituents = create_base_constituents()
     tables = ["format","biography","address","gender","process","role","collection"]
     location_pattern = re.compile("(\-?\d+(\.\d+)?)\s*,\s*(\-?\d+(\.\d+)?)")

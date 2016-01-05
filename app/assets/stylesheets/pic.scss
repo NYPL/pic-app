@@ -1,0 +1,720 @@
+@import "bourbon";
+@import "grid-settings";
+@import "neat";
+@import "css3-mixins.scss";
+
+$facetsWidth: 20%;
+$resultsWidth: 30%;
+$columnMargin: 30px;
+$facetMargin: 5px;
+$minimizedWidth: 60px;
+$minimizedHeight: 60px;
+$iconSize: 30px;
+$feedback-width: 300px;
+$feedback-height: 275px;
+$feedback-bottom: 0;
+$mobile-breakpoint: 800px;
+$button-width: 200px;
+$button-height: 35px;
+
+html, body {
+    width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    background: $white;
+    line-height: normal;
+}
+
+/* map stuff */
+
+// override cesium toolbar
+
+.cesium-viewer-toolbar {
+    right: 45px;
+}
+
+.minimize, .maximize {
+    font-size: 1px;
+    color: $gray;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: $gray;
+    border-radius: 0 0 0 10px;
+    padding: $generalMargin $generalMargin 10px 10px;
+
+    &:before {
+        @include drr-icon('\e612');
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        color: $black;
+    }
+}
+
+.maximize {
+    &:before {
+        @include drr-icon('\e60e');
+    }
+}
+
+#cesiumContainer .maximize {
+    &:before {
+        @include drr-icon('\e60d');
+    }
+}
+
+#cesiumContainer .maximize, #cesiumContainer .minimize {
+    background-color: $black;
+
+    &:before, &:before {
+        color: $gray;
+    }
+}
+
+h3 {
+    font-family: $bodyFont;
+}
+
+hr {
+    border: none;
+    border-bottom: 1px solid $darkGray;
+}
+
+#cesiumContainer {
+    background-color: $black;
+}
+
+#cesiumContainer {
+    position: absolute;
+    left: ($facetsWidth + $resultsWidth);
+    width: (100% - $facetsWidth - $resultsWidth);
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+    }
+
+    &.minimized {
+        width: $minimizedWidth;
+        overflow: hidden;
+
+        #total-points, .legend, #hover {
+            display: none;
+        }
+    }
+}
+
+#map-header {
+    margin: $generalMargin;
+    padding-bottom: $generalMargin;
+    border-bottom: 1px solid $darkGray;
+}
+
+#facet-container {
+    background-color: $gray;
+    color: $black;
+    position: absolute;
+    width: $facetsWidth;
+    top: 0;//$generalMargin;
+    left: 0;//$generalMargin;
+    bottom: 0;
+    // padding-right: $generalMargin;
+    // border-radius: 3px;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    #facets {
+        height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    &.minimized {
+        width: $minimizedWidth;
+        overflow: hidden;
+
+        #facets-clear, #slogan, #facets {
+            display: none;
+        }
+    }
+}
+
+// @include keyframes(popIn) {
+//   0% {
+//     @include transform(rotateZ(-200deg) scale(0));
+//   }
+//   90% {
+//     @include transform(rotateZ(-20deg) scale(1.2));
+//   }
+//   100% {
+//     @include transform(rotateZ(-20deg) scale(1));
+//   }
+// }
+// @include animation(popIn);
+
+.legend {
+    font-size: 0.9em;
+    position: absolute;
+    z-index: 1;
+    left: $generalMargin;
+    bottom: $generalMargin;
+    color: $white;
+    @include text-shadow(-1px, 1px, 0px, $black);
+    // text-transform: uppercase;
+
+    @include transition-property(left);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    &.minimized {
+        left: $generalMargin;
+    }
+
+    li {
+        margin-bottom: 1em;
+
+        .color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: $generalMargin;
+            border-radius: 10px;
+            vertical-align: middle;
+        }
+    }
+}
+
+#total-points {
+    position: absolute;
+    z-index: 1;
+    left: $generalMargin;
+    top: $generalMargin;
+    max-width: 75%;
+    @include text-shadow(-1px, 1px, 0px, $black);
+    color: $gray;
+    font-size: 1em;
+    margin-bottom: $generalMargin;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    &.minimized {
+        left: $generalMargin + $minimizedWidth + $generalMargin;
+    }
+
+    em {
+        font-style: normal;
+        color: $white;
+    }
+
+    .number {
+        color: $white;
+        font-size: 3em;
+    }
+}
+
+
+.biz.color {
+    background-color: rgba(255, 127, 2, 1);
+}
+
+.born.color {
+    background-color: rgba(76, 173, 73, 1);
+}
+
+.died.color {
+    background-color: rgba(53, 124, 183, 1);
+}
+
+.active.color {
+    background-color: rgba(226, 25, 25, 1);
+}
+
+.hidden {
+    display: none;
+}
+
+.hl, .link {
+    color: $linkColor;
+}
+
+.link {
+    cursor: pointer;
+
+    &.more {
+        margin-bottom: 1em;
+    }
+}
+
+.more span {
+    display: block;
+    text-align: center;
+    padding: $generalMargin;
+    background: $linkColor;
+    color: $white;
+    border-radius: 3px;
+}
+
+#facets-clear {
+    cursor: pointer;
+}
+
+#facets {
+    margin: $generalMargin;
+
+    label {
+        display: block;
+        clear: both;
+    }
+
+    .icon.query {
+        @include drr-icon('');
+        display: block;
+        background-size: 100%;
+        cursor: pointer;
+        font-size: $iconSize;
+        float: right;
+        margin-right: $generalMargin;
+    }
+
+    span, .text {
+        font-size: 1em;
+        font-family: $bodyFont;
+        width: calc($facetsWidth - ($columnMargin * 2) - $iconSize);
+        padding: $facetMargin;
+    }
+
+    .date.text {
+        width: 60px;
+    }
+
+    .facet-header {
+        cursor: pointer;
+
+        &:before {
+            @include drr-icon('');
+            display: inline-block;
+            background-size: 100%;
+            margin-right: $facetMargin;
+            position: relative;
+            top: 2px;
+        }
+
+        &.open:before {
+            @include transform(rotateZ(90deg) translateY(-1px) translateX(-1px));
+        }
+
+    }
+
+    .facet-group {
+        display: none;
+
+        &.open {
+            display: block;
+        }
+    }
+
+    .facet-header, .facet-item {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .facet-item {
+        padding: $facetMargin;
+        padding-left: $generalMargin*2;
+
+        &:hover {
+            background: $black;
+            color: $white;
+        }
+
+        &.active {
+            font-weight: bold;
+
+            &:before {
+                content: "✓";
+                display: inline-block;
+                margin-left: -1 * $columnMargin * .5;
+                width: $columnMargin * .5;
+            }
+        }
+    }
+
+    .facet {
+        @include clearfix;
+        margin-bottom: $generalMargin;
+
+        &.disabled {
+            color: lighten($black, 20%);
+        }
+    }
+
+    .timeline {
+        @include clearfix;
+    }
+
+    .date-field {
+        float: left;
+        margin-right: $generalMargin;
+
+        label {
+            display: inline-block;
+        }
+    }
+
+}
+
+#constituents {
+    position: absolute;
+    left: $facetsWidth;
+    width: $resultsWidth;
+    background-color: $gray;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid $black;
+    padding: $generalMargin;
+
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
+
+    .scroller {
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    &.minimized {
+        width: $minimizedWidth;
+        overflow: hidden;
+
+        .results, .more {
+            display: none;
+        }
+    }
+
+    .constituent-item {
+        margin: 0 0 ($generalMargin * 2) 0;
+
+        h3 {
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: $linkColor;
+
+            &:before {
+                @include drr-icon('');
+                display: inline-block;
+                background-size: 100%;
+                margin-right: $facetMargin;
+                position: relative;
+                top: 2px;
+                width: 20px;
+                float: left;
+                margin-right: 10px;
+            }
+
+            &.open:before {
+                @include transform(rotateZ(90deg) translateY(-1px) translateX(-1px));
+            }
+
+            .title {
+                display: block;
+                float: left;
+                width: 230px;
+            }
+
+            .subtitle {
+                font-size: 0.8em;
+                font-weight: normal;
+                display: block;
+                line-height: 1.5em;
+                margin-left: 30px;
+                clear: both;
+            }
+        }
+    }
+
+    .constituent-content {
+        margin: 0 (-1 * $generalMargin) ($generalMargin * 2);
+        padding-left: 2em;
+
+        p {
+            margin-left: 7px;
+        }
+    }
+
+    .link-list {
+        margin-bottom: 1em;
+        margin-left: 7px;
+
+        li {
+            margin-bottom: 0.5em;
+
+            &:after {
+                @include drr-icon('');
+                font-size: 0.7em;
+                margin-left: 3px;
+                vertical-align: super;
+            }
+        }
+
+    }
+
+}
+
+.addresses {
+    background: $white;
+    padding: $generalMargin;
+    padding-left: 40px;
+    margin-left: -2em;
+
+    .address-item {
+        margin-bottom: $generalMargin;
+        padding-bottom: $generalMargin;
+        border-bottom: 1px solid $gray;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    .address-item-type {
+    }
+
+    .address-item-content {
+        margin-left: $generalMargin;
+    }
+}
+
+#hover {
+    width: $facetsWidth * 2;
+    position: absolute;
+    z-index: 1;
+    background: $white;
+    padding: $generalMargin;
+    left: -1000px;
+    top: -1000px;
+    text-align: center;
+    border-radius: 2px;
+
+    .geoname {
+        white-space: nowrap;
+    }
+
+    .hits {
+        font-weight: bold;
+    }
+}
+
+#feedback {
+    position: fixed;
+    bottom: $feedback-bottom;
+    right: 0;
+    z-index: 11111;
+    background: white;
+    width: $feedback-width;
+    right: -($feedback-width+1);
+    font-size: 16px;
+    // line-height: 24px;
+    border: 1px solid $gray;
+    border-right: none;
+
+    @media print {
+        display: none;
+    }
+
+    @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+        border-color: $black;
+        position: fixed;
+        width: 100%;
+        right: auto;
+        bottom: -$feedback-height;
+        height: $feedback-height + $button-height;
+    }
+
+    &.preload {
+        right: -($feedback-width + $button-width);
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            right: auto;
+            bottom: -($feedback-height + $button-height);
+        }
+    }
+
+    @include transition(all, .2s, ease-out);
+
+    &.open {
+        right: 0;
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            right: auto;
+            bottom: 0;
+        }
+    }
+
+    #feedback-toggle {
+        position: absolute;
+        right: 300px;
+        bottom: 0px;
+        background-color: $gray;
+        color: $white;
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            position: static;
+            width: 100%;
+            text-align: center;
+            height: $button-height;
+            padding-top: $button-height * .2;
+            // bottom: -$feedback-height;
+        }
+
+        a {
+            display: none;
+            padding: 10px 30px;
+            // color: $white;
+
+            &.visible {
+                display: block;
+            }
+
+            // &.open {
+            // }
+
+            &.close {
+                // padding: 10px 50px;
+                white-space: nowrap;
+            }
+
+            // &:hover {
+            //  text-decoration: none;
+            //  background-color: $white;
+            //  color: $gray;
+            // }
+            @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+             // font-size: 14px;
+             padding: 3px; 
+            }
+        }
+    }
+
+    #feedback-form {
+        margin: 10px;
+
+        @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+            height: $feedback-height;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        ul {
+            margin-bottom: 5px;
+
+            li {
+                display: inline-block;
+                margin-right: 10px;
+            }
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px 0;
+            display: inline-block;
+            background-color: $linkColor;
+            color: $white;
+            // text-transform: uppercase;
+        }
+
+        input.textfield {
+            font-size: 1em;
+            font-family: $bodyFont;
+            border: 1px solid $gray;
+            padding: 10px;
+            margin: 5px 0;
+            width: $feedback-width - 42;
+            display: inline-block;
+
+            @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+                width: 100%;
+            }
+        }
+
+        textarea {
+            font-size: 1em;
+            resize: none;
+            padding: 10px 10px 0 10px;
+            width: $feedback-width - 42;
+            height: 90px;
+            border: 1px solid $gray;
+            border-bottom: none;
+            margin-bottom: 0;
+            font-family: $bodyFont;
+
+            @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+                width: 100%;
+            }
+
+            &.error {
+                color: $linkColor;
+            }
+        }
+
+        #feedback-counter {
+            color: $gray;
+            text-align: right;
+            padding: 0 10px 10px 10px;
+            width: $feedback-width - 42;
+            border: 1px solid $gray;
+            border-top: none;
+
+            @media screen and (min-width: 0px) and (max-width: $mobile-breakpoint) {
+                width: 100%;
+                margin-top: -5px;
+            }
+        }
+
+        .controls {
+            text-align: right;
+        }
+    }
+
+    #feedback-wait {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0,0,0,0.75);
+        color: $white;
+        text-align: center;
+        line-height: 260px;
+
+        .spinner {
+            left: 50%;
+            top: -100px;
+        }
+    }
+
+    #feedback-thanks {
+        height: 100px;
+        margin-top: 10px;
+    }
+
+    .step2 {
+        display: none;
+    }
+}

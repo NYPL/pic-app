@@ -1,0 +1,74 @@
+<% content_for :dynamic_js do %>
+  <%# stylesheet_link_tag    "lib/Cesium/Widgets/widgets", :media => "all" %>
+  <%# javascript_include_tag "lib/vendor/leaflet.markercluster" %>
+  <script type="text/javascript">
+  var feedback_form = "\n  <div id=\'feedback-toggle\'>\n    <a href=\"javascript:void(0)\" class=\"open visible\">Feedback<\/a>\n    <a href=\"javascript:void(0)\" class=\"close\">Close<\/a>\n  <\/div>\n  <form method=\"post\" id=\"feedback-form\" data-remote=\"true\" accept-charset=\"UTF-8\">\n\n      <input id=\"frompage\" name=\"frompage\" type=\"hidden\" value=\"/\" />\n      <h2 id=\'feedback-title\'>\n        <span class=\'step1\'>Feedback<\/span>\n        <span class=\'step2\'>Thank you!<\/span>\n      <\/h2>\n      <ul class=\'step1\'>\n        <li>\n          <input id=\'feedback-1\' type=\'radio\' value=\'1\' name=\'type\' checked=\'checked\'>\n          <label for=\'feedback-1\'>Suggest<\/label>\n        <\/li>\n        <li>\n          <input id=\'feedback-2\' type=\'radio\' value=\'2\' name=\'type\'>\n          <label for=\'feedback-2\'>Like<\/label>\n        <\/li>\n        <li>\n          <input id=\'feedback-3\' type=\'radio\' value=\'3\' name=\'type\'>\n          <label for=\'feedback-3\'>Dislike<\/label>\n        <\/li>\n        <li>\n          <input id=\'feedback-4\' type=\'radio\' value=\'4\' name=\'type\'>\n          <label for=\'feedback-4\'>Bug<\/label>\n        <\/li>\n      <\/ul>\n\n  <input type=\'text\' name=\'feedback_id\' class=\'step1 textfield\' placeholder=\'record ID (if any)\' />  <textarea id=\'feedback-text\' name=\'feedback_text\' data-placeholder=\'We want to hear from you! Enter your feedback here.\' data-error=\'Please leave a comment.\' maxlength=\'400\' class=\'step1\'><\/textarea><div id=\'feedback-counter\' class=\'step1\'>400<\/div>\n      <div class=\'controls step1\'>\n        <a href=\'javascript:void(0)\' class=\'button\' id=\'feedback-send\'>Send<\/a>\n      <\/div>\n\n      <div id=\'feedback-wait\'>\n        <span>Please wait...<\/span>\n      <\/div>\n\n      <p id=\'feedback-thanks\' class=\'step2\'>Thank you for helping the Library.<\/p>\n      <div class=\'controls step2\'>\n        <a href=\'javascript:void(0)\' class=\'button\' id=\'feedback-close\'>Close ><\/a>\n      <\/div>\n  <\/form>\n\n\n";
+  </script>
+  <script src="assets/lib/Cesium/Cesium.js"></script>
+  <script src="assets/lib/csvToArray.v2.1.js"></script>
+  <script src="assets/lib/history.js"></script>
+  <script src="assets/lib/history.adapter.native.js"></script>
+  <script src="assets/lib/spin.min.js"></script>
+  <script type="text/javascript">
+  window.CESIUM_BASE_URL = '/assets/lib/Cesium';
+  var _pic = new PIC.PIC();
+  window.onload = function () {
+      _pic.init();
+  }
+  </script>
+
+<% end %>
+
+    <div id="credits"></div>
+    <div id="cesiumContainer">
+        <div id="total-points"></div>
+        <ul class="legend">
+            <li><span class="color born"></span>Born</li>
+            <li><span class="color active"></span>Active in</li>
+            <li><span class="color biz"></span>Business</li>
+            <li><span class="color died"></span>Died</li>
+        </ul>
+        <div id="hover"></div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="facet-container">
+        <div id="map-header">
+            <h1 id="acronym">PIC</h1>
+            <p id="slogan">Photographers’ Identities Catalog</p>
+            <!-- <a id="overlay-minimize" class="link">Minimize</a><span class="facets-clear"> | -->
+            <a id="facets-clear" class="link">Clear all filters</a></span>
+        </div>
+        <div id="facets">
+            <div id="facet-list">
+                <div class="facet">
+                    <label for="nameQuery">Name or ID</label>
+                    <input type="text" class="text" id="nameQuery" />
+                    <div class="icon query" title="search by name" onclick="_pic.applyFilters()"></div>
+                </div>
+                <div class="timeline facet">
+                    <label>Alive or active date</label>
+                    <div class="date-field">
+                        <label for="nameQuery">From</label>
+                        <input type="text" class="date text" id="fromDate" />
+                    </div>
+                    <div class="date-field">
+                        <label for="nameQuery">To</label>
+                        <input type="text" class="date text" id="toDate" />
+                    </div>
+                    <div class="icon query" title="search by date range" onclick="_pic.applyFilters()"></div>
+                </div>
+            </div>
+        </div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="constituents">
+        <div class="scroller">
+            <div class="results"></div>
+            <div class="more"></div>
+        </div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="feedback" class="preload"></div>

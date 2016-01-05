@@ -36,6 +36,10 @@ gem 'google_drive', '1.0.2'
 gem 'google-api-client'#, '~> 0.7.0'
 gem 'useragent'
 
+gem 'bourbon'
+gem 'neat'
+gem 'typescript-rails'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

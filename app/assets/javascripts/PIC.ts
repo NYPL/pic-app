@@ -82,9 +82,8 @@ module PIC {
         latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
 
 
-        tooltipElement = $("#constituents");
-
-        facetsElement = $("#facets");
+        tooltipElement;
+        facetsElement;
 
         nameQueryElement = "nameQuery";
         fromDateElement = "fromDate";
@@ -215,6 +214,8 @@ module PIC {
         }
 
         init() {
+            this.tooltipElement = $("#constituents");
+            this.facetsElement = $("#facets");
             this.getFacets();
             this.resetBounds();
             this.initWorld();
@@ -443,6 +444,7 @@ module PIC {
         updateTotals (total) {
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
+            this.notifyRepaintRequired();
         }
 
         updateBounds () {

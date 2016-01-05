@@ -223,7 +223,7 @@ DEPENDENCIES
   google_drive (= 1.0.2)
   jbuilder (~> 2.0)
   jquery-rails
-  neat (= 1.7.1)
+  neat
   pg
   rails (= 4.2.2)
   sass-rails (~> 5.0)

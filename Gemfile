@@ -37,7 +37,7 @@ gem 'google-api-client'#, '~> 0.7.0'
 gem 'useragent'
 
 gem 'bourbon'
-gem 'neat', '1.7.1'
+gem 'neat'
 gem 'typescript-rails'
 
 group :development, :test do

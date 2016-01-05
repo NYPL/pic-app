@@ -116,7 +116,7 @@ GEM
     multi_json (1.11.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
-    neat (1.7.2)
+    neat (1.7.1)
       bourbon (>= 4.0)
       sass (>= 3.3)
     nokogiri (1.6.6.2)
@@ -223,7 +223,7 @@ DEPENDENCIES
   google_drive (= 1.0.2)
   jbuilder (~> 2.0)
   jquery-rails
-  neat
+  neat (= 1.7.1)
   pg
   rails (= 4.2.2)
   sass-rails (~> 5.0)

@@ -129,12 +129,6 @@ module PIC {
         };
 
         constructor() {
-            $("#facet-container .minimize").click(() => this.minimizeFacets());
-            $("#facet-container .maximize").click(() => this.maximizeFacets());
-            $("#cesiumContainer .minimize").click(() => this.minimizeMap());
-            $("#cesiumContainer .maximize").click(() => this.maximizeMap());
-            $("#constituents .minimize").click(() => this.minimizeResults());
-            $("#constituents .maximize").click(() => this.maximizeResults());
         }
 
         processStateChange () {
@@ -214,6 +208,13 @@ module PIC {
         }
 
         init() {
+            $("#facet-container .minimize").click(() => this.minimizeFacets());
+            $("#facet-container .maximize").click(() => this.maximizeFacets());
+            $("#cesiumContainer .minimize").click(() => this.minimizeMap());
+            $("#cesiumContainer .maximize").click(() => this.maximizeMap());
+            $("#constituents .minimize").click(() => this.minimizeResults());
+            $("#constituents .maximize").click(() => this.maximizeResults());
+
             this.tooltipElement = $("#constituents");
             this.facetsElement = $("#facets");
             this.getFacets();

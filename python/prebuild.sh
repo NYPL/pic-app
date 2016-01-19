@@ -29,8 +29,8 @@ echo "Pulling"
 git pull origin csv
 
 echo ""
-echo "Checkout of gh-pages"
-git checkout -b gh-pages origin/gh-pages
+echo "Checkout of master"
+git checkout -b master origin/master
 
 echo ""
 echo "Merging"
@@ -53,7 +53,7 @@ git commit -m ":rocket: new deploy from travis-ci"
 echo ""
 echo "Push"
 
-git push origin gh-pages
+git push origin master
 
 echo ""
 echo "#### DEPLOY COMPLETE"

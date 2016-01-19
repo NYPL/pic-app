@@ -1,11 +1,11 @@
 language: python
-# branches:
-#   only:
-#   - csv
 python:
 - '2.7'
 before_install:
 - chmod 755 ./python/prebuild.sh
+- chmod 755 ./python/build_index.sh
+after_deploy:
+- "./python/build_index.sh"
 install:
 - pip install -r ./python/requirements.txt
 script:

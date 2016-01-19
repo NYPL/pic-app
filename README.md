@@ -1,1 +1,5 @@
-# Google Spreadsheet feedback
+# PIC
+
+By David Lowe / [Mauricio Giraldo](https://github.com/mgiraldo)
+
+view at: http://pic.heroku.com

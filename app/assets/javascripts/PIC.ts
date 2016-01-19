@@ -1106,7 +1106,8 @@ module PIC {
                         cleaned = cleaned.replace('DisplayName', '');
                         var isNumeric = !isNaN(Number(cleaned));
                         if (!isNumeric) {
-                            normal.push(facetList[k]);
+                            // removing period to allow for searches like "john d. rock"
+                            normal.push(facetList[k].replace(/([\.]*)/g, ''));
                         } else {
                             normal.push("(ConstituentID:"+cleaned+")");
                         }

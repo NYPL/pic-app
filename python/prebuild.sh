@@ -37,10 +37,6 @@ echo "Merging"
 git merge csv -m ":rocket: merge from travis-ci"
 
 echo ""
-echo "Run the index"
-python ./python/index_builder.py
-
-echo ""
 echo "Status"
 git status
 

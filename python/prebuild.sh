@@ -22,7 +22,7 @@ git branch -a
 
 echo ""
 echo "Getting csv branch"
-git checkout origin csv
+git checkout csv
 
 echo ""
 echo "Pulling"

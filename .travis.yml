@@ -1,7 +1,6 @@
 language: python
 branches:
   except:
-  - gh-pages
   - master
   only:
   - csv

@@ -20,6 +20,7 @@ notifications:
 deploy:
   provider: heroku
   app: pic
+  skip_cleanup: true
   on:
     all_branches: true
   api_key:

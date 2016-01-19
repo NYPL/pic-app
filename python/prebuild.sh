@@ -46,7 +46,7 @@ git status
 
 echo ""
 echo "Adding new files"
-git add csv
+git add public/assets/csv
 
 git commit -m ":rocket: new deploy from travis-ci"
 

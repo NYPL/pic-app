@@ -30,7 +30,7 @@ git pull origin csv
 
 echo ""
 echo "Checkout of master"
-git checkout -b master origin/master
+git checkout master
 
 echo ""
 echo "Merging"

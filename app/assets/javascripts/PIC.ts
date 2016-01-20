@@ -68,7 +68,7 @@ module PIC {
         startMousePosition;
         lastQuery;
 
-        rootPath = '/assets/';
+        rootPath = 'http://pic-data.s3.amazonaws.com/';
 
         tileUrl = 'https://a.tiles.mapbox.com/v3/';
         // tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';

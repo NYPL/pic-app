@@ -1,4 +1,6 @@
-rvm: 2.2.2
+language: python
+python:
+- '2.7'
 notifications:
   email: false
   slack:
@@ -9,6 +11,5 @@ deploy:
     master: pic
   on:
     branch: master
-    rvm: 2.2.2
   api_key:
     secure: l7ycOaqsFDcpnoKPA/f/KM5y2K/oWb81cLw6OXjkEF+bh3pg8gXPa2wog2EYzuD/jMCS5jFpaPBsjG8UQFVRCxPRk3kHU2cNLiEK4OSZ+cR+ZdkZ2Vu9xoNyN/vPo8ioQ1WpmlAeJgTVdrGSguWBzlEFTVtk51szs3YEqTsvR2tlrVUziZsLMBDivGK8uWZV7Ha96QyiCrGkzZ2tQ3hgv6mwcXKDbyziFR5/A6ri3EJriQoru+3BpsOaPdqgLQ9eugYMxxi2l13Q22QhFGIrpVR6LK9Q0XTxY+G8XTvU0KSz+ezi0qwm9v3+cSFqfttUhwmku6BWyCfLibEoPJgfUSaJK+SzZMqj4wnm6XQVgn+WLQidwFD2yNZ6s7+p/JMeH+gRI6zSEConNn5zhxRdWcz5wZ5NmSgdIV7ZAw4miuTe4Jfx+AgUV+CrYsBxH1Ji0NQQykLWYWedh445oTqUnDqAxTeNYlRYuNXuyjx6sK6YNPrSmmx1uVzG+iRlfIooIjGE2lV05OKkvBrhl/rlkmJhoufoV78+feV4+YsQ0akehAYxr/AYeXFT2KRj1CbXzWrw51EtrSHXAQPhktfZBwv3fuVTJqHNV7cUyqKDr4swNN7DVfCbKsYkVAztkMwHFbKMmQP4QN0L5Ap4ImD8VYfWXUcddBYBM5nfXs4PuuY=

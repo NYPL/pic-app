@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
     root 'feedback#index'
+    resources :constituents
     match 'save' => 'feedback#save_spreadsheet', :via => [:get, :post]
 
   # Example of regular route:

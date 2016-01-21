@@ -33,6 +33,10 @@ gem 'unicorn'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'responders', '~> 2.0'
+
+gem 'elasticsearch'
+
 gem 'google_drive', '1.0.2'
 gem 'google-api-client'#, '~> 0.7.0'
 gem 'useragent'

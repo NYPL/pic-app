@@ -124,6 +124,8 @@ hr {
     top: 0;//$generalMargin;
     left: 0;//$generalMargin;
     bottom: 0;
+    @include display(flex);
+    @include flex-direction(column);
     // padding-right: $generalMargin;
     // border-radius: 3px;
 
@@ -132,9 +134,10 @@ hr {
     @include transition-timing-function(ease-in);
 
     #facets {
-        height: 100%;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+        @include flex(auto);
+        flex: auto;
     }
 
     &.minimized {

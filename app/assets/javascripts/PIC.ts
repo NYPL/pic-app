@@ -728,10 +728,12 @@ module PIC {
             var constituents = data.hits.hits;
             var total = data.hits.total;
             this.totalPhotographers = total;
+            var str = "<p>Found " + this.totalPhotographers.toLocaleString() + " constituents.";
             if (total > this.tooltipLimit) {
-                var str = "<p>Found " + this.totalPhotographers.toLocaleString() + " constituents. Showing first " + this.tooltipLimit + ".</p>";
-                this.tooltipElement.find(".results").prepend(str);
+                str = str + " Showing first " + this.tooltipLimit + ".";
             }
+            str = str + "</p>";
+            this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
         }

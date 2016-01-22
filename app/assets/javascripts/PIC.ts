@@ -863,8 +863,9 @@ module PIC {
             str += "</div>";
             this.tooltipElement.find(".results").append(str);
             $(".constituent-toggle-" + p.ConstituentID).click( () => {
-                $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
-                $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
+                // $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
+                // $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
+                window.open("/constituents/" + p.ConstituentID);
             } );
             $("#constituent-addresslist-" + p.ConstituentID + " .address-header").click( () => this.getAddressList(parseInt(p.ConstituentID)) );
         }

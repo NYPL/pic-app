@@ -1,4 +1,4 @@
-/// <reference path="tsd.d.ts" />
+///<reference path="tsd.d.ts" />
 ///<reference path='Facet.ts' />
 var Historyjs: Historyjs = <any>History;
 
@@ -101,7 +101,7 @@ module PIC {
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
             ["date", "", "Date", "", ""],
-            ["locations", "Location", "Location", "", ""]
+            // ["locations", "Location", "Location", "", ""]
         ];
 
         facetValues = {};
@@ -391,8 +391,8 @@ module PIC {
         }
 
         getData(filters, data, callback, parameter = undefined) {
-            var url = this.baseUrl+"/constituent/_search?sort=nameSort:asc&"+filters;
-            // console.log(url, JSON.stringify(data));
+            var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc&"+filters;
+            console.log(url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -578,9 +578,6 @@ module PIC {
                 if (this.mousePosition != this.startMousePosition) return;
                 var pickedObject = this.pickEntity({x:e.layerX, y:e.layerY});
                 this.refreshPicked(pickedObject);
-                if (Cesium.defined(pickedObject) && pickedObject.id &&  (pickedObject.id.toString().indexOf("P_") === 0)) {
-                    this.clickPoint(this.pickedEntity.entity);
-                }
             };
 
             this.canvas.onmousemove = (e) => {
@@ -610,26 +607,16 @@ module PIC {
 
         refreshPicked (picked) {
             var showHover = false;
-            // reset
-            if (this.pickedEntity != undefined && picked !== this.pickedEntity.entity) {
-                // revert properties
-                this.pickedEntity.entity.primitive.color = this.pickedEntity.color;
-                this.pickedEntity.entity.primitive.pixelSize = this.pixelSize;
-            }
             if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
                 if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
                     this.pickedEntity = {
                         color: Cesium.clone(picked.primitive.color),
                         entity: picked
                     };
-                    // apply new properties
-                    // picked.primitive.color = selectedColor;
-                    this.pickedEntity.entity.primitive.pixelSize = this.pixelSize * this.pixelScale;
                     this.buildHover();
                 }
                 showHover = true;
             } else {
-                // reset
                 this.pickedEntity = undefined;
             }
             this.positionHover(showHover);
@@ -716,17 +703,6 @@ module PIC {
             }
             x += leftOffset;
             el.offset({left:x, top:y});
-        }
-
-        clickPoint (point) {
-            if (point == this.pickedEntity) return;
-            this.maximizeFacets();
-            var id = point.id;
-            var latlon = point.primitive.originalLatlon;
-            var realID = id.substr(2);
-            this.setLatlonWidget(latlon);
-            this.updateFilter("locations", realID + "|" + latlon);
-            this.applyFilters();
         }
 
         setLatlonWidget (latlon) {
@@ -1259,10 +1235,9 @@ module PIC {
         }
 
         addPoints (newPoints) {
-            // if (newPoints.length === 0) return;
+            if (newPoints.length === 0) return;
             var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
-            var latlon = $("#" + this.facetWithName("locations")[0]).data("value").toString();
             var i, l = newPoints.length;
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -1274,7 +1249,6 @@ module PIC {
                 var loc = p[0] + "," + p[1];
                 if (addressType != "*" && tid != addressType) continue;
                 if (country != "*" && cid != country) continue;
-                if (latlon != "*" && loc != latlon) continue;
                 // end hack
                 var height;
                 // point has no real height
@@ -1410,14 +1384,6 @@ module PIC {
             key = this.filters[facetKey];
             if (key !== "*") {
                 subject += "in <em>" + this.facetValues[facet[0]][key] + "</em> ";
-            }
-
-            // location
-            facet = this.facets[11];
-            facetKey = facet[2];
-            key = this.filters[facetKey];
-            if (key !== "*") {
-                subject += "in latitude,longitude equal to <em>" + this.filters[facetKey].split("|")[1] + "</em> ";
             }
 
             predicate = "for " + this.totalPhotographers.toLocaleString() + " ";

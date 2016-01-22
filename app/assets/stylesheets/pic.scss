@@ -319,10 +319,16 @@ hr {
     }
 
     .facet-group {
-        display: none;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        @include transition-property(all);
+        @include transition-duration(0.15s);
+        @include transition-timing-function(ease-in);
 
         &.open {
-            display: block;
+            opacity: 1;
+            max-height: 10000px;
         }
     }
 

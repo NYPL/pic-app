@@ -68,15 +68,15 @@ module PIC {
         startMousePosition;
         lastQuery;
 
-        rootPath = 'http://pic-data.s3.amazonaws.com/';
+        rootPath = '';
 
-        tileUrl = 'https://a.tiles.mapbox.com/v3/';
+        tileUrl = '';
         // tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
-        mapboxKey = 'pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
+        mapboxKey = '';
         // mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
-        baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
-        geonamesURL = "http://api.geonames.org/citiesJSON?username=mgiraldo";
-        bingMapsKey = 'AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B';
+        baseUrl = '';
+        geonamesUrl = '';
+        mapboxGeocoderUrl = '';
 
         // the way we knoe in elastic if a constituent has latlon-looking data
         latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
@@ -88,6 +88,7 @@ module PIC {
         nameQueryElement = "nameQuery";
         fromDateElement = "fromDate";
         toDateElement = "toDate";
+        placeQueryElement = "placeQuery";
 
         facets : string[][] = [
             ["addresstypes", "Address Type", "AddressTypeID", "AddressType", "address"],
@@ -100,6 +101,7 @@ module PIC {
             ["biographies", "Source", "TermID", "Term", "biography"],
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
+            [this.placeQueryElement, "", "Place", "", ""],
             ["date", "", "Date", "", ""],
             // ["locations", "Location", "Location", "", ""]
         ];
@@ -163,18 +165,9 @@ module PIC {
                     // console.log(key, key1, key2, facet, widget);
                 }
                 if (widget) {
-                    if (pair[0] != "Location") {
-                        widget.setValue(pair[1]);
-                    } else {
-                        if (pair[1] == "*") {
-                            widget.reset();
-                        } else {
-                            var latlon = pair[1].split("|")[1];
-                            this.setLatlonWidget(latlon);
-                        }
-                    }
+                    widget.setValue(pair[1]);
                 } else {
-                    // date or name
+                    // date, place or name
                     if (pair[0] == "DisplayName") {
                         var str = "";
                         var rawName = pair[1];
@@ -188,6 +181,19 @@ module PIC {
                             str = rawName;
                         }
                         $("#" + this.nameQueryElement).val(str);
+                    } else if (pair[0] == "Place") {
+                        var str = "";
+                        var rawPlace = pair[1];
+                        rawPlace = rawPlace.replace(/[\(\)]/ig, "");
+                        rawPlace = rawPlace.replace(/~1/g, "");
+                        var isNumeric = !isNaN(Number(rawPlace));
+                        if (pair[1] != "*" && !isNumeric) {
+                            var names = rawPlace.split(" AND ");
+                            str = names.join(" ");
+                        } else if (isNumeric) {
+                            str = rawPlace;
+                        }
+                        $("#" + this.placeQueryElement).val(str);
                     } else if (pair[0] == "Date") {
                         var from = this.minYear.toString();
                         var to = this.maxYear.toString();
@@ -266,7 +272,6 @@ module PIC {
         }
 
         initWorld () {
-            Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: new Cesium.MapboxImageryProvider({
                     url: this.tileUrl,
@@ -278,6 +283,7 @@ module PIC {
                 //     fileExtension: this.mapboxKey
                 // })
                 // ,clock: new Cesium.Clock({shouldAnimate:false})
+                ,geocoder: false
                 ,baseLayerPicker: false
                 ,homeButton : false
                 ,infoBox : false
@@ -392,7 +398,7 @@ module PIC {
 
         getData(filters, data, callback, parameter = undefined) {
             var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc&"+filters;
-            console.log(url, JSON.stringify(data));
+            // console.log(url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -647,7 +653,7 @@ module PIC {
             if (hits > 1) str += " including";
             if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
             str += "<br /><span id='geoname'>&nbsp;</span>";
-            str += "<br />click dot to zoom and view list";
+            // str += "<br />click dot to zoom and view list";
             str += "</div>";
             el.html(str);
             var latlon = position.split(",");
@@ -668,8 +674,8 @@ module PIC {
             var south = Math.round((lat-0.02) * 100) / 100;
             var east = Math.round((lon+0.02) * 100) / 100;
             var west = Math.round((lon-0.02) * 100) / 100;
-            // var reverseGeo = this.geonamesURL + "&lat=" + latlon[0] + "&lng=" + latlon[1];
-            var reverseGeo = this.geonamesURL + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+            // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+            var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
             console.log(reverseGeo);
             this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
@@ -1090,6 +1096,9 @@ module PIC {
                         } else {
                             normal.push("(ConstituentID:"+cleaned+")");
                         }
+                    } else if (facetList[k].indexOf("Place") !== -1) {
+                        // deconstruct facet to convert to ID
+                        // normal.push(facetList[k]);
                     } else {
                         normal.push(facetList[k]);
                     }
@@ -1121,6 +1130,8 @@ module PIC {
             if (facet[4] != "") {
                 this.filters[facet[4]+"."+facet[2]] = value;
             } else if (facet[2] === "DisplayName") {
+                this.filters[facet[2]] = value;
+            } else if (facet[2] === "Place") {
                 this.filters[facet[2]] = value;
             } else {
                 this.filters[facet[2]] = value;
@@ -1315,8 +1326,9 @@ module PIC {
         }
 
         resetLocationQuery() {
-            var txt = "Location: Any";
-            $("#locationFacet .facet-header").html(txt);
+            var el = $("#" + this.placeQueryElement)
+            el.val("");
+            this.updateFilter(this.placeQueryElement, "*");
         }
 
         validateYear (element, defaultValue) {
@@ -1501,7 +1513,32 @@ module PIC {
             this.updateFilter(this.nameQueryElement, value);
         }
 
-        onFromDateKeyUp (e) {
+        updatePlaceFilter() {
+            // https://api.mapbox.com/geocoding/v5/mapbox.places/hoi+an.json?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ
+            // this.mapboxGeocoderUrl
+            var str = $("#" + this.placeQueryElement).val().trim();
+            if (str !== "") {
+                var isNumeric = !isNaN(Number(str));
+                if (!isNumeric) {
+                    str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
+                    str = str.trim().replace(/\s/g, "~1 ");
+                    str = str + "~1";
+                    var f = str.split(" ");
+                    var legit = [];
+                    for (var thing in f) {
+                        var trimmed = f[thing].trim();
+                        if (trimmed !== "") legit.push(trimmed);
+                    }
+                    str = '(' + legit.join(" AND ") + ')';
+                }
+            } else {
+                str = "*";
+            }
+            var value = str;
+            this.updateFilter(this.placeQueryElement, value);
+        }
+
+        onFromDateKeyUp(e) {
             var el = e.target;
             if (e.keyCode === 13) {
                 this.updateTimeFilters();
@@ -1517,7 +1554,7 @@ module PIC {
             }
         }
 
-        onNameQueryKeyUp (e) {
+        onNameQueryKeyUp(e) {
             var el = e.target;
             if (e.keyCode === 13) {
                 this.updateNameFilter();
@@ -1525,7 +1562,15 @@ module PIC {
             }
         }
 
-        onFacetChanged (widget:Facet) {
+        onPlaceQueryKeyUp(e) {
+            var el = e.target;
+            if (e.keyCode === 13) {
+                this.updatePlaceFilter();
+                this.applyFilters();
+            }
+        }
+
+        onFacetChanged(widget: Facet) {
             if (widget.ID === "locations") {
                 widget.cleanFacets();
                 widget.selectItem(widget.defaultValue);
@@ -1550,6 +1595,9 @@ module PIC {
             var name = $("#" + this.nameQueryElement)
             name.keyup((e) => this.onNameQueryKeyUp(e));
             name.blur(() => this.updateNameFilter());
+            var location = $("#" + this.placeQueryElement)
+            location.keyup((e) => this.onPlaceQueryKeyUp(e));
+            location.blur(() => this.updatePlaceFilter());
             $("#facets-clear").click(() => this.clearFilters());
             // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }

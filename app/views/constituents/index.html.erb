@@ -10,6 +10,12 @@
   window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
   var _pic = new PIC.PIC();
   window.onload = function () {
+      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
+      _pic.rootPath = "http://pic-data.s3.amazonaws.com/";
+      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
+      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
+      _pic.mapboxGeocoderUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
       _pic.init();
   }
   </script>
@@ -41,6 +47,11 @@
                     <label for="nameQuery">Name or ID</label>
                     <input type="text" class="text" id="nameQuery" />
                     <div class="icon query" title="search by name" onclick="_pic.applyFilters()"></div>
+                </div>
+                <div class="facet">
+                    <label for="placeQuery">Place</label>
+                    <input type="text" class="text" id="placeQuery" />
+                    <div class="icon query" title="search by place" onclick="_pic.applyFilters()"></div>
                 </div>
                 <div class="timeline facet">
                     <label>Alive or active date</label>

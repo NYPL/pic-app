@@ -837,7 +837,7 @@ module PIC {
             if (p.biography) {
                 // str += "<p>";
                 str += "<ul class=\"link-list\">";
-                str += "<strong>Data found in:</strong>";
+                str += "<strong>Data from:</strong>";
                 var links = [];
                 for (var i in p.biography) {
                     var link = '<li><a target="_blank" class="external" href="'+ p.biography[i].URL +'">';

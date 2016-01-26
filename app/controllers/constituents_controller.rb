@@ -2,6 +2,9 @@ class ConstituentsController < ApplicationController
 
   respond_to :html, :json
 
+  def index
+  end
+
   def show
     connection_string = "https://#{ENV['ELASTIC_USER']}:#{ENV['ELASTIC_PASSWORD']}@#{ENV['ELASTIC_HOST']}"
     client = Elasticsearch::Client.new host: connection_string

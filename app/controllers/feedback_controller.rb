@@ -1,8 +1,5 @@
 class FeedbackController < ApplicationController
 
-    def index
-    end
-
     def save_spreadsheet
         type = ["none","Suggest", "Like", "Dislike", "Bug"]
         if !params.nil?

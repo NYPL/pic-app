@@ -13,5 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require PIC
 //= require feedback
+//= require lib/spin.min

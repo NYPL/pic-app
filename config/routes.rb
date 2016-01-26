@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-    root 'feedback#index'
+    root 'constituents#index'
+
     resources :constituents
     match 'save' => 'feedback#save_spreadsheet', :via => [:get, :post]
 

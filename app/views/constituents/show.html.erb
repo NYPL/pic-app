@@ -1,1 +1,132 @@
-<%= debug @constituent %>
+<% content_for :dynamic_js do %>
+  <%= stylesheet_link_tag    "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css", :media => "all" %>
+  <%= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>
+<% end %>
+
+<div id="wrapper">
+    <header>
+        <div id="nypl">The New York Public Library</div>
+        <p id="slogan">Photographers’ Identities Catalog</p>
+    </header>
+    <main>
+        <span class="constituentid">ID:<%= @constituent["ConstituentID"] %></span>
+        <h1 class="name"><%= @constituent["DisplayName"] %></h1>
+        <h2 class="subtitle"><%= @constituent["DisplayDate"] %></h2>
+        <span class="gender"><%= @constituent["gender"][0]["Term"] %></span>
+        <%# role %>
+        <% if @constituent["role"] && @constituent["role"].count > 0 %>
+        <h3>Roles performed</h3>
+        <ul class="role">
+        <% @constituent["role"].each do |role| %>
+            <li><a href="/?role.TermID=<%= role["TermID"] %>"><%= role["Term"] %></a></li>
+        </ul>
+        <% end %>
+        <% end %>
+        <%# process %>
+        <% if @constituent["process"] && @constituent["process"].count > 0 %>
+        <h3>Processes used</h3>
+        <ul class="process">
+        <% @constituent["process"].each do |process| %>
+            <li><a href="/?process.TermID=<%= process["TermID"] %>"><%= process["Term"] %></a></li>
+        </ul>
+        <% end %>
+        <% end %>
+        <%# collection %>
+        <% if @constituent["collection"] && @constituent["collection"].count > 0 %>
+        <h3>Found in collections</h3>
+        <ul class="collection">
+        <% @constituent["collection"].each do |collection| %>
+            <li><a href="/?collection.TermID=<%= collection["TermID"] %>"><%= collection["Term"] %></a> (<a href="<%= collection["URL"] %>" target="_blank">visit site</a>)</li>
+        </ul>
+        <% end %>
+        <% end %>
+        <%# biography %>
+        <% if @constituent["biography"] && @constituent["biography"].count > 0 %>
+        <h3>Data from:</h3>
+        <ul class="biography">
+        <% @constituent["biography"].each do |biography| %>
+            <li><a href="/?biography.TermID=<%= biography["TermID"] %>"><%= biography["Term"] %></a> (<a href="<%= biography["URL"] %>" target="_blank">visit site</a>)</li>
+        </ul>
+        <% end %>
+        <% end %>
+        <%# address %>
+        <%
+            total = @constituent["address"].count
+            if @constituent["address"] && total > 0
+                z = 9
+                size = 128
+                count = 0
+                max_maps = 10
+                colors = {}
+                colors["2"] = "FF7F02"
+                colors["5"] = "4CAD49"
+                colors["6"] = "357CB7"
+                colors["7"] = "E21919"
+        %>
+        <h3>Locations:</h3>
+        <p>
+            <%= @constituent["DisplayName"] %> has <%= pluralize total, "location" %>.
+            <% if total > max_maps %>
+            Showing first <%= max_maps %>.
+            <% end %>
+        </p>
+        <div class="locations">
+        <% while count < max_maps && @constituent["address"][count] do %>
+        <%
+            address = @constituent["address"][count]
+            count = count + 1
+            color = colors[address["AddressTypeID"]]
+            addstring = ""
+            if (address["State"] != "NULL")
+                addstring = address["State"] + "<br />" + addstring
+                z = 11
+            end
+            if (address["City"] != "NULL")
+                addstring = address["City"] + ", " + addstring
+                z = 13
+            end
+            if (address["StreetLine3"] != "NULL")
+                addstring = address["StreetLine3"] + "<br />" + addstring
+                z = 15
+            end
+            if (address["StreetLine2"] != "NULL")
+                addstring = address["StreetLine2"] + "<br />" + addstring
+                z = 17
+            end
+            if (address["StreetLine1"] != "NULL")
+                addstring = address["StreetLine1"] + "<br />" + addstring
+                z = 19
+            end
+            if (address["Country"] != "NULL") then addstring += address["Country"] + "<br />" end
+        %>
+            <div class="location-<%= address["ConAddressID"] %>">
+        <%
+            if (address["Remarks"] != "NULL" && address["Remarks"] != "0,0" && address["Remarks"].split(",").count == 2)
+                lonlat = address["Remarks"].split(",")[1] + "," + address["Remarks"].split(",")[0]
+                mapimage = "https://api.mapbox.com/v4/nypllabs.8e20560b/pin-s+#{color}(#{lonlat})/#{lonlat},#{z}/#{size}x#{size}.png?access_token=#{ENV["MAPBOX_KEY"]}"
+        %>
+
+                <div class="map">
+                    <img src="<%= mapimage %>">
+                </div>
+        <%
+            end
+        %>
+                <div class="address">
+                    <h4>
+                        <%= address["AddressType"] %>
+                        <% if address["DisplayName2"] != "NULL" %>(<%= address["DisplayName2"] %>)<% end %>
+                    </h4>
+                    <p><%= addstring.html_safe %></p>
+                </div>
+            </div>
+        </div>
+        <% end %>
+        <% end %>
+
+    </main>
+</div>
+
+
+
+<%# debug @constituent %>

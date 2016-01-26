@@ -53,8 +53,9 @@
         <%
             total = @constituent["address"].count
             if @constituent["address"] && total > 0
-                z = 9
-                size = 128
+                zoom_increase = 2
+                max_zoom = 22
+                size = 200
                 count = 0
                 max_maps = 10
                 colors = {}
@@ -74,40 +75,57 @@
         <% while count < max_maps && @constituent["address"][count] do %>
         <%
             address = @constituent["address"][count]
+            zoom = 5
+            id = address["ConAddressID"]
             count = count + 1
             color = colors[address["AddressTypeID"]]
             addstring = ""
             if (address["State"] != "NULL")
                 addstring = address["State"] + "<br />" + addstring
-                z = 11
+                zoom = zoom + zoom_increase
             end
             if (address["City"] != "NULL")
                 addstring = address["City"] + ", " + addstring
-                z = 13
+                zoom = zoom + zoom_increase
             end
             if (address["StreetLine3"] != "NULL")
                 addstring = address["StreetLine3"] + "<br />" + addstring
-                z = 15
+                zoom = zoom + zoom_increase
             end
             if (address["StreetLine2"] != "NULL")
                 addstring = address["StreetLine2"] + "<br />" + addstring
-                z = 17
+                zoom = zoom + zoom_increase
             end
             if (address["StreetLine1"] != "NULL")
                 addstring = address["StreetLine1"] + "<br />" + addstring
-                z = 19
+                zoom = zoom + zoom_increase
             end
             if (address["Country"] != "NULL") then addstring += address["Country"] + "<br />" end
+            if zoom > max_zoom then zoom = max_zoom end
         %>
             <div class="location-<%= address["ConAddressID"] %>">
         <%
             if (address["Remarks"] != "NULL" && address["Remarks"] != "0,0" && address["Remarks"].split(",").count == 2)
                 lonlat = address["Remarks"].split(",")[1] + "," + address["Remarks"].split(",")[0]
-                mapimage = "https://api.mapbox.com/v4/nypllabs.8e20560b/pin-s+#{color}(#{lonlat})/#{lonlat},#{z}/#{size}x#{size}.png?access_token=#{ENV["MAPBOX_KEY"]}"
+                mapimage = "https://api.mapbox.com/v4/nypllabs.8e20560b/pin-s+#{color}(#{lonlat})/#{lonlat},#{zoom}/#{size}x#{size}.png?access_token=#{ENV["MAPBOX_KEY"]}"
+                if zoom + zoom_increase <= max_zoom
+                    big_zoom = zoom+zoom_increase
+                else
+                    big_zoom = max_zoom
+                end
+                mapimage_big = "https://api.mapbox.com/v4/nypllabs.8e20560b/pin-l+#{color}(#{lonlat})/#{lonlat},#{big_zoom}/#{size}x#{size}.png?access_token=#{ENV["MAPBOX_KEY"]}"
         %>
 
-                <div class="map">
-                    <img src="<%= mapimage %>">
+                <style type="text/css">
+                    /*.map-<%= id %> {
+                        background-image: url('<%= mapimage %>');
+                    }
+                    .map-<%= id %>:hover {
+                        background-image: url('<%= mapimage_big %>');
+                    }*/
+                </style>
+                <div class="map map-<%= id %>">
+                    <%= image_tag mapimage, {"data-small": mapimage, "data-big": mapimage_big, "data-isbig": false, title: address["AddressType"], alt: address["AddressType"] } %>
                 </div>
         <%
             end
@@ -120,8 +138,8 @@
                     <p><%= addstring.html_safe %></p>
                 </div>
             </div>
-        </div>
         <% end %>
+        </div>
         <% end %>
 
     </main>

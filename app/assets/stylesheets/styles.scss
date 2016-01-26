@@ -66,6 +66,12 @@ p {
     margin-left: 33px;
 }
 
+.locations .map {
+    width: 200px;
+    height: 200px;
+    background-color: $gray;
+}
+
 #feedback {
     position: fixed;
     bottom: $feedback-bottom;

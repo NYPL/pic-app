@@ -71,16 +71,9 @@ module PIC {
         rootPath = '';
 
         tileUrl = '';
-        // tileUrl = 'https://a.tiles.mapbox.com/v4/nypllabs.8e20560b/';
         mapboxKey = '';
-        // mapboxKey = 'png?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ';
         baseUrl = '';
         geonamesUrl = '';
-        mapboxGeocoderUrl = '';
-
-        // the way we knoe in elastic if a constituent has latlon-looking data
-        latlonQuery = "address.Remarks:(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)";
-
 
         tooltipElement;
         facetsElement;
@@ -88,7 +81,6 @@ module PIC {
         nameQueryElement = "nameQuery";
         fromDateElement = "fromDate";
         toDateElement = "toDate";
-        placeQueryElement = "placeQuery";
 
         facets : string[][] = [
             ["addresstypes", "Address Type", "AddressTypeID", "AddressType", "address"],
@@ -101,7 +93,7 @@ module PIC {
             ["biographies", "Source", "TermID", "Term", "biography"],
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
-            [this.placeQueryElement, "", "Place", "", ""],
+            ["bbox", "", "Place", "", ""],
             ["date", "", "Date", "", ""],
             // ["locations", "Location", "Location", "", ""]
         ];
@@ -181,19 +173,6 @@ module PIC {
                             str = rawName;
                         }
                         $("#" + this.nameQueryElement).val(str);
-                    } else if (pair[0] == "Place") {
-                        var str = "";
-                        var rawPlace = pair[1];
-                        rawPlace = rawPlace.replace(/[\(\)]/ig, "");
-                        rawPlace = rawPlace.replace(/~1/g, "");
-                        var isNumeric = !isNaN(Number(rawPlace));
-                        if (pair[1] != "*" && !isNumeric) {
-                            var names = rawPlace.split(" AND ");
-                            str = names.join(" ");
-                        } else if (isNumeric) {
-                            str = rawPlace;
-                        }
-                        $("#" + this.placeQueryElement).val(str);
                     } else if (pair[0] == "Date") {
                         var from = this.minYear.toString();
                         var to = this.maxYear.toString();
@@ -283,7 +262,7 @@ module PIC {
                 //     fileExtension: this.mapboxKey
                 // })
                 // ,clock: new Cesium.Clock({shouldAnimate:false})
-                ,geocoder: false
+                // ,geocoder: false
                 ,baseLayerPicker: false
                 ,homeButton : false
                 ,infoBox : false
@@ -1180,7 +1159,6 @@ module PIC {
         clearFilters () {
             this.resetNameQuery();
             this.resetDateQuery();
-            this.resetLocationQuery();
             for (var i = 0; i < this.facets.length; i++) {
                 var facet = this.facets[i];
                 var f = facet[0];
@@ -1323,12 +1301,6 @@ module PIC {
             var el = $("#" + this.nameQueryElement)
             el.val("");
             this.updateFilter(this.nameQueryElement, "*");
-        }
-
-        resetLocationQuery() {
-            var el = $("#" + this.placeQueryElement)
-            el.val("");
-            this.updateFilter(this.placeQueryElement, "*");
         }
 
         validateYear (element, defaultValue) {
@@ -1513,31 +1485,6 @@ module PIC {
             this.updateFilter(this.nameQueryElement, value);
         }
 
-        updatePlaceFilter() {
-            // https://api.mapbox.com/geocoding/v5/mapbox.places/hoi+an.json?access_token=pk.eyJ1IjoibnlwbGxhYnMiLCJhIjoiSFVmbFM0YyJ9.sl0CRaO71he1XMf_362FZQ
-            // this.mapboxGeocoderUrl
-            var str = $("#" + this.placeQueryElement).val().trim();
-            if (str !== "") {
-                var isNumeric = !isNaN(Number(str));
-                if (!isNumeric) {
-                    str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
-                    str = str.trim().replace(/\s/g, "~1 ");
-                    str = str + "~1";
-                    var f = str.split(" ");
-                    var legit = [];
-                    for (var thing in f) {
-                        var trimmed = f[thing].trim();
-                        if (trimmed !== "") legit.push(trimmed);
-                    }
-                    str = '(' + legit.join(" AND ") + ')';
-                }
-            } else {
-                str = "*";
-            }
-            var value = str;
-            this.updateFilter(this.placeQueryElement, value);
-        }
-
         onFromDateKeyUp(e) {
             var el = e.target;
             if (e.keyCode === 13) {
@@ -1558,14 +1505,6 @@ module PIC {
             var el = e.target;
             if (e.keyCode === 13) {
                 this.updateNameFilter();
-                this.applyFilters();
-            }
-        }
-
-        onPlaceQueryKeyUp(e) {
-            var el = e.target;
-            if (e.keyCode === 13) {
-                this.updatePlaceFilter();
                 this.applyFilters();
             }
         }
@@ -1595,9 +1534,6 @@ module PIC {
             var name = $("#" + this.nameQueryElement)
             name.keyup((e) => this.onNameQueryKeyUp(e));
             name.blur(() => this.updateNameFilter());
-            var location = $("#" + this.placeQueryElement)
-            location.keyup((e) => this.onPlaceQueryKeyUp(e));
-            location.blur(() => this.updatePlaceFilter());
             $("#facets-clear").click(() => this.clearFilters());
             // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }

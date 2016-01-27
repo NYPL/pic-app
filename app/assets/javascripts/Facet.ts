@@ -32,6 +32,8 @@ module PIC {
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
+            console.log(this.ID, this.ID === "bbox");
+            if (this.ID == "bbox") this.addFacetItem("Current view", "Current view");
         }
 
         init() {

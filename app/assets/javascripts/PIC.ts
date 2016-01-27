@@ -74,6 +74,7 @@ module PIC {
         mapboxKey = '';
         baseUrl = '';
         geonamesUrl = '';
+        bingMapsKey = '';
 
         tooltipElement;
         facetsElement;
@@ -159,10 +160,8 @@ module PIC {
                     if (pair[0] != "bbox") {
                         widget.setValue(pair[1]);
                     } else {
-                        if (pair[1] == "*") {
-                            widget.reset();
-                        } else {
-                            var bbox = pair[1].split("|")[1];
+                        if (pair[1] !== "*") {
+                            var bbox = new Cesium.Cartesian2(0, 0);// pair[1];
                             this.setBboxWidget(bbox);
                         }
                     }
@@ -259,6 +258,7 @@ module PIC {
         }
 
         initWorld () {
+            Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: new Cesium.MapboxImageryProvider({
                     url: this.tileUrl,
@@ -561,6 +561,15 @@ module PIC {
 
             this.handler = new Cesium.ScreenSpaceEventHandler(this.canvas);
 
+            // to update the current view in the bbox facet
+            this.handler.setInputAction( (movement) => {
+                var scene = this.viewer.scene;
+                var ellipsoid = scene.globe.ellipsoid;
+                var position = this.camera.position;
+                this.setBboxWidget(Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, position));
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
             $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
@@ -698,13 +707,14 @@ module PIC {
             el.offset({left:x, top:y});
         }
 
-        setBboxWidget (bbox) {
+        setBboxWidget (bbox:Cesium.Cartesian2) {
             var widget = this.facetWidgets["bbox"];
-            widget.cleanFacets();
-            widget.addFacetItem("bbox", bbox);
-            widget.setValue(bbox);
-            widget.selectItem(bbox.replace(/[\.,\s\*]/g, '_'));
-            widget.setHeaderText(bbox);
+            console.log(bbox);
+            // widget.cleanFacets();
+            // widget.addFacetItem("bbox", bbox);
+            // widget.setValue(bbox);
+            // widget.selectItem(bbox.replace(/[\.,\s\*]/g, '_'));
+            // widget.setHeaderText(bbox);
         }
 
         closeFacets () {
@@ -1127,7 +1137,11 @@ module PIC {
             } else if (facet[2] === "DisplayName") {
                 this.filters[facet[2]] = value;
             } else if (facet[2] === "bbox") {
-                this.filters[facet[2]] = value;
+                if (value == "Current view") {
+                    this.filters[facet[2]] = value;
+                } else {
+                    this.filters[facet[2]] = value;
+                }
             } else {
                 this.filters[facet[2]] = value;
             }
@@ -1526,10 +1540,6 @@ module PIC {
         }
 
         onFacetChanged(widget: Facet) {
-            if (widget.ID === "bbox") {
-                widget.cleanFacets();
-                widget.selectItem(widget.defaultValue);
-            }
             this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         }

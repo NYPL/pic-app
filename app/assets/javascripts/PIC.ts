@@ -93,9 +93,8 @@ module PIC {
             ["biographies", "Source", "TermID", "Term", "biography"],
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
-            ["bbox", "", "Place", "", ""],
             ["date", "", "Date", "", ""],
-            // ["locations", "Location", "Location", "", ""]
+            ["bbox", "Within bounds", "bbox", "", ""],
         ];
 
         facetValues = {};
@@ -157,7 +156,16 @@ module PIC {
                     // console.log(key, key1, key2, facet, widget);
                 }
                 if (widget) {
-                    widget.setValue(pair[1]);
+                    if (pair[0] != "bbox") {
+                        widget.setValue(pair[1]);
+                    } else {
+                        if (pair[1] == "*") {
+                            widget.reset();
+                        } else {
+                            var bbox = pair[1].split("|")[1];
+                            this.setBboxWidget(bbox);
+                        }
+                    }
                 } else {
                     // date, place or name
                     if (pair[0] == "DisplayName") {
@@ -690,13 +698,13 @@ module PIC {
             el.offset({left:x, top:y});
         }
 
-        setLatlonWidget (latlon) {
-            var widget = this.facetWidgets["locations"];
+        setBboxWidget (bbox) {
+            var widget = this.facetWidgets["bbox"];
             widget.cleanFacets();
-            widget.addFacetItem("location", latlon);
-            widget.setValue(latlon);
-            widget.selectItem(latlon.replace(/[\.,\s\*]/g, '_'));
-            widget.setHeaderText(latlon);
+            widget.addFacetItem("bbox", bbox);
+            widget.setValue(bbox);
+            widget.selectItem(bbox.replace(/[\.,\s\*]/g, '_'));
+            widget.setHeaderText(bbox);
         }
 
         closeFacets () {
@@ -973,25 +981,29 @@ module PIC {
             for (var i=0; i < this.facets.length; i++) {
                 if (this.facets[i][1] != "") this.getFacet(i);
             }
-            // hack for locations facet
-            // this.createFacet(this.facets.length-1);
         }
 
         getFacet (index) {
             var facet = this.facets[index];
 
-            this.createFacet(facet);
+            var widget = this.createFacet(facet);
 
-            var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.random() * 100000;
 
-            this.loadTextFile(url, this.updateFacet, facet);
+            if (facet[0] !== "bbox") {
+                // hack for ignoring the bbox (has no csv)
+                var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.random() * 100000;
+                this.loadTextFile(url, this.updateFacet, facet);
+            } else {
+                this.initFacetWidget(widget);
+            }
         }
 
-        createFacet (facet) {
+        createFacet (facet):Facet {
             var f = facet[0];
             this.facetValues[f] = {};
             this.facetWidgets[f] = new Facet(f, $("#facet-list"), facet[1]);
             this.updateFilter(f, "*");
+            return this.facetWidgets[f];
         }
 
         updateFacet (responseText, facet) {
@@ -1008,8 +1020,12 @@ module PIC {
                 this.facetValues[facet[0]][value] = name;
                 widget.addFacetItem(name, value);
             }
-            widget.init();
-            widget.element.on("facet:change", (e, widget:Facet) => { this.onFacetChanged(widget) });
+            this.initFacetWidget(widget);
+        }
+
+        initFacetWidget (facet:Facet) {
+            facet.init();
+            facet.element.on("facet:change", (e, widget: Facet) => { this.onFacetChanged(widget) });
         }
 
         facetWithName (name): Array<string> | Number {
@@ -1045,11 +1061,11 @@ module PIC {
                 if (this.filters[k] != "*") {
                     if (k === "Date") {
                         facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + " OR BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
-                    } else if (k === "Location") {
-                        var id_latlon = this.filters[k].split("|");
-                        var id = id_latlon[0];
-                        var latlon = id_latlon[1]; 
-                        facetList.push("(address.Remarks:\"" + latlon + "\")");
+                    } else if (k === "bbox") {
+                        var id_bbox = this.filters[k].split("|");
+                        var id = id_bbox[0];
+                        var bbox = id_bbox[1]; 
+                        facetList.push("(address.Remarks:\"" + bbox + "\")");
                     } else {
                         facetList.push("(" + k + ":" + this.filters[k] + ")");
                     }
@@ -1106,11 +1122,11 @@ module PIC {
 
         updateFilter (facetName, value) {
             var facet = this.facetWithName(facetName);
-            if (facet[4] != "") {
+            if (facet[4] !== "") {
                 this.filters[facet[4]+"."+facet[2]] = value;
             } else if (facet[2] === "DisplayName") {
                 this.filters[facet[2]] = value;
-            } else if (facet[2] === "Place") {
+            } else if (facet[2] === "bbox") {
                 this.filters[facet[2]] = value;
             } else {
                 this.filters[facet[2]] = value;
@@ -1510,7 +1526,7 @@ module PIC {
         }
 
         onFacetChanged(widget: Facet) {
-            if (widget.ID === "locations") {
+            if (widget.ID === "bbox") {
                 widget.cleanFacets();
                 widget.selectItem(widget.defaultValue);
             }

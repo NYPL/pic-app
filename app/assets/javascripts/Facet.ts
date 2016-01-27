@@ -66,6 +66,7 @@ module PIC {
             this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
+            if (this.ID === "bbox") this.cleanFacets();
             this.closeGroup();
         }
 
@@ -81,9 +82,16 @@ module PIC {
         addFacetItem(name, value) {
             var strName;
             var strValue;
-            this.data[value] = name;
-            strName = name;
-            strValue = value.replace(/[\.,\s\*]/g, '_');
+            if (name !== "bbox") {
+                this.data[value] = name;
+                strName = name;
+                strValue = value.replace(/[\.,\s\*]/g, '_');
+            } else {
+                // hack for locations
+                strName = value;
+                value = value.replace(/[\.,\s\*]/g, '_');
+                strValue = value;
+            }
             var str = '<div id="' + this.ID + '-' + strValue + '" class="link facet-item" data-value="' + value + '">' + strName + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         }

@@ -50,6 +50,8 @@ module PIC {
         defaultValue = "*";
 
         nullIsland: any;
+        boundsGeom: Cesium.GeometryInstance;
+        isDrawing = false;
 
         minYear = 1700;
         maxYear = new Date().getFullYear();
@@ -161,7 +163,7 @@ module PIC {
                         widget.setValue(pair[1]);
                     } else {
                         if (pair[1] !== "*") {
-                            var bbox = new Cesium.Cartesian2(0, 0);// pair[1];
+                            var bbox = new Cesium.Cartesian3(0, 0, 180000);// pair[1];
                             this.setBboxWidget(bbox);
                         }
                     }
@@ -303,6 +305,27 @@ module PIC {
             this.lines = new Cesium.Primitive();
 
             this.scene.primitives.add(this.lines);
+
+            this.boundsGeom = new Cesium.GeometryInstance({
+                geometry: new Cesium.RectangleOutlineGeometry({
+                    rectangle: Cesium.Rectangle.fromDegrees(-77,0,0,74)
+                }),
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOW.withAlpha(0.5))
+                }
+            });
+
+            this.viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: [this.boundsGeom],
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat : true,
+                    renderState : {
+                        lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
+                    }
+                }),
+                releaseGeometryInstances: false
+            }));
+
         }
 
         addNullIsland () {
@@ -559,17 +582,6 @@ module PIC {
         initMouseHandler() {
             var pic = this;
 
-            this.handler = new Cesium.ScreenSpaceEventHandler(this.canvas);
-
-            // to update the current view in the bbox facet
-            this.handler.setInputAction( (movement) => {
-                var scene = this.viewer.scene;
-                var ellipsoid = scene.globe.ellipsoid;
-                var position = this.camera.position;
-                this.setBboxWidget(Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, position));
-            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
             $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
@@ -587,13 +599,33 @@ module PIC {
                 this.mousePosition = c;
                 var pickedObject = this.scene.pick(c);
                 this.refreshPicked(pickedObject);
+                if (this.isDrawing) this.drawMove(c);
             }
 
             this.canvas.onmousedown = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 this.mousePosition = this.startMousePosition = c;
+                if (this.isDrawing) this.drawStart(c);
             }
 
+            this.canvas.onmouseup = (e) => {
+                var c = new Cesium.Cartesian2(e.layerX, e.layerY);
+                this.mousePosition = this.startMousePosition = c;
+                if (this.isDrawing) this.drawEnd(c);
+            }
+
+        }
+
+        drawStart (position) {
+            console.log("start:", position);
+        }
+
+        drawEnd (position) {
+            console.log("end:", position);
+        }
+
+        drawMove (position) {
+            console.log("move:", position);
         }
 
         pickEntity (windowPosition) {
@@ -609,6 +641,7 @@ module PIC {
 
         refreshPicked (picked) {
             var showHover = false;
+            if (this.isDrawing) return;
             if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
                 if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
                     this.pickedEntity = {
@@ -707,14 +740,27 @@ module PIC {
             el.offset({left:x, top:y});
         }
 
-        setBboxWidget (bbox:Cesium.Cartesian2) {
+        setBboxWidget (position:Cesium.Cartesian3) {
+            return;
+            var scene = this.viewer.scene;
+            var ellipsoid = scene.globe.ellipsoid;
+            var cartesian = Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, position);
+
             var widget = this.facetWidgets["bbox"];
-            console.log(bbox);
-            // widget.cleanFacets();
-            // widget.addFacetItem("bbox", bbox);
-            // widget.setValue(bbox);
-            // widget.selectItem(bbox.replace(/[\.,\s\*]/g, '_'));
-            // widget.setHeaderText(bbox);
+            var current = widget.getActiveValue();
+            if (current && current === "*") {
+                // not currently active
+                var value = cartesian.x + "," + cartesian.y;
+                widget.setIndexValue(1, value);
+            }
+        }
+
+        startDrawing () {
+            this.isDrawing = true;
+            this.scene.screenSpaceCameraController.enableRotate = false;
+            this.scene.screenSpaceCameraController.enableTranslate = false;
+            this.scene.screenSpaceCameraController.enableTilt = false;
+            this.disableFacets();
         }
 
         closeFacets () {
@@ -866,9 +912,9 @@ module PIC {
             str += "</div>";
             this.tooltipElement.find(".results").append(str);
             $(".constituent-toggle-" + p.ConstituentID).click( () => {
-                // $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
-                // $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
-                window.open("/constituents/" + p.ConstituentID);
+                $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
+                $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
+                // window.open("/constituents/" + p.ConstituentID);
             } );
             $("#constituent-addresslist-" + p.ConstituentID + " .address-header").click( () => this.getAddressList(parseInt(p.ConstituentID)) );
         }
@@ -1137,7 +1183,7 @@ module PIC {
             } else if (facet[2] === "DisplayName") {
                 this.filters[facet[2]] = value;
             } else if (facet[2] === "bbox") {
-                if (value == "Current view") {
+                if (value == "Select area") {
                     this.filters[facet[2]] = value;
                 } else {
                     this.filters[facet[2]] = value;
@@ -1540,6 +1586,14 @@ module PIC {
         }
 
         onFacetChanged(widget: Facet) {
+            if (widget === this.facetWidgets["bbox"]) {
+                var val = widget.getActiveValue();
+                if (val !== "*") {
+                    // nothing happens until drawing ends
+                    this.startDrawing();
+                    return;
+                }
+            }
             this.updateFilter(widget.ID, widget.value);
             this.applyFilters();
         }

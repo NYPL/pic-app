@@ -1244,7 +1244,7 @@ declare module Cesium {
       static subsample(rectangle: Rectangle, ellipsoid?: Ellipsoid, surfaceHeight?: number, result?: Cartesian3[]): Cartesian3[];
   }
 
-  class RectangleGeometry {
+  class RectangleGeometry extends Geometry {
       static packedLength: number;
       constructor(options: { rectangle: Rectangle; vertexFormat?: VertexFormat; ellipsoid?: Ellipsoid; granularity?: number; height?: number; rotation?: number; stRotation?: number; extrudedHeight?: number });
       static pack(value: BoundingSphere, array: number[], startingIndex?: number);
@@ -1252,7 +1252,7 @@ declare module Cesium {
       static createGeometry(rectangleGeometry: RectangleGeometry): Geometry;
   }
 
-  class RectangleOutlineGeometry {
+  class RectangleOutlineGeometry extends Geometry {
       static packedLength: number;
       constructor(options: { rectangle: Rectangle; ellipsoid?: Ellipsoid; granularity?: number; height?: number; rotation?: number; extrudedHeight?: number });
       static pack(value: BoundingSphere, array: number[], startingIndex?: number);

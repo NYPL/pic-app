@@ -32,8 +32,7 @@ module PIC {
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
-            console.log(this.ID, this.ID === "bbox");
-            if (this.ID == "bbox") this.addFacetItem("Current view", "Current view");
+            if (this.ID == "bbox") this.addFacetItem("Select area", "Select area");
         }
 
         init() {
@@ -106,6 +105,22 @@ module PIC {
                     }
                 }
             );
+        }
+
+        getActiveValue():string {
+            var item = $(this.IDPrefix + ".facet-item.active");
+            if (item === undefined) return;
+            var value = item.data("value");
+            if (value === undefined) return;
+            return value.toString();
+        }
+
+        setIndexValue(index, value) {
+            var items = $(this.IDPrefix + ".facet-item");
+            var item = items[index];
+            if (item === undefined) return;
+            var jitem = $(item);
+            jitem.data("value", value);
         }
 
         selectItem(value) {

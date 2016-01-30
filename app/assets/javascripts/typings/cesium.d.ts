@@ -275,6 +275,7 @@ declare module Cesium {
       toString(): string;
       static fromRadians(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
       static fromDegrees(longitude: number, latitude: number, height?: number, result?: Cartographic): Cartographic;
+      static fromCartesian(cartesian: Cartesian3, ellipsoid?: Ellipsoid, result?: Cartographic): Cartographic;
       static clone(cartographic: Cartographic, result?: Cartographic): Cartographic;
       static equals(left?: Cartographic, right?: Cartographic): boolean;
       static equalsEpsilon(left: Cartographic, right: Cartographic, epsilon: number): boolean;
@@ -4440,7 +4441,7 @@ declare module Cesium {
       RADIANS_PER_ARCSECOND,
   }
 
-  module CesiumMath {
+  module Math {
       function sign(value: number): number;
       function signNotZero(value: number): number;
       function toSNorm(value: number): number;

@@ -50,8 +50,11 @@ module PIC {
         defaultValue = "*";
 
         nullIsland: any;
-        boundsGeom: Cesium.GeometryInstance;
+        boundsFrom: Cesium.Cartographic;
+        boundsTo: Cesium.Cartographic;
+        boundsPrimitive: Cesium.Primitive;
         isDrawing = false;
+        isPenDown = false;
 
         minYear = 1700;
         maxYear = new Date().getFullYear();
@@ -163,7 +166,7 @@ module PIC {
                         widget.setValue(pair[1]);
                     } else {
                         if (pair[1] !== "*") {
-                            var bbox = new Cesium.Cartesian3(0, 0, 180000);// pair[1];
+                            var bbox = [Cesium.Cartographic.fromDegrees(90,180), Cesium.Cartographic.fromDegrees(-90,-180)];
                             this.setBboxWidget(bbox);
                         }
                     }
@@ -267,10 +270,7 @@ module PIC {
                     mapId: 'nypllabs.8e20560b',
                     accessToken: this.mapboxKey
                 })
-                // imageryProvider: new Cesium.OpenStreetMapImageryProvider({
-                //     url: this.tileUrl, // nypllabs.7f17c2d1
-                //     fileExtension: this.mapboxKey
-                // })
+
                 // ,clock: new Cesium.Clock({shouldAnimate:false})
                 // ,geocoder: false
                 ,baseLayerPicker: false
@@ -306,17 +306,22 @@ module PIC {
 
             this.scene.primitives.add(this.lines);
 
-            this.boundsGeom = new Cesium.GeometryInstance({
+            this.boundsPrimitive = new Cesium.Primitive();
+            
+            this.scene.primitives.add(this.boundsPrimitive);
+
+        }
+        
+        makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.Primitive {
+            return new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
                 geometry: new Cesium.RectangleOutlineGeometry({
-                    rectangle: Cesium.Rectangle.fromDegrees(-77,0,0,74)
+                    rectangle: Cesium.Rectangle.fromCartographicArray([from, to])
                 }),
                 attributes: {
                     color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOW.withAlpha(0.5))
                 }
-            });
-
-            this.viewer.scene.primitives.add(new Cesium.Primitive({
-                geometryInstances: [this.boundsGeom],
+            }),
                 appearance: new Cesium.PerInstanceColorAppearance({
                     flat : true,
                     renderState : {
@@ -324,8 +329,7 @@ module PIC {
                     }
                 }),
                 releaseGeometryInstances: false
-            }));
-
+            });
         }
 
         addNullIsland () {
@@ -596,6 +600,7 @@ module PIC {
 
             this.canvas.onmousemove = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
+                if (!c) return;
                 this.mousePosition = c;
                 var pickedObject = this.scene.pick(c);
                 this.refreshPicked(pickedObject);
@@ -616,16 +621,37 @@ module PIC {
 
         }
 
-        drawStart (position) {
-            console.log("start:", position);
+        drawStart (position:Cesium.Cartesian2) {
+            this.isPenDown = true;
+            this.scene.primitives.remove(this.boundsPrimitive);
+            if (!position) return;
+            var cartesian = this.camera.pickEllipsoid(position, this.scene.globe.ellipsoid);
+            if (cartesian === undefined) return;
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            this.boundsTo = cartographic;
+            this.boundsFrom = cartographic;
         }
 
-        drawEnd (position) {
-            console.log("end:", position);
+        drawEnd (position:Cesium.Cartesian2) {
+            this.isPenDown = false;
+            this.setBboxWidget([this.boundsFrom,this.boundsTo]);
         }
 
-        drawMove (position) {
-            console.log("move:", position);
+        drawMove (position:Cesium.Cartesian2) {
+            if (!this.isPenDown) return;
+            if (!position) return;
+            var cartesian = this.camera.pickEllipsoid(position, this.scene.globe.ellipsoid);
+            if (cartesian === undefined) return;
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            this.boundsTo = cartographic;
+            this.drawBounds();
+        }
+        
+        drawBounds () {
+            this.scene.primitives.remove(this.boundsPrimitive);
+            this.boundsPrimitive = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
+            this.scene.primitives.add(this.boundsPrimitive);
+            this.notifyRepaintRequired();
         }
 
         pickEntity (windowPosition) {
@@ -740,18 +766,20 @@ module PIC {
             el.offset({left:x, top:y});
         }
 
-        setBboxWidget (position:Cesium.Cartesian3) {
-            return;
-            var scene = this.viewer.scene;
-            var ellipsoid = scene.globe.ellipsoid;
-            var cartesian = Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, position);
-
+        setBboxWidget (bbox:Array<Cesium.Cartographic>) {
+            // var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+            // var longitude = Cesium.Math.toDegrees(cartographic.longitude);
+            // var latitudeString = latitude.toFixed(2);
+            // var longitudeString = longitude.toFixed(2);
+            var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);
             var widget = this.facetWidgets["bbox"];
             var current = widget.getActiveValue();
-            if (current && current === "*") {
+            console.log("bbox:", rectangle);
+            if (current && current === "Select area") {
                 // not currently active
-                var value = cartesian.x + "," + cartesian.y;
+                var value = rectangle.west + "|" + rectangle.south + "|" + rectangle.east + "|" + rectangle.north;
                 widget.setIndexValue(1, value);
+                console.log("bbox:", value);
             }
         }
 

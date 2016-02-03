@@ -67,7 +67,10 @@ module PIC {
             this.setValue(this.defaultValue);
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + " .facet-item:first-child").addClass("active");
-            if (this.ID === "bbox") this.cleanFacets();
+            if (this.ID == "bbox") {
+                this.cleanFacets();
+                this.addFacetItem("Select area", "Select area");
+            }
             this.closeGroup();
         }
 
@@ -127,6 +130,16 @@ module PIC {
             value = value.replace(/[\.,\s\*]/g, '_');
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + "#" + this.ID + '-' + value).addClass("active");
+            this.closeGroup();
+        }
+
+        selectIndex(index) {
+            var items = $(this.IDPrefix + ".facet-item");
+            var item = items[index];
+            if (item === undefined) return;
+            $(this.IDPrefix + ".facet-item").removeClass("active");
+            var jitem = $(item);
+            jitem.addClass("active");
             this.closeGroup();
         }
 

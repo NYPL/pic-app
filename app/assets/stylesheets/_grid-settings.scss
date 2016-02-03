@@ -10,24 +10,3 @@ $max-width: 1200px;
 $tablet: new-breakpoint(max-width 768px 8);
 $mobile: new-breakpoint(max-width 480px 4);
 
-// pic stuff
-@font-face{
-    font-family:"kievit font";
-    font-style:normal;
-    font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Book.woff") format('woff');}
-
-@font-face{
-    font-family:"milo font";
-    font-style:normal;
-    font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-medium/MiloSlabWebPro-Medium.woff") format('woff');}
-
-$bodyFont: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$headerFont: "milo font", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$white: #efefef;
-$gray: #eee;
-$darkGray: darken($gray, 20%);
-$black: #222;
-$linkColor: #900;
-$generalMargin: 10px;

@@ -53,6 +53,7 @@ module PIC {
         boundsFrom: Cesium.Cartographic;
         boundsTo: Cesium.Cartographic;
         boundsPrimitive: Cesium.Primitive;
+        boundsLast: string;
         isDrawing = false;
         isPenDown = false;
 
@@ -165,9 +166,20 @@ module PIC {
                     if (pair[0] != "bbox") {
                         widget.setValue(pair[1]);
                     } else {
-                        if (pair[1] !== "*") {
+                        if (pair[1] === "*") {
+                            widget.reset();
                             var bbox = [Cesium.Cartographic.fromDegrees(90,180), Cesium.Cartographic.fromDegrees(-90,-180)];
                             this.setBboxWidget(bbox);
+                            this.boundsLast = "";
+                        } else {
+                            var eswnArray = pair[1].split("|");
+                            var east = Number(eswnArray[0]);
+                            var south = Number(eswnArray[1]);
+                            var west = Number(eswnArray[2]);
+                            var north = Number(eswnArray[3]);
+                            var bbox = [Cesium.Cartographic.fromDegrees(north,west), Cesium.Cartographic.fromDegrees(south,east)];
+                            this.setBboxWidget(bbox);
+                            this.boundsLast = pair[1];
                         }
                     }
                 } else {
@@ -211,6 +223,8 @@ module PIC {
             $("#cesiumContainer .maximize").click(() => this.maximizeMap());
             $("#constituents .minimize").click(() => this.minimizeResults());
             $("#constituents .maximize").click(() => this.maximizeResults());
+            $("#bounds .button.apply").click(() => this.applyBounds());
+            $("#bounds .button.cancel").click(() => this.cancelBounds());
 
             this.tooltipElement = $("#constituents");
             this.facetsElement = $("#facets");
@@ -412,7 +426,7 @@ module PIC {
 
         getData(filters, data, callback, parameter = undefined) {
             var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc&"+filters;
-            // console.log(url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -611,17 +625,55 @@ module PIC {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawStart(c);
+                this.hideBoundsDialog();
             }
 
             this.canvas.onmouseup = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawEnd(c);
+                this.positionBoundsDialog(e.layerX, e.layerY);
             }
 
         }
 
-        drawStart (position:Cesium.Cartesian2) {
+        positionBoundsDialog (x, y) {
+            var bWidth = $("#bounds").width();
+            var cWidth = $("#cesiumContainer").width();
+            var xPx = x + "px";
+            var yPx = y + "px";
+            if (x + bWidth > cWidth) {
+                xPx = (x - bWidth) + "px";
+            }
+            $("#bounds").css("top", yPx);
+            $("#bounds").css("left", xPx);
+        }
+
+        showBoundsDialog () {
+            $("#bounds").fadeIn(100);
+        }
+
+        hideBoundsDialog () {
+            $("#bounds").hide();
+        }
+
+        applyBounds () {
+            var widget = this.facetWidgets["bbox"];
+            this.hideBoundsDialog();
+            this.stopDrawing();
+            this.updateFilter(widget.ID, widget.value);
+            this.applyFilters();
+        }
+
+        cancelBounds () {
+            var widget = this.facetWidgets["bbox"];
+            widget.setIndexValue(1, "Select area");
+            widget.setValue("*");
+            this.hideBoundsDialog();
+            this.stopDrawing();
+        }
+
+        drawStart(position: Cesium.Cartesian2) {
             this.isPenDown = true;
             this.scene.primitives.remove(this.boundsPrimitive);
             if (!position) return;
@@ -635,6 +687,7 @@ module PIC {
         drawEnd (position:Cesium.Cartesian2) {
             this.isPenDown = false;
             this.setBboxWidget([this.boundsFrom,this.boundsTo]);
+            this.showBoundsDialog();
         }
 
         drawMove (position:Cesium.Cartesian2) {
@@ -646,7 +699,7 @@ module PIC {
             this.boundsTo = cartographic;
             this.drawBounds();
         }
-        
+
         drawBounds () {
             this.scene.primitives.remove(this.boundsPrimitive);
             this.boundsPrimitive = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
@@ -775,10 +828,14 @@ module PIC {
             var widget = this.facetWidgets["bbox"];
             var current = widget.getActiveValue();
             console.log("bbox:", rectangle);
-            if (current && current === "Select area") {
+            if (current) {
                 // not currently active
-                var value = rectangle.west + "|" + rectangle.south + "|" + rectangle.east + "|" + rectangle.north;
+                var value = Cesium.Math.toDegrees(rectangle.west).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.south).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.east).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.north).toPrecision(6);
+                this.boundsLast = value;
                 widget.setIndexValue(1, value);
+                widget.value = value; // hack because setValue not intended for bboxes
+                widget.selectIndex(1);
+                widget.setHeaderText("Selected area");
                 console.log("bbox:", value);
             }
         }
@@ -791,7 +848,16 @@ module PIC {
             this.disableFacets();
         }
 
-        closeFacets () {
+        stopDrawing() {
+            this.isDrawing = false;
+            this.scene.screenSpaceCameraController.enableRotate = true;
+            this.scene.screenSpaceCameraController.enableTranslate = true;
+            this.scene.screenSpaceCameraController.enableTilt = true;
+            this.scene.primitives.remove(this.boundsPrimitive);
+            this.enableFacets();
+        }
+
+        closeFacets() {
             for (var key in this.facetWidgets) {
                 var widget = this.facetWidgets[key];
                 if (widget === undefined) continue;
@@ -1271,6 +1337,7 @@ module PIC {
                 if (widget === undefined) continue;
                 widget.reset();
             }
+            this.stopDrawing();
             this.applyFilters();
         }
 

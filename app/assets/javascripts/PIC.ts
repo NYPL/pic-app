@@ -53,7 +53,6 @@ module PIC {
         boundsFrom: Cesium.Cartographic;
         boundsTo: Cesium.Cartographic;
         boundsPrimitive: Cesium.Primitive;
-        boundsLast: string;
         isDrawing = false;
         isPenDown = false;
 
@@ -166,12 +165,7 @@ module PIC {
                     if (pair[0] != "bbox") {
                         widget.setValue(pair[1]);
                     } else {
-                        if (pair[1] === "*") {
-                            widget.reset();
-                            var bbox = [Cesium.Cartographic.fromDegrees(90,180), Cesium.Cartographic.fromDegrees(-90,-180)];
-                            this.setBboxWidget(bbox);
-                            this.boundsLast = "";
-                        } else {
+                        if (pair[1] !== "*") {
                             var eswnArray = pair[1].split("|");
                             var east = Number(eswnArray[0]);
                             var south = Number(eswnArray[1]);
@@ -179,7 +173,6 @@ module PIC {
                             var north = Number(eswnArray[3]);
                             var bbox = [Cesium.Cartographic.fromDegrees(north,west), Cesium.Cartographic.fromDegrees(south,east)];
                             this.setBboxWidget(bbox);
-                            this.boundsLast = pair[1];
                         }
                     }
                 } else {
@@ -445,30 +438,36 @@ module PIC {
             r.send(JSON.stringify(data));
         }
 
-        buildElasticQuery (normal:string, nested:string) {
+        buildElasticQuery (normal:Array<string>, filter:Array<string>) {
+            console.log("buildEQ", normal, filter);
+
+            var normalString = "*";
+            if (normal.length > 0) normalString = "(" + normal.join(" AND ") + ")";
+
             var data = {
                 "query": {
-                    "filtered": {
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    { "query_string": { "query": normal } }
-                                ]
-                            }
-                        }
+                    "bool": {
+                        "must": [
+                            { "query_string": { "query": normalString } }
+                        ]
                     }
                 }
             };
-            if (nested !== "*") {
+
+            if (filter.length === 0) return data;
+
+            // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
+
+            var edgesArray = filter[0].split(":")[1].split("|");
+
+            if (filter[0] !== "*" && filter[0] !== "(*)" && edgesArray.length === 4) {
                 data["filter"] = {
-                    "nested": {
-                        "path": "address",
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    { "query_string": { "query": nested } }
-                                ]
-                            }
+                    "geo_bounding_box": {
+                        "address.Location": {
+                            "left": Number(edgesArray[0]),
+                            "bottom": Number(edgesArray[1]),
+                            "right": Number(edgesArray[2]),
+                            "top": Number(edgesArray[3])
                         }
                     }
                 }
@@ -831,7 +830,7 @@ module PIC {
             if (current) {
                 // not currently active
                 var value = Cesium.Math.toDegrees(rectangle.west).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.south).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.east).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.north).toPrecision(6);
-                this.boundsLast = value;
+
                 widget.setIndexValue(1, value);
                 widget.value = value; // hack because setValue not intended for bboxes
                 widget.selectIndex(1);
@@ -1016,7 +1015,7 @@ module PIC {
         getAddressList (id) {
             // console.log(id);
             var filters = "filter_path=hits.hits._source";
-            var data = this.buildElasticQuery("ConstituentID:" + id, "*");
+            var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
             this.getData(filters, data, this.parseConstituentAddresses, id);
         }
 
@@ -1212,10 +1211,8 @@ module PIC {
                     if (k === "Date") {
                         facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + " OR BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
                     } else if (k === "bbox") {
-                        var id_bbox = this.filters[k].split("|");
-                        var id = id_bbox[0];
-                        var bbox = id_bbox[1]; 
-                        facetList.push("(address.Remarks:\"" + bbox + "\")");
+                        var bbox = this.filters[k];
+                        facetList.push("bbox:" + bbox);
                     } else {
                         facetList.push("(" + k + ":" + this.filters[k] + ")");
                     }
@@ -1227,9 +1224,9 @@ module PIC {
         buildFacetQuery (facetList=undefined) {
             if (facetList === undefined) facetList = this.buildFacetList();
             var normal = [];
-            var nested = [];
+            var filter = [];
             for (var k in facetList) {
-                if (facetList[k].indexOf("address.") === -1) {
+                if (facetList[k].indexOf("bbox") === -1) {
                     if (facetList[k].indexOf("DisplayName") !== -1) {
                         // deconstruct facet to convert to ID
                         var cleaned = facetList[k].replace(/([\(\)\:]*)/g, '');
@@ -1248,15 +1245,11 @@ module PIC {
                         normal.push(facetList[k]);
                     }
                 } else {
-                    nested.push(facetList[k]);
+                    filter.push(facetList[k]);
                 }
             }
-            var normalString = "*";
-            if (normal.length > 0) normalString = "(" + normal.join(" AND ") + ")";
-            var nestedString = "*";
-            if (nested.length > 0) nestedString = "(" + nested.join(" AND ") + ")";
 
-            var facetQuery = this.buildElasticQuery(normalString, nestedString);
+            var facetQuery = this.buildElasticQuery(normal, filter);
             return facetQuery;
         }
 
@@ -1401,6 +1394,20 @@ module PIC {
             if (newPoints.length === 0) return;
             var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
+            var bounds = this.facetWidgets["bbox"].getActiveValue();
+            var n = 180;
+            var s = -180;
+            var e = 180;
+            var w = -180;
+            if (bounds != "*") {
+                var boundsArray = bounds.split("|");
+                if (boundsArray.length === 4) {
+                    w = Number(boundsArray[0]);
+                    s = Number(boundsArray[1]);
+                    e = Number(boundsArray[2]);
+                    n = Number(boundsArray[3]);
+                }
+            }
             var i, l = newPoints.length;
             for (i = 0; i < l; i++) {
                 var index = this.pointHash[newPoints[i]];
@@ -1412,6 +1419,8 @@ module PIC {
                 var loc = p[0] + "," + p[1];
                 if (addressType != "*" && tid != addressType) continue;
                 if (country != "*" && cid != country) continue;
+                if (country != "*" && cid != country) continue;
+                if (!(w <= p[0] && e >= p[0] && n >= p[1] && s <= p[1])) continue;
                 // end hack
                 var height;
                 // point has no real height
@@ -1681,6 +1690,7 @@ module PIC {
         }
 
         onFacetChanged(widget: Facet) {
+            console.log(widget);
             if (widget === this.facetWidgets["bbox"]) {
                 var val = widget.getActiveValue();
                 if (val !== "*") {

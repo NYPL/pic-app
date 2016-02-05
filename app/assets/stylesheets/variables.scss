@@ -28,6 +28,7 @@ $button-height: 35px;
 $bodyFont: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headerFont: "milo font", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $white: #efefef;
+$whiter: lighten($white, 10%);
 $gray: #eee;
 $darkGray: darken($gray, 30%);
 $black: #222;

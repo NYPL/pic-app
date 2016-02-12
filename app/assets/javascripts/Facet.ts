@@ -32,7 +32,7 @@ module PIC {
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
-            if (this.ID == "bbox") this.addFacetItem("Select area", "Select area");
+            if (this.ID == "bbox") this.addFacetItem("Select area", "-180_-90_180_90");
         }
 
         init() {
@@ -64,48 +64,34 @@ module PIC {
         }
 
         reset() {
-            this.setValue(this.defaultValue);
-            $(this.IDPrefix + ".facet-item").removeClass("active");
-            $(this.IDPrefix + " .facet-item:first-child").addClass("active");
             if (this.ID == "bbox") {
                 this.cleanFacets();
-                this.addFacetItem("Select area", "Select area");
+                this.addFacetItem("Any", this.defaultValue);
+                this.addFacetItem("Select area", "-180_-90_180_90");
             }
+            this.setValue(this.defaultValue);
             this.closeGroup();
-        }
-
-        setValue(value) {
-            this.value = value;
-            $(this.IDPrefix).data("value", value);
-            this.selectItem(value);
-
-            var txtValue = this.data[value];
-            this.setHeaderText(txtValue);
         }
 
         addFacetItem(name, value) {
             var strName;
             var strValue;
+            this.data[value] = name;
             if (name !== "bbox") {
-                this.data[value] = name;
                 strName = name;
                 strValue = value.replace(/[\.,\s\*]/g, '_');
             } else {
-                // hack for locations
-                strName = value;
-                value = value.replace(/[\.,\s\*]/g, '_');
+                strName = name;
                 strValue = value;
             }
-            var str = '<div id="' + this.ID + '-' + strValue + '" class="link facet-item" data-value="' + value + '">' + strName + '</div>';
+            var str = '<div id="' + this.ID + '-' + strValue.replace(/\./g, '\\.') + '" class="link facet-item" data-value="' + value + '">' + strName + '</div>';
             $(this.IDPrefix + ".facet-group").append(str);
         }
 
         cleanFacets() {
             $(this.IDPrefix + ".facet-item").each(
                 function(index) {
-                    if ($(this).data("value").toString() !== "*") {
-                        $(this).remove();
-                    }
+                    $(this).remove();
                 }
             );
         }
@@ -123,13 +109,34 @@ module PIC {
             var item = items[index];
             if (item === undefined) return;
             var jitem = $(item);
+            jitem.attr("id", "#" + this.ID + '-' + value.replace(/\./g, '\\.'));
             jitem.data("value", value);
+        }
+
+        setValue(value, headerText:string = undefined) {
+            console.log("value:", value, "headerText:", headerText);
+            this.value = value;
+            $(this.IDPrefix).data("value", value);
+
+            if (this.ID === "bbox" && value !== this.defaultValue) {
+                this.setIndexValue(1, value);
+            }
+
+            this.selectItem(value);
+
+            var txtValue = this.data[value];
+
+            if (headerText === undefined) {
+                this.setHeaderText(txtValue);
+            } else {
+                this.setHeaderText(headerText);
+            }
         }
 
         selectItem(value) {
             value = value.replace(/[\.,\s\*]/g, '_');
             $(this.IDPrefix + ".facet-item").removeClass("active");
-            $(this.IDPrefix + "#" + this.ID + '-' + value).addClass("active");
+            $(this.IDPrefix + "#" + this.ID + '-' + value.replace(/\./g, '\\.')).addClass("active");
             this.closeGroup();
         }
 
@@ -141,6 +148,16 @@ module PIC {
             var jitem = $(item);
             jitem.addClass("active");
             this.closeGroup();
+        }
+
+        getSelectedIndex() {
+            var items = $(this.IDPrefix + ".facet-item");
+            
+            for (var i=0; i < items.length; i++) {
+                var item = $(items[i]);
+                if (item.hasClass("active")) return i;
+            }
+            return 0;
         }
 
         setHeaderText(text) {
@@ -157,7 +174,9 @@ module PIC {
             var value = el.data("value").toString();
             var id = el.attr("id");
             if (value === oldValue) return;
-            this.setValue(value);
+            var headerText;
+            // if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Selected area";
+            this.setValue(value, headerText);
             $(this.IDPrefix).trigger("facet:change", this);
         }
 

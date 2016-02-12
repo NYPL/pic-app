@@ -166,7 +166,7 @@ module PIC {
                         widget.setValue(pair[1]);
                     } else {
                         if (pair[1] !== "*") {
-                            var eswnArray = pair[1].split("|");
+                            var eswnArray = pair[1].split("_");
                             var east = Number(eswnArray[0]);
                             var south = Number(eswnArray[1]);
                             var west = Number(eswnArray[2]);
@@ -458,7 +458,7 @@ module PIC {
 
             // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
 
-            var edgesArray = filter[0].split(":")[1].split("|");
+            var edgesArray = filter[0].split(":")[1].split("_");
 
             if (filter[0] !== "*" && filter[0] !== "(*)" && edgesArray.length === 4) {
                 data["filter"] = {
@@ -666,8 +666,9 @@ module PIC {
 
         cancelBounds () {
             var widget = this.facetWidgets["bbox"];
-            widget.setIndexValue(1, "Select area");
-            widget.setValue("*");
+            widget.reset();
+            this.initFacetWidget(widget);
+            widget.init(); // hack... but works ¯\_(ツ)_/¯
             this.hideBoundsDialog();
             this.stopDrawing();
         }
@@ -685,7 +686,6 @@ module PIC {
 
         drawEnd (position:Cesium.Cartesian2) {
             this.isPenDown = false;
-            this.setBboxWidget([this.boundsFrom,this.boundsTo]);
             this.showBoundsDialog();
         }
 
@@ -696,6 +696,7 @@ module PIC {
             if (cartesian === undefined) return;
             var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
             this.boundsTo = cartographic;
+            this.setBboxWidget([this.boundsFrom,this.boundsTo]);
             this.drawBounds();
         }
 
@@ -826,15 +827,12 @@ module PIC {
             var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);
             var widget = this.facetWidgets["bbox"];
             var current = widget.getActiveValue();
-            console.log("bbox:", rectangle);
-            if (current) {
+            // console.log("bbox:", rectangle);
+            if (current === undefined || current !== "*") {
                 // not currently active
-                var value = Cesium.Math.toDegrees(rectangle.west).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.south).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.east).toPrecision(6) + "|" + Cesium.Math.toDegrees(rectangle.north).toPrecision(6);
-
-                widget.setIndexValue(1, value);
-                widget.value = value; // hack because setValue not intended for bboxes
+                var value = Cesium.Math.toDegrees(rectangle.west).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.south).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.east).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.north).toPrecision(6);
+                widget.setValue(value, "Selected area");
                 widget.selectIndex(1);
-                widget.setHeaderText("Selected area");
                 console.log("bbox:", value);
             }
         }
@@ -1329,6 +1327,7 @@ module PIC {
                 var widget = this.facetWidgets[f];
                 if (widget === undefined) continue;
                 widget.reset();
+                this.initFacetWidget(widget);
             }
             this.stopDrawing();
             this.applyFilters();
@@ -1400,7 +1399,7 @@ module PIC {
             var e = 180;
             var w = -180;
             if (bounds != "*") {
-                var boundsArray = bounds.split("|");
+                var boundsArray = bounds.split("_");
                 if (boundsArray.length === 4) {
                     w = Number(boundsArray[0]);
                     s = Number(boundsArray[1]);
@@ -1690,10 +1689,8 @@ module PIC {
         }
 
         onFacetChanged(widget: Facet) {
-            console.log(widget);
             if (widget === this.facetWidgets["bbox"]) {
-                var val = widget.getActiveValue();
-                if (val !== "*") {
+                if (widget.value !== "*") {
                     // nothing happens until drawing ends
                     this.startDrawing();
                     return;

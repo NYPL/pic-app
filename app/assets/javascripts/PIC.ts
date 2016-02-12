@@ -52,6 +52,7 @@ module PIC {
         nullIsland: any;
         boundsFrom: Cesium.Cartographic;
         boundsTo: Cesium.Cartographic;
+        boundsSelectionPrimitive: Cesium.Primitive;
         boundsPrimitive: Cesium.Primitive;
         isDrawing = false;
         isPenDown = false;
@@ -165,14 +166,17 @@ module PIC {
                     if (pair[0] != "bbox") {
                         widget.setValue(pair[1]);
                     } else {
+                        console.log("pair", pair);
+                        if (this.boundsPrimitive) this.scene.primitives.remove(this.boundsPrimitive);
                         if (pair[1] !== "*") {
                             var eswnArray = pair[1].split("_");
-                            var east = Number(eswnArray[0]);
+                            var west = Number(eswnArray[0]);
                             var south = Number(eswnArray[1]);
-                            var west = Number(eswnArray[2]);
+                            var east = Number(eswnArray[2]);
                             var north = Number(eswnArray[3]);
                             var bbox = [Cesium.Cartographic.fromDegrees(north,west), Cesium.Cartographic.fromDegrees(south,east)];
                             this.setBboxWidget(bbox);
+                            this.drawBounds(north, south, east, west);
                         }
                     }
                 } else {
@@ -313,10 +317,11 @@ module PIC {
 
             this.scene.primitives.add(this.lines);
 
-            this.boundsPrimitive = new Cesium.Primitive();
-            
-            this.scene.primitives.add(this.boundsPrimitive);
+            this.boundsSelectionPrimitive = new Cesium.Primitive();
+            this.scene.primitives.add(this.boundsSelectionPrimitive);
 
+            this.boundsPrimitive = new Cesium.Primitive();
+            this.scene.primitives.add(this.boundsPrimitive);
         }
         
         makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.Primitive {
@@ -675,7 +680,7 @@ module PIC {
 
         drawStart(position: Cesium.Cartesian2) {
             this.isPenDown = true;
-            this.scene.primitives.remove(this.boundsPrimitive);
+            this.scene.primitives.remove(this.boundsSelectionPrimitive);
             if (!position) return;
             var cartesian = this.camera.pickEllipsoid(position, this.scene.globe.ellipsoid);
             if (cartesian === undefined) return;
@@ -697,14 +702,37 @@ module PIC {
             var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
             this.boundsTo = cartographic;
             this.setBboxWidget([this.boundsFrom,this.boundsTo]);
-            this.drawBounds();
+            this.drawSelection();
         }
 
-        drawBounds () {
-            this.scene.primitives.remove(this.boundsPrimitive);
-            this.boundsPrimitive = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
-            this.scene.primitives.add(this.boundsPrimitive);
+        drawSelection () {
+            this.scene.primitives.remove(this.boundsSelectionPrimitive);
+            this.boundsSelectionPrimitive = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
+            this.scene.primitives.add(this.boundsSelectionPrimitive);
             this.notifyRepaintRequired();
+        }
+        
+        drawBounds (north:number, south:number, east:number, west:number) {
+            this.scene.primitives.remove(this.boundsPrimitive);
+            this.boundsPrimitive = new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
+                geometry: new Cesium.RectangleOutlineGeometry({
+                    rectangle: Cesium.Rectangle.fromDegrees(west, south, east, north)
+                }),
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.WHITE.withAlpha(0.5))
+                }
+            }),
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat : true,
+                    renderState : {
+                        lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
+                    }
+                }),
+                releaseGeometryInstances: false
+            });
+            // this.boundsPrimitive = this.makeBoundsRect();
+            this.scene.primitives.add(this.boundsPrimitive);
         }
 
         pickEntity (windowPosition) {
@@ -820,20 +848,15 @@ module PIC {
         }
 
         setBboxWidget (bbox:Array<Cesium.Cartographic>) {
-            // var latitude = Cesium.Math.toDegrees(cartographic.latitude);
-            // var longitude = Cesium.Math.toDegrees(cartographic.longitude);
-            // var latitudeString = latitude.toFixed(2);
-            // var longitudeString = longitude.toFixed(2);
             var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);
             var widget = this.facetWidgets["bbox"];
             var current = widget.getActiveValue();
-            // console.log("bbox:", rectangle);
-            if (current === undefined || current !== "*") {
+            console.log("bbox:", current, rectangle);
+            if (current === undefined || current !== "*" || rectangle) {
                 // not currently active
-                var value = Cesium.Math.toDegrees(rectangle.west).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.south).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.east).toPrecision(6) + "_" + Cesium.Math.toDegrees(rectangle.north).toPrecision(6);
+                var value = Cesium.Math.toDegrees(rectangle.west).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.south).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.east).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.north).toFixed(4);
                 widget.setValue(value, "Selected area");
                 widget.selectIndex(1);
-                console.log("bbox:", value);
             }
         }
 
@@ -850,7 +873,7 @@ module PIC {
             this.scene.screenSpaceCameraController.enableRotate = true;
             this.scene.screenSpaceCameraController.enableTranslate = true;
             this.scene.screenSpaceCameraController.enableTilt = true;
-            this.scene.primitives.remove(this.boundsPrimitive);
+            this.scene.primitives.remove(this.boundsSelectionPrimitive);
             this.enableFacets();
         }
 

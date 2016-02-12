@@ -114,7 +114,6 @@ module PIC {
         }
 
         setValue(value, headerText:string = undefined) {
-            console.log("value:", value, "headerText:", headerText);
             this.value = value;
             $(this.IDPrefix).data("value", value);
 

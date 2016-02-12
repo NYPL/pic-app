@@ -459,7 +459,7 @@ module PIC {
                 }
             };
 
-            if (filter.length === 0) return data;
+            if (filter.length === 0 || filter[0].indexOf("*") !== -1) return data;
 
             // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
 

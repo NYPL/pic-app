@@ -397,7 +397,7 @@ hr {
     position: absolute;
     left: $facetsWidth;
     width: $resultsWidth;
-    background-color: $gray;
+    background-color: $darkGray;
     top: 0;
     bottom: 0;
     border-left: 1px solid $black;
@@ -412,6 +412,10 @@ hr {
         height: 100%;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+    }
+
+    .minimize, .maximize {
+        background-color: $darkGray;
     }
 
     &.minimized {

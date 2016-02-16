@@ -6,19 +6,6 @@
   <%= javascript_include_tag "/assets/lib/history" %>
   <%= javascript_include_tag "/assets/lib/history.adapter.native" %>
   <%= javascript_include_tag "PIC" %>
-  <script type="text/javascript">
-  window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
-  var _pic = new PIC.PIC();
-  window.onload = function () {
-      _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
-      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
-      _pic.rootPath = "http://pic-data.s3.amazonaws.com/";
-      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
-      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
-      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
-      _pic.init();
-  }
-  </script>
 
 <% end %>
 
@@ -78,3 +65,17 @@
         <div class="maximize hidden">Maximize</div>
     </div>
     <div id="feedback" class="preload"></div>
+
+  <script type="text/javascript">
+  window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
+  var _pic = new PIC.PIC();
+  window.onload = function () {
+      _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
+      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
+      _pic.rootPath = "http://pic-data.s3.amazonaws.com/";
+      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
+      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
+      _pic.init();
+  }
+  </script>

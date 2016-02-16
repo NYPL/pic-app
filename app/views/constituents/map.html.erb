@@ -1,0 +1,80 @@
+<% content_for :dynamic_js do %>
+  <%= stylesheet_link_tag    "/assets/lib/Cesium/Widgets/widgets", :media => "all" %>
+  <%= stylesheet_link_tag    "pic", :media => "all" %>
+  <%= javascript_include_tag "/assets/lib/Cesium/Cesium" %>
+  <%= javascript_include_tag "/assets/lib/csvToArray.v2.1" %>
+  <%= javascript_include_tag "/assets/lib/history" %>
+  <%= javascript_include_tag "/assets/lib/history.adapter.native" %>
+  <%= javascript_include_tag "PIC" %>
+  <script type="text/javascript">
+  window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
+  var _pic = new PIC.PIC();
+  window.onload = function () {
+      _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
+      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
+      _pic.rootPath = "http://pic-data.s3.amazonaws.com/";
+      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
+      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
+      _pic.init();
+  }
+  </script>
+
+<% end %>
+
+    <div id="credits"></div>
+    <div id="cesiumContainer">
+        <div id="total-points"></div>
+        <ul class="legend">
+            <li><span class="color born"></span>Born</li>
+            <li><span class="color active"></span>Active in</li>
+            <li><span class="color biz"></span>Business</li>
+            <li><span class="color died"></span>Died</li>
+        </ul>
+        <div id="hover"></div>
+        <div id="bounds">
+            <span class="button apply">Apply</span>
+            <span class="button cancel">Cancel</span>
+        </div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="facet-container">
+        <div id="map-header">
+            <h1 id="acronym">PIC</h1>
+            <p id="slogan">Photographers’ Identities Catalog</p>
+            <a id="facets-clear" class="link">Clear all filters</a>
+        </div>
+        <div id="facets">
+            <div id="facet-list">
+                <div class="facet">
+                    <label for="nameQuery">Name or ID</label>
+                    <input type="text" class="text" id="nameQuery" />
+                    <div class="icon query" title="search by name" onclick="_pic.applyFilters()"></div>
+                </div>
+                <div class="timeline facet">
+                    <label>Alive or active date</label>
+                    <div class="date-field">
+                        <label for="nameQuery">From</label>
+                        <input type="text" class="date text" id="fromDate" />
+                    </div>
+                    <div class="date-field">
+                        <label for="nameQuery">To</label>
+                        <input type="text" class="date text" id="toDate" />
+                    </div>
+                    <div class="icon query" title="search by date range" onclick="_pic.applyFilters()"></div>
+                </div>
+            </div>
+        </div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="constituents">
+        <div class="scroller">
+            <div class="results"></div>
+            <div class="more"></div>
+        </div>
+        <div class="minimize">Minimize</div>
+        <div class="maximize hidden">Maximize</div>
+    </div>
+    <div id="feedback" class="preload"></div>

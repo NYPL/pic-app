@@ -5,6 +5,9 @@ class ConstituentsController < ApplicationController
   def index
   end
 
+  def map
+  end
+
   def show
     connection_string = "https://#{ENV['ELASTIC_USER']}:#{ENV['ELASTIC_PASSWORD']}@#{ENV['ELASTIC_HOST']}"
     client = Elasticsearch::Client.new host: connection_string

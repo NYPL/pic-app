@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     root 'constituents#index'
 
     resources :constituents
+
+    get 'map' => 'constituents#map'
+
     match 'save' => 'feedback#save_spreadsheet', :via => [:get, :post]
 
   # Example of regular route:

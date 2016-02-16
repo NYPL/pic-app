@@ -1,80 +1,94 @@
-<% content_for :dynamic_js do %>
-  <%= stylesheet_link_tag    "/assets/lib/Cesium/Widgets/widgets", :media => "all" %>
-  <%= stylesheet_link_tag    "pic", :media => "all" %>
-  <%= javascript_include_tag "/assets/lib/Cesium/Cesium" %>
-  <%= javascript_include_tag "/assets/lib/csvToArray.v2.1" %>
-  <%= javascript_include_tag "/assets/lib/history" %>
-  <%= javascript_include_tag "/assets/lib/history.adapter.native" %>
-  <%= javascript_include_tag "PIC" %>
-  <script type="text/javascript">
-  window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
-  var _pic = new PIC.PIC();
-  window.onload = function () {
-      _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
-      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
-      _pic.rootPath = "http://pic-data.s3.amazonaws.com/";
-      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
-      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
-      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
-      _pic.init();
-  }
-  </script>
+<h1><%= link_to "go to map", "/map" %></h1>
 
-<% end %>
 
-    <div id="credits"></div>
-    <div id="cesiumContainer">
-        <div id="total-points"></div>
-        <ul class="legend">
-            <li><span class="color born"></span>Born</li>
-            <li><span class="color active"></span>Active in</li>
-            <li><span class="color biz"></span>Business</li>
-            <li><span class="color died"></span>Died</li>
-        </ul>
-        <div id="hover"></div>
-        <div id="bounds">
-            <span class="button apply">Apply</span>
-            <span class="button cancel">Cancel</span>
-        </div>
-        <div class="minimize">Minimize</div>
-        <div class="maximize hidden">Maximize</div>
-    </div>
-    <div id="facet-container">
-        <div id="map-header">
-            <h1 id="acronym">PIC</h1>
-            <p id="slogan">Photographers’ Identities Catalog</p>
-            <a id="facets-clear" class="link">Clear all filters</a>
-        </div>
-        <div id="facets">
-            <div id="facet-list">
-                <div class="facet">
-                    <label for="nameQuery">Name or ID</label>
-                    <input type="text" class="text" id="nameQuery" />
-                    <div class="icon query" title="search by name" onclick="_pic.applyFilters()"></div>
-                </div>
-                <div class="timeline facet">
-                    <label>Alive or active date</label>
-                    <div class="date-field">
-                        <label for="nameQuery">From</label>
-                        <input type="text" class="date text" id="fromDate" />
-                    </div>
-                    <div class="date-field">
-                        <label for="nameQuery">To</label>
-                        <input type="text" class="date text" id="toDate" />
-                    </div>
-                    <div class="icon query" title="search by date range" onclick="_pic.applyFilters()"></div>
-                </div>
-            </div>
-        </div>
-        <div class="minimize">Minimize</div>
-        <div class="maximize hidden">Maximize</div>
-    </div>
-    <div id="constituents">
-        <div class="scroller">
-            <div class="results"></div>
-            <div class="more"></div>
-        </div>
-        <div class="minimize">Minimize</div>
-        <div class="maximize hidden">Maximize</div>
-    </div>
-    <div id="feedback" class="preload"></div>
+<h1 id="pic">PIC</h1>
+
+<h2 id="photographers-identities-catalog">Photographers’ Identities Catalog</h2>
+
+<p>Photographers’ Identities Catalog (PIC) is a growing collection of biographical data describing photographers, studios, manufacturers, and others involved in the production of photographic images in the last 175 years. Each entry consists of a Name, Nationality, Date(s), and Sources from which the entry was derived. Where known, they also include at least some of the following: gender, role (if other than Photographer), photographic processes and formats used, locations (of birth, death, studio addresses, or areas of activity) and their corresponding dates, and known repositories of their work. PIC is an increasingly thorough resource for the attribution and dating of photographs, and hopefully of interest to broader historical and genealogical communities, as well. The information has been culled from trusted biographical dictionaries, catalogs and databases, and from extensive original research by NYPL Photography Collection staff.</p>
+
+
+
+<h3 id="sample-use-cases">Sample Use Cases</h3>
+
+<p>Learn about a topic of interest <br>
+Want to read about 19th century female photographers in England? Select Female from the Gender options, England from the Address Country options, and set the end date to 1900. You could also select Wikipedia from the Sources, and within each entry, you’ll find a link directly to the article. [screenshot map] [screenshot search options]</p>
+
+
+
+<h3 id="find-photographs-by-a-particular-photographer">Find photographs by a particular photographer</h3>
+
+<p>Trying to locate work by James Presley Ball Sr.? Search for him by name in the search bar at the top left, and click his name to see more information about him. Included are links to collections known to have his photographs (please note that our list of collections is by no means comprehensive, and many photographers have no collections listed). Further, by clicking Connect Locations you can easily see the zig-zagging arc of his career; you might want to contact museums, libraries or historical societies in these places, and you may find more work by him. [screenshot card view] [screenshot map]</p>
+
+
+
+<h3 id="identify-and-date-your-photographs">Identify and date your photographs</h3>
+
+<p>Have old family photographs you’re trying to date? Many studio portraits, such as Cabinet Cards or Cartes de Visite print the photographer’s or studio’s name and address along the bottom or on the back of the photo. In many cases, PIC has the dates a studio occupied a specific address. For instance, William Watson Washburn operated a studio at 26 Camp Street, New Orleans from 1849-1853. After that he moved to 120 Canal Street.</p>
+
+
+
+<h3 id="have-fun-explore">Have fun &amp; explore!</h3>
+
+<p>PIC has information on nearly 115,000 photographers and studios, so spin the globe &amp; click around. You might find world traveling photographers like Chester Burger and Kay Simmon Blumberg, or even photographers in outer space! </p>
+
+
+
+<h3 id="how-to">How To</h3>
+
+<p>We hope you find PIC intuitive to use, but we understand that you may find some things quirky or confusing. Let us know if you’re having problems, and we’ll consider how we can make PIC more useful for you. In the meantime, here’s a tour of the interface and how to use it.</p>
+
+<p>The screen is divided into three sections: the search column to the left, the search results in the center, and the map. Any of them can be minimized by clicking the X in the upper right of the column.</p>
+
+<p>In the top right corner of the map, you can click the grid icon to select how you’d like to view the map- flat (default) or as a globe.  <br>
+On the left of this is the location search bar. This lets you zoom to a particular place on the map. This doesn’t affect what information is displayed on the map, it just lets you look at a location up close. <br>
+In the top left, you’ll find in plain English what the map is showing you. This will change as you click on points or use search or filters in the search column. </p>
+
+<p>In the leftmost column you can search and filter the PIC data. <br>
+Search for a name with the search bar. If you don’t find what you’re looking for, be less specific. Try just a last name. This may give you too many results. If you know where your person or studio existed, zoom to that location by using the location search bar on the map. You can also set a specific time frame to limit the search results. Setting a beginning and end year will show only events that happened within that range. <br>
+Use filters, such as Gender, Process or Collection, etc. to further limit your results. <br>
+Note that the Location filter changes to a set of geographic coordinates when you click a point on the map. PIC then shows only the photographers or studios who are in that specific location (and who match all other criteria you have selected). If you want to see all the search results, regardless of their location, simply select Any from the Location filter. <br>
+To start over completely, select Clear All Filters (located just above the search bar).</p>
+
+<p>The results of your search and filtering are displayed as a list in the center column. Click on a name to reveal more information and to more closely examine locations associated with that name. Show Locations zooms and recenters the map, and Connect Locations, well, connects those dots from birth to death, and chronologically in between.</p>
+
+
+
+<h3 id="faq">FAQ</h3>
+
+
+
+<h4 id="im-a-photographer-can-i-be-listed-in-pic">I’m a photographer. Can I be listed in PIC?</h4>
+
+<p>Given the ubiquity of cameras in the digital age, it’s simply not possible for us to maintain biographies for all contemporary photographers. To maintain PIC as a useful research and discovery tool, we include photographers in the collections of public institutions, or who are otherwise newsworthy. If your work is in a museum somewhere, ask them to contact us with their list of photographers. We also include many contemporary photographers with biographies in Wikipedia and WikiData, which maintain their own standards of notability. We regularly update PIC with new entries found there.</p>
+
+
+
+<h4 id="i-have-a-collection-of-photographs-will-pic-link-to-it">I have a collection of photographs. Will PIC link to it?</h4>
+
+<p>PIC does not track private collections or the stables of commercial galleries. If you are a museum, library, historical society, or other archive which is open to the public, we’d love to learn more about your photograph collection. Contact us!</p>
+
+
+
+<h4 id="why-are-there-so-many-people-on-a-tiny-island-off-the-west-coast-of-africa">Why are there so many people on a tiny island off the west coast of Africa?</h4>
+
+<p>That’s not actually an island, and there’s not actually anyone there. That point is located at the coordinates 0’ latitude &amp; 0’ longitude, and we use it to map information when we don’t know a location (in the cartography world, it’s often called “Null Island”). If, for instance, we know someone was born in 1872, but we don’t know where, we put the point on Null Island. You can help us evacuate the island by finding locations we’re missing!</p>
+
+
+
+<h4 id="i-have-information-pic-lacks-or-ive-spotted-an-error-how-do-i-contribute-or-request-a-correction">I have information PIC lacks, or I’ve spotted an error. How do I contribute or request a correction?</h4>
+
+<p>Please let us know! Use the feedback link in the bottom right of the map. It is helpful if you include the Record ID number to identify the photographer in question. That ID can be found after the Name, Nationality and Dates of the constituent.</p>
+
+
+
+<h4 id="if-pic-is-about-photographers-identities-why-is-the-map-so-prominent">If PIC is about photographer’s identities, why is the map so prominent?</h4>
+
+<p>Time and place can be essential information if you’re trying to identify a photographer. With hundreds of entries for people with the last name “Williams”, it would be really inefficient to scroll through, and click into, each entry to find the “Williams” active in the location you’re looking for. Also, place-names can change over time, and national borders move, so the map allows you to browse for studios in Saint Petersburg, even if the city was called Leningrad at the time. Also, PIC data skews heavily toward the United States and Europe, but we want to represent the whole of photo history. It’s important to be able to see at a glance where we have more work to do. Plus, maps are just fun!</p>
+
+
+
+<h4 id="where-did-all-these-photographer-biographies-come-from">Where did all these photographer biographies come from?</h4>
+
+<p>We’ve listed all of our sources in each record so you can double check our work. It’s a mix of trusted books, databases and websites published by photography scholars, as well as Wikipedia and Wikidata. When a source is a US Census, City or Business Directory, Military Records or Death Records, that means NYPL staff has conducted original research on the subject. (See Background for more information on the George Eastman House database)</p>
+

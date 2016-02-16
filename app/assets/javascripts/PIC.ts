@@ -851,7 +851,7 @@ module PIC {
             var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);
             var widget = this.facetWidgets["bbox"];
             var current = widget.getActiveValue();
-            console.log("bbox:", current, rectangle);
+            // console.log("bbox:", current, rectangle);
             if (current === undefined || current !== "*" || rectangle) {
                 // not currently active
                 var value = Cesium.Math.toDegrees(rectangle.west).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.south).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.east).toFixed(4) + "_" + Cesium.Math.toDegrees(rectangle.north).toFixed(4);
@@ -1713,6 +1713,7 @@ module PIC {
 
         onFacetChanged(widget: Facet) {
             if (widget === this.facetWidgets["bbox"]) {
+                console.log("ch-ch-ch-changes!", widget.value);
                 if (widget.value !== "*") {
                     // nothing happens until drawing ends
                     this.startDrawing();

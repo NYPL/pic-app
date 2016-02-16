@@ -151,7 +151,6 @@ module PIC {
 
         getSelectedIndex() {
             var items = $(this.IDPrefix + ".facet-item");
-            
             for (var i=0; i < items.length; i++) {
                 var item = $(items[i]);
                 if (item.hasClass("active")) return i;
@@ -174,7 +173,7 @@ module PIC {
             var id = el.attr("id");
             if (value === oldValue) return;
             var headerText;
-            // if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Selected area";
+            if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Select area";
             this.setValue(value, headerText);
             $(this.IDPrefix).trigger("facet:change", this);
         }

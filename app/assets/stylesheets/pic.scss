@@ -180,6 +180,10 @@ hr {
     left: $generalMargin;
     bottom: $generalMargin;
     color: $white;
+    width: 300px;
+    height: 100px;
+    mix-blend-mode: normal;
+
     @include text-shadow(-1px, 1px, 0px, $black);
     // text-transform: uppercase;
 
@@ -192,15 +196,61 @@ hr {
     }
 
     li {
-        margin-bottom: 1em;
+        height: 20px;
+        margin: 0;
+
+        .label, .color {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .label {
+            width: 100px;
+            text-align: center;
+        }
 
         .color {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            margin-right: $generalMargin;
-            border-radius: 10px;
-            vertical-align: middle;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            mix-blend-mode: color-dodge;
+        }
+
+        &.born {
+          margin-bottom: -8px;
+        }
+
+        &.born .label {
+          margin-top: -55px;
+        }
+
+        &.biz, &.active {
+          width: 50%;
+          float: left;
+        }
+
+        &.active .color {
+          margin: 0 -10px 0 2px;
+          float: right;
+        }
+
+        &.active .label {
+          margin-top: 13px;
+          text-align: right;
+        }
+
+        &.biz .color {
+          margin: 0 2px 0 -10px;
+          float: left;
+        }
+
+        &.biz .label {
+          margin-top: 13px;
+          text-align: left;
+        }
+
+        &.died {
+          margin-top: 15px;
         }
     }
 }
@@ -236,19 +286,19 @@ hr {
 }
 
 
-.biz.color {
+.biz .color {
     background-color: rgba(255, 127, 2, 1);
 }
 
-.born.color {
+.born .color {
     background-color: rgba(76, 173, 73, 1);
 }
 
-.died.color {
+.died .color {
     background-color: rgba(53, 124, 183, 1);
 }
 
-.active.color {
+.active .color {
     background-color: rgba(226, 25, 25, 1);
 }
 

@@ -606,35 +606,35 @@ module PIC {
 
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
-            $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
+            // $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
 
-            this.canvas.onclick = (e) => {
-                this.canvas.focus();
-                // console.log(mousePosition, startMousePosition, e);
-                if (this.mousePosition != this.startMousePosition) return;
-                var pickedObject = this.pickEntity({x:e.layerX, y:e.layerY});
-                this.refreshPicked(pickedObject);
-            };
+            // this.canvas.onclick = (e) => {
+            //     this.canvas.focus();
+            //     // console.log(mousePosition, startMousePosition, e);
+            //     if (this.mousePosition != this.startMousePosition) return;
+            //     var pickedObject = this.pickEntity({x:e.layerX, y:e.layerY});
+            //     this.refreshPicked(pickedObject);
+            // };
 
             this.canvas.onmousemove = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 if (!c) return;
-                this.mousePosition = c;
-                var pickedObject = this.scene.pick(c);
-                this.refreshPicked(pickedObject);
+                // this.mousePosition = c;
+                // var pickedObject = this.scene.pick(c);
+                // this.refreshPicked(pickedObject);
                 if (this.isDrawing) this.drawMove(c);
             }
 
             this.canvas.onmousedown = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
-                this.mousePosition = this.startMousePosition = c;
+                // this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawStart(c);
                 this.hideBoundsDialog();
             }
 
             this.canvas.onmouseup = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
-                this.mousePosition = this.startMousePosition = c;
+                // this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawEnd(c);
                 this.positionBoundsDialog(e.layerX, e.layerY);
             }

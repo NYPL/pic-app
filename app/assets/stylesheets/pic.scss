@@ -293,16 +293,19 @@ hr {
         @include drr-icon('');
         display: block;
         background-size: 100%;
+        background-color: $gray;
         cursor: pointer;
         font-size: $iconSize;
-        float: right;
-        margin-right: $generalMargin;
+        position: absolute;
+        right: 0;
+        top: 35%;
+        padding-left: $generalMargin;
     }
 
     span, .text {
         font-size: 1em;
         font-family: $bodyFont;
-        @include calc(width, "#{$facetsWidth} - (#{$columnMargin} * 2) - #{$iconSize}");
+        width: 100%;
         padding: $facetMargin;
     }
 
@@ -372,6 +375,7 @@ hr {
     .facet {
         @include clearfix;
         margin-bottom: $generalMargin;
+        position: relative;
 
         &.disabled {
             color: lighten($black, 20%);

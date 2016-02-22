@@ -39,6 +39,7 @@ module PIC {
 
         elasticSize = 1500;
         padding = 0.01; // to extend the boundary a bit
+        maxExport = 100;
         tooltipLimit = 50;
         heightDelta = 100;
         lineWidth = 2;
@@ -896,6 +897,10 @@ module PIC {
             if (total > this.tooltipLimit) {
                 str = str + " Showing first " + this.tooltipLimit + ".";
             }
+            var url = "/export/?q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
+            var exportStr = "Export results as JSON";
+            if (total > this.maxExport) exportStr = "Export first " + this.maxExport + " results as JSON";
+            str = str + '<br /><a href="'+url+'" target="_blank">'+exportStr+'</a>';
             str = str + "</p>";
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);

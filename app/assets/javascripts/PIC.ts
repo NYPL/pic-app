@@ -81,6 +81,7 @@ module PIC {
         baseUrl = '';
         geonamesUrl = '';
         bingMapsKey = '';
+        nullIslandPath = '';
 
         tooltipElement;
         facetsElement;
@@ -323,7 +324,7 @@ module PIC {
             this.boundsPrimitive = new Cesium.Primitive();
             this.scene.primitives.add(this.boundsPrimitive);
         }
-        
+
         makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.Primitive {
             return new Cesium.Primitive({
                 geometryInstances: new Cesium.GeometryInstance({
@@ -345,7 +346,7 @@ module PIC {
         }
 
         addNullIsland () {
-            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(this.rootPath + 'null-island.json', {
+            this.nullIsland = this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(this.nullIslandPath, {
                 stroke: this.unknownColor,
                 strokeWidth: 3,
                 fill: this.invisibleColor,

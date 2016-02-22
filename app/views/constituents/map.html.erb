@@ -74,6 +74,7 @@
       _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966.us-east-1.aws.found.io:9243/pic";
       _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
       _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
+      _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';
       _pic.init();
   }
   $(function() {

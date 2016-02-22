@@ -298,7 +298,7 @@ hr {
         font-size: $iconSize;
         position: absolute;
         right: 0;
-        top: 35%;
+        top: 14px;
         padding-left: $generalMargin;
     }
 
@@ -389,6 +389,7 @@ hr {
     .date-field {
         float: left;
         margin-right: $generalMargin;
+        margin-bottom: $generalMargin;
 
         label {
             display: inline-block;

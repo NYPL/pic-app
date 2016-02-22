@@ -302,7 +302,7 @@ hr {
     span, .text {
         font-size: 1em;
         font-family: $bodyFont;
-        width: calc($facetsWidth - ($columnMargin * 2) - $iconSize);
+        @include calc(width, "#{$facetsWidth} - (#{$columnMargin} * 2) - #{$iconSize}");
         padding: $facetMargin;
     }
 

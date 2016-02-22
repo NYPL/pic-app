@@ -73,6 +73,48 @@ header {
     margin-right: 10px;
 }
 
+#footer {
+  margin: 20em 0 0 0;
+  text-align: center;
+  font-size: 0.8em;
+  line-height: 1.4em;
+  color: $darkGray;
+
+  @media screen and (max-width: $mobile-breakpoint) {
+    // margin-left: $radius*2;
+    // margin-right: $radius*2;
+    // text-align: center;
+    // background-color: $bubblecolor;
+    // border-radius: $radius;
+    // padding: $radius;
+  }
+
+  p {
+    @media screen and (max-width: $mobile-breakpoint) {
+      width: auto;
+      margin-left: 0;
+    }
+  }
+
+  .nypl {
+    color: $black;
+    display: block;
+  }
+
+  .icon-icon_lion {
+    color: $black;
+    display: block;
+
+    &:before {
+      @include drr-icon("\4e");
+      display: block;
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+  }
+
+}
+
 .locations .map {
     width: 200px;
     height: 200px;

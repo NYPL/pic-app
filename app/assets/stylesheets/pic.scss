@@ -99,7 +99,7 @@ hr {
     position: absolute;
     left: ($facetsWidth + $resultsWidth);
     width: (100% - $facetsWidth - $resultsWidth);
-    top: 0;
+    top: $headerHeight;
     right: 0;
     bottom: 0;
 
@@ -131,7 +131,7 @@ hr {
     color: $black;
     position: absolute;
     width: $facetsWidth;
-    top: 0;//$generalMargin;
+    top: $headerHeight;//$generalMargin;
     left: 0;//$generalMargin;
     bottom: 0;
     @include display(flex);
@@ -398,7 +398,7 @@ hr {
     left: $facetsWidth;
     width: $resultsWidth;
     background-color: $darkGray;
-    top: 0;
+    top: $headerHeight;
     bottom: 0;
     border-left: 1px solid $black;
     padding: $generalMargin;

@@ -33,7 +33,7 @@ p {
 
 /* normal site stuff */
 
-.wrapper {
+#wrapper {
     @include outer-container;
 }
 
@@ -51,19 +51,26 @@ p {
     }
 }
 
-#nypl {
-    font-size: 1px;
-    color: $white;
+header {
+    background-color: $black;
+    height: $headerHeight;
+    color: $darkGray;
+    padding: 8px;
+    display: flex;
+    @include flex-direction(row);
+    @include align-items(center);
+    border-top: 2px solid $nyplRed;
 
-    &:before {
-        @include drr-icon('\e900');
-        font-size: 100px;
-        color: $black;
+    a:link, a:visited, a:hover {
+        color: $white;
     }
 }
 
-#slogan {
-    margin-left: 33px;
+#nypl {
+    @include drr-icon('');
+    font-size: 30px;
+    color: $white;
+    margin-right: 10px;
 }
 
 .locations .map {

@@ -3,11 +3,6 @@
   <%= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>
 <% end %>
 
-<div id="wrapper">
-    <header>
-        <div id="nypl">The New York Public Library</div>
-        <p id="slogan">Photographers’ Identities Catalog</p>
-    </header>
     <main>
         <span class="constituentid">ID:<%= @constituent["ConstituentID"] %></span>
         <h1 class="name"><%= @constituent["DisplayName"] %></h1>
@@ -144,7 +139,6 @@
         <% end %>
 
     </main>
-</div>
 
 
 

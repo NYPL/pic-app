@@ -86,6 +86,7 @@ module PIC {
 
         tooltipElement;
         facetsElement;
+        spinner;
 
         nameQueryElement = "nameQuery";
         fromDateElement = "fromDate";
@@ -1288,6 +1289,7 @@ module PIC {
             this.tooltipElement.find(".results").empty();
             this.tooltipElement.find(".more").empty();
             this.removeLines();
+            this.hideSpinner();
         }
 
         updateFilter (facetName, value) {
@@ -1322,6 +1324,7 @@ module PIC {
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
+            this.showSpinner();
             var addresses = [];
             var data = this.buildFacetQuery();
             var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
@@ -1357,6 +1360,7 @@ module PIC {
                 if (widget === undefined) continue;
                 widget.reset();
                 this.initFacetWidget(widget);
+                widget.init(); // hack... but works ¯\_(ツ)_/¯
             }
             this.stopDrawing();
             this.applyFilters();
@@ -1391,16 +1395,34 @@ module PIC {
             var data = this.buildFacetQuery();
             var filters = this.buildBaseQueryFilters(0);
             // console.log("tooltip", data);
-            this.showSpinner();
             this.getData(filters, data, this.updateTooltip);
         }
 
         showSpinner () {
-            // var spin = new Spinner(opts).spin();
+            var opts = {
+                lines: 11, // The number of lines to draw
+                length: 0, // The length of each line
+                width: 12, // The line thickness
+                radius: 24, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                color: '#fff', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                // zIndex: 9, // The z- index(defaults to 2000000000)
+                // top: '100px', // Top position relative to parent in px
+                // left: '50%' // Left position relative to parent in px
+            }
+
+            var spin = new Spinner(opts).spin();
+            this.tooltipElement.append(spin.el);
         }
 
         hideSpinner () {
-
+            this.tooltipElement.find(".spinner").remove();
         }
 
         addressesForID (id) {
@@ -1671,7 +1693,7 @@ module PIC {
             if (key !== "*") {
                 var dates = $("#" + this.fromDateElement).val();
                 dates += " to " + $("#" + this.toDateElement).val();
-                predicate += "who were alive or active from <em>" + dates + "</em> ";
+                predicate += "who were alive or active <em>from " + dates + "</em> ";
             }
 
             // biography

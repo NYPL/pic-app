@@ -5,7 +5,7 @@
 @import "grid-settings";
 
 html, body {
-    margin: 20px 0 100px;
+    margin: 0 0 100px;
     padding: 0;
     font-family: $bodyFont;
     font-size: 16px;
@@ -32,13 +32,54 @@ p {
 }
 
 /* normal site stuff */
+@include keyframes(starwars) {
+  0% {
+    background-position: 50% 300%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
 
-#wrapper {
+#hero {
+    background: #000 asset-url("hero-full") no-repeat 50% 300%;
+    height: 300px;
+    display: flex;
+    align-items: flex-end;
+
+    @include animation(starwars 4s 1s forwards);
+
+    h1 {
+        width: 1024px;
+        margin: 0 auto 1em;
+        color: $white;
+        font-size: 3em;
+        @include text-shadow(-2px, 2px, 0px, $black);
+    }
+}
+
+
+.wrapper {
     @include outer-container;
+
+    p {
+    }
 }
 
 .main-header, .intro, .footer {
     @include span-columns(12);
+}
+
+.enter-link, .enter-link:link, .enter-link:visited {
+    display: block;
+    font-size: 2em;
+    background-color: $linkColor;
+    color: $white;
+    padding: 12px 18px;
+    margin: 0 auto;
+    width: 200px;
+    text-align: center;
+    border-radius: 4px;
 }
 
 #acronym {

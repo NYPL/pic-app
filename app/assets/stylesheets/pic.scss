@@ -226,7 +226,7 @@ hr {
 
     em {
         font-style: normal;
-        color: $white;
+        color: lighten($linkColor, 20%);
     }
 
     .number {

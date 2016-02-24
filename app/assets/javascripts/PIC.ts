@@ -1542,7 +1542,7 @@ module PIC {
             0  Birth
                places
             1  in Australia
-            11 in Australia
+            11 within bounds
                for
             2  English
             3  , Female
@@ -1579,6 +1579,14 @@ module PIC {
             key = this.filters[facetKey];
             if (key !== "*") {
                 subject += "in <em>" + this.facetValues[facet[0]][key] + "</em> ";
+            }
+
+            // bbox
+            facet = this.facets[11];
+            facetKey = facet[2];
+            key = this.filters[facetKey];
+            if (key !== "*") {
+                subject += " <em>within the selected bounds</em> ";
             }
 
             predicate = "for " + this.totalPhotographers.toLocaleString() + " ";

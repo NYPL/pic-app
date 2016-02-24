@@ -1391,7 +1391,16 @@ module PIC {
             var data = this.buildFacetQuery();
             var filters = this.buildBaseQueryFilters(0);
             // console.log("tooltip", data);
+            this.showSpinner();
             this.getData(filters, data, this.updateTooltip);
+        }
+
+        showSpinner () {
+            // var spin = new Spinner(opts).spin();
+        }
+
+        hideSpinner () {
+
         }
 
         addressesForID (id) {

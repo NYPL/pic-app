@@ -412,6 +412,12 @@ hr {
     @include transition-duration(0.2s);
     @include transition-timing-function(ease-in);
 
+    .spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+    }
+
     .scroller {
         width: 100%;
         height: 100%;

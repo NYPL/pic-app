@@ -9,7 +9,7 @@ html, body {
     padding: 0;
     font-family: $bodyFont;
     font-size: 18px;
-    line-height: 1.5em;
+    line-height: 1.75em;
     background: $white;
 }
 
@@ -62,22 +62,33 @@ p {
 .wrapper {
     @include outer-container;
 
-    p {
+    p.intro {
+        @include span-columns(10);
+        @include shift(1);
+        font-size: 1.2em;
+        line-height: 1.75em;
+        // color: $darkGray;
+        margin-top: 1em;
+
+        &.more {
+            text-align: center;
+        }
     }
 }
 
-.main-header, .intro, .footer {
+.main-header, .footer {
     @include span-columns(12);
 }
 
 .enter-link {
     display: block;
     font-size: 2em;
-    padding: 12px 18px;
+    padding: 12px 18px 8px;
     margin: 0 auto;
     width: 200px;
     text-align: center;
     border-radius: 4px;
+    clear: both;
     @include box-shadow(0, 0, 0px, 0, $linkColor);
 
     @include transition(all, .1s);
@@ -91,6 +102,55 @@ p {
         background-color: $black;
         @include box-shadow(0, 5px, 10px, 0, $linkColor);
         transform: translateY(-5px);
+    }
+}
+
+.main-nav {
+    @include row();
+
+    li {
+        &:first-child {
+            @include shift(3);
+            border-radius: 6px 0 0 6px;
+        }
+
+        &:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+
+        @include span-columns(2);
+        text-align: center;
+        background-color: white;
+
+        a {
+            color: $linkColor;
+            display: block;
+            padding: 8px 12px 4px;
+            text-transform: uppercase;
+        }
+    }
+}
+
+.wrap {
+    &-sample, &-how, &-faq, &-background {
+        margin: 1em 0 5em;
+        padding: 1em 0 2em;
+    }
+
+    &-sample {
+        background-color: lighten($bornColor, 20%);
+    }
+
+    &-how {
+        background-color: lighten($diedColor, 20%);
+    }
+
+    &-faq {
+        background-color: lighten($activeColor, 20%);
+    }
+
+    &-background {
+        background-color: lighten($bizColor, 20%);
     }
 }
 

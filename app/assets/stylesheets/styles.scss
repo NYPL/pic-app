@@ -103,7 +103,7 @@ p {
         .use-case {
             @include span-columns(5 of 10);
             @include omega(2n);
-            margin-bottom: 1em;
+            margin-bottom: 3em;
 
             img {
                 width: 100%;
@@ -154,6 +154,24 @@ p {
 #background {
     img {
         width: 100%;
+    }
+
+    blockquote {
+        @include span-columns(6);
+        @include shift(3);
+        font-family: $headerFont;
+        font-size: 2em;
+        line-height: 1.25em;
+        margin-bottom: 1em;
+
+        &:before {
+            content: "“";
+            font-size: 2em;
+            color: $white;
+            width: .5em;
+            display: inline-block;
+            margin-left: -.5em;
+        }
     }
 }
 

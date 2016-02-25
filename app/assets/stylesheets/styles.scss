@@ -47,7 +47,7 @@ p {
     display: flex;
     align-items: flex-end;
 
-    @include animation(starwars 4s .25s forwards);
+    @include animation(starwars 3s .2s forwards);
 
     h1 {
         width: 1024px;

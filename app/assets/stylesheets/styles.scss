@@ -4,6 +4,15 @@
 @import "variables";
 @import "grid-settings";
 
+@include keyframes(starwars) {
+  0% {
+    background-position: 50% 300%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
 html, body {
     margin: 0 0 100px;
     padding: 0;
@@ -32,15 +41,6 @@ p {
 }
 
 /* normal site stuff */
-@include keyframes(starwars) {
-  0% {
-    background-position: 50% 300%;
-  }
-  100% {
-    background-position: 50% 0%;
-  }
-}
-
 #hero {
     background: #000 asset-url("hero-full") no-repeat 50% 300%;
     height: 300px;
@@ -51,7 +51,8 @@ p {
 
     h1 {
         width: 1024px;
-        margin: 0 auto .7em;
+        @include shift(1);
+        margin-bottom: .7em;
         color: $white;
         font-size: 2.5em;
         @include text-shadow(-2px, 2px, 0px, $black);
@@ -62,17 +63,90 @@ p {
 .wrapper {
     @include outer-container;
 
-    p.intro {
+    h2 {
+        @include span-columns(11);
+        @include shift(1);
+        font-size: 2em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+}
+
+#intro, #how-to, #faq, #background {
+    h3 {
         @include span-columns(10);
         @include shift(1);
-        font-size: 1.2em;
-        line-height: 1.75em;
-        // color: $darkGray;
-        margin-top: 1em;
+    }
+
+    p {
+        @include span-columns(10);
+        @include shift(1);
+
+        &.intro {
+            @include span-columns(10);
+            font-size: 1.2em;
+            line-height: 1.75em;
+            margin-top: 1em;
+        }
 
         &.more {
             text-align: center;
         }
+    }
+}
+
+#samples {
+    .cases {
+        @include span-columns(10);
+        @include shift(1);
+
+        .use-case {
+            @include span-columns(5 of 10);
+            @include omega(2n);
+            margin-bottom: 1em;
+
+            img {
+                width: 100%;
+            }
+
+            a.sample-link {
+                display: block;
+                font-size: 1.3em;
+                padding: 8px 12px 6px;
+                margin: 0 auto;
+                width: 100px;
+                text-align: center;
+                border-radius: 4px;
+                clear: both;
+                @include box-shadow(0, 0, 0px, 0, $linkColor);
+
+                @include transition(all, .1s);
+
+                &:link, &:visited {
+                    background-color: $linkColor;
+                    color: $white;
+                }
+
+                &:hover {
+                    background-color: $black;
+                    @include box-shadow(0, 2px, 4px, 0, $linkColor);
+                    transform: translateY(-2px);
+                }
+            }
+        }
+    }
+}
+
+
+#faq {
+    h3 {
+        @include span-columns(10);
+        @include shift(1);
+    }
+
+    p {
+        @include span-columns(8);
+        @include shift(2);
     }
 }
 
@@ -87,7 +161,7 @@ p {
     margin: 0 auto;
     width: 200px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 6px;
     clear: both;
     @include box-shadow(0, 0, 0px, 0, $linkColor);
 
@@ -122,7 +196,7 @@ p {
         }
 
         &.faq {
-            background-color: lighten($activeColor, 20%);
+            background-color: lighten($diedColor, 20%);
         }
 
         &.background {
@@ -153,21 +227,11 @@ p {
     }
 
     &-faq {
-        background-color: lighten($activeColor, 20%);
+        background-color: lighten($diedColor, 20%);
     }
 
     &-background {
         background-color: lighten($bizColor, 20%);
-    }
-}
-
-#acronym {
-    display: inline-block;
-    line-height: normal;
-
-    &:before {
-        @include drr-icon('N');
-        vertical-align: bottom;
     }
 }
 

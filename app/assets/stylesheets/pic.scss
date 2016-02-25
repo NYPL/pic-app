@@ -6,6 +6,7 @@
 
 html, body {
     width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+    font-size: 16px;
     background: $white;
     line-height: normal;
 }
@@ -181,6 +182,10 @@ hr {
     bottom: $generalMargin;
     color: $white;
     @include text-shadow(-1px, 1px, 0px, $black);
+    background-color: transparentize($black, .25);
+    padding: 10px;
+    border: 1px solid $white;
+    border-radius: 0px;
     // text-transform: uppercase;
 
     @include transition-property(left);
@@ -193,6 +198,10 @@ hr {
 
     li {
         margin-bottom: 1em;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
 
         .color {
             display: inline-block;

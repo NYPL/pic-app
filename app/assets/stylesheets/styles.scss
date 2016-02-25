@@ -8,7 +8,7 @@ html, body {
     margin: 0 0 100px;
     padding: 0;
     font-family: $bodyFont;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5em;
     background: $white;
 }
@@ -47,13 +47,13 @@ p {
     display: flex;
     align-items: flex-end;
 
-    @include animation(starwars 4s 1s forwards);
+    @include animation(starwars 4s .25s forwards);
 
     h1 {
         width: 1024px;
-        margin: 0 auto 1em;
+        margin: 0 auto .7em;
         color: $white;
-        font-size: 3em;
+        font-size: 2.5em;
         @include text-shadow(-2px, 2px, 0px, $black);
     }
 }
@@ -70,16 +70,28 @@ p {
     @include span-columns(12);
 }
 
-.enter-link, .enter-link:link, .enter-link:visited {
+.enter-link {
     display: block;
     font-size: 2em;
-    background-color: $linkColor;
-    color: $white;
     padding: 12px 18px;
     margin: 0 auto;
     width: 200px;
     text-align: center;
     border-radius: 4px;
+    @include box-shadow(0, 0, 0px, 0, $linkColor);
+
+    @include transition(all, .1s);
+
+    &:link, &:visited {
+        background-color: $linkColor;
+        color: $white;
+    }
+
+    &:hover {
+        background-color: $black;
+        @include box-shadow(0, 5px, 10px, 0, $linkColor);
+        transform: translateY(-5px);
+    }
 }
 
 #acronym {

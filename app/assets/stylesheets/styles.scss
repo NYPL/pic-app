@@ -107,7 +107,7 @@ p {
 
             img {
                 width: 100%;
-                border-top: 2px solid $nyplRed;
+                border-top: 2px solid white;
             }
 
             a.sample-link {
@@ -152,8 +152,28 @@ p {
 }
 
 #background {
+    .figure {
+        @include span-columns(12);
+        margin-bottom: 1em;
+    }
+
     img {
-        width: 100%;
+        @include span-columns(10);
+    }
+
+    .caption {
+        @include span-columns(2);
+        font-family: $headerFont;
+        text-align: right;
+        font-size: .8em;
+        line-height: 1.2em;
+        border-top: 1px solid white;
+        padding-top: 1em;
+    }
+
+    p {
+        @include span-columns(9);
+        @include shift(2);
     }
 
     blockquote {

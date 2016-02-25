@@ -151,6 +151,12 @@ p {
     }
 }
 
+#background {
+    img {
+        width: 100%;
+    }
+}
+
 .main-header, .footer {
     @include span-columns(12);
 }

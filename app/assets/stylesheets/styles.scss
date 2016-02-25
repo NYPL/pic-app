@@ -109,21 +109,28 @@ p {
     @include row();
 
     li {
+        @include span-columns(2);
+        border-radius: 0 0 6px 6px;
+        text-align: center;
+
         &:first-child {
             @include shift(3);
-            border-radius: 6px 0 0 6px;
         }
 
-        &:last-child {
-            border-radius: 0 6px 6px 0;
+        &.samples {
+            background-color: lighten($bornColor, 20%);
         }
 
-        @include span-columns(2);
-        text-align: center;
-        background-color: white;
+        &.faq {
+            background-color: lighten($activeColor, 20%);
+        }
+
+        &.background {
+            background-color: lighten($bizColor, 20%);
+        }
 
         a {
-            color: $linkColor;
+            color: $black;
             display: block;
             padding: 8px 12px 4px;
             text-transform: uppercase;
@@ -134,7 +141,7 @@ p {
 .wrap {
     &-sample, &-how, &-faq, &-background {
         margin: 1em 0 5em;
-        padding: 1em 0 2em;
+        padding: 0 0 2em;
     }
 
     &-sample {

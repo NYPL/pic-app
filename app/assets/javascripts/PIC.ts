@@ -1305,7 +1305,7 @@ module PIC {
             } else if (facet[2] === "DisplayName") {
                 this.filters[facet[2]] = value;
             } else if (facet[2] === "bbox") {
-                if (value == "Select area") {
+                if (value == "Select area on map") {
                     this.filters[facet[2]] = value;
                 } else {
                     this.filters[facet[2]] = value;

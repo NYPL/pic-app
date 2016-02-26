@@ -32,7 +32,7 @@ module PIC {
             this.description = description;
             this.buildHTML();
             this.addFacetItem("Any", this.defaultValue);
-            if (this.ID == "bbox") this.addFacetItem("Select area", "-180_-90_180_90");
+            if (this.ID == "bbox") this.addFacetItem("Select area on map", "-180_-90_180_90");
         }
 
         init() {
@@ -67,7 +67,7 @@ module PIC {
             if (this.ID == "bbox") {
                 this.cleanFacets();
                 this.addFacetItem("Any", this.defaultValue);
-                this.addFacetItem("Select area", "-180_-90_180_90");
+                this.addFacetItem("Select area on map", "-180_-90_180_90");
             }
             this.setValue(this.defaultValue);
             this.closeGroup();
@@ -173,7 +173,7 @@ module PIC {
             var id = el.attr("id");
             if (value === oldValue) return;
             var headerText;
-            if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Select area";
+            if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Select area on map";
             this.setValue(value, headerText);
             $(this.IDPrefix).trigger("facet:change", this);
         }

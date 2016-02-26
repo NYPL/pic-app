@@ -1062,7 +1062,7 @@ module PIC {
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
                     addstring += "<div class=\"address-item-type\">";
-                    addstring += add.AddressType;
+                    addstring += "<strong>" + add.AddressType + "</strong>";
                     if (add.DisplayName2 != "NULL") addstring += " (" + add.DisplayName2 + ")";
                     addstring += "</div>";
                     if (add.Remarks != "NULL" && add.Remarks != "0,0") {

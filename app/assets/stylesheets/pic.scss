@@ -526,6 +526,21 @@ hr {
     padding: $generalMargin;
     padding-left: 40px;
     margin-left: -2em;
+    position: relative;
+
+    &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        left: 10px;
+        top: 0;
+        border: 10px solid $darkGray;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+    }
 
     .address-item {
         margin-bottom: $generalMargin;

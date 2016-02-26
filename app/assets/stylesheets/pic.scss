@@ -491,9 +491,14 @@ hr {
     .constituent-content {
         margin: 0 0 ($generalMargin * 2);
         padding-left: 2em;
+        border-bottom: 4px solid $black;
 
         p {
             margin-left: 7px;
+        }
+
+        strong {
+            font-family: $headerFont;
         }
     }
 

@@ -951,15 +951,15 @@ module PIC {
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
             str += "<p>";
             // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
-            str += "ID:" + p.ConstituentID + "<br />";
-            if (p.gender) str += this.facetValues["genders"][p.gender[0].TermID] + "<br />";
+            str += "<strong>ID:</strong> " + p.ConstituentID + "<br />";
+            if (p.gender) str += p.gender[0].Term + "<br />";
             str += "</p>";
             if (p.role) {
                 str += "<p>";
                 str += "<strong>Roles:</strong><br />";
                 var list = [];
                 for (var i in p.role) {
-                    list.push(this.facetValues["roles"][p.role[i].TermID]);
+                    list.push(p.role[i].Term);
                 }
                 str += list.join(", ");
                 str += "</p>";
@@ -970,7 +970,7 @@ module PIC {
                 var list = [];
                 for (var i in p.process) {
                     // console.log(p.process[i].TermID);
-                    if (this.facetValues["processes"][p.process[i].TermID] !== undefined) list.push(this.facetValues["processes"][p.process[i].TermID]);
+                    if (this.facetValues["processes"][p.process[i].TermID] !== undefined) list.push(p.process[i].Term);
                 }
                 str += list.join(", ");
                 str += "</p>";
@@ -980,7 +980,7 @@ module PIC {
                 str += "<strong>Formats used:</strong><br />";
                 var list = [];
                 for (var i in p.format) {
-                    list.push(this.facetValues["formats"][p.format[i].TermID]);
+                    list.push(p.format[i].Term);
                 }
                 str += list.join(", ");
                 str += "</p>";
@@ -992,7 +992,7 @@ module PIC {
                         continue;
                     }
                     var link = '<li><a target="_blank" class="external" href="'+ p.collection[i].URL +'">';
-                    link += this.facetValues["collections"][p.collection[i].TermID];
+                    link += p.collection[i].Term;
                     link += '</a></li>';
                     links.push(link);
                 }
@@ -1012,7 +1012,7 @@ module PIC {
                 var links = [];
                 for (var i in p.biography) {
                     var link = '<li><a target="_blank" class="external" href="'+ p.biography[i].URL +'">';
-                    link += this.facetValues["biographies"][p.biography[i].TermID];
+                    link += p.biography[i].Term;
                     link += '</a></li>';
                     links.push(link);
                 }
@@ -1062,7 +1062,7 @@ module PIC {
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
                     addstring += "<div class=\"address-item-type\">";
-                    addstring += this.facetValues["addresstypes"][add.AddressTypeID];
+                    addstring += add.AddressType;
                     if (add.DisplayName2 != "NULL") addstring += " (" + add.DisplayName2 + ")";
                     addstring += "</div>";
                     if (add.Remarks != "NULL" && add.Remarks != "0,0") {
@@ -1074,7 +1074,7 @@ module PIC {
                     if (add.StreetLine3 != "NULL") addstring += add.StreetLine3 + "<br />";
                     if (add.City != "NULL") addstring += add.City + ", ";
                     if (add.State != "NULL") addstring += add.State + "<br />";
-                    if (add.CountryID != "NULL") addstring += this.facetValues["countries"][add.CountryID] + "<br />";
+                    if (add.CountryID != "NULL") addstring += add.Country + "<br />";
                     // addstring += add.Remarks + "<br />";
                     addstring += "</div>";
                     addstring += "</div>";

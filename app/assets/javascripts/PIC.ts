@@ -270,6 +270,7 @@ module PIC {
                 _wheelEvent = 'DOMMouseScroll';
             }
             this.canvas.addEventListener(_wheelEvent, _bindRepaint, false);
+            this.showSpinner();
         }
 
         resetBounds () {

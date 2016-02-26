@@ -161,19 +161,6 @@ hr {
     }
 }
 
-// @include keyframes(popIn) {
-//   0% {
-//     @include transform(rotateZ(-200deg) scale(0));
-//   }
-//   90% {
-//     @include transform(rotateZ(-20deg) scale(1.2));
-//   }
-//   100% {
-//     @include transform(rotateZ(-20deg) scale(1));
-//   }
-// }
-// @include animation(popIn);
-
 .legend {
     font-size: 0.9em;
     position: absolute;
@@ -409,6 +396,13 @@ hr {
 
 }
 
+.scroller {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
 #constituents {
     position: absolute;
     left: $facetsWidth;
@@ -427,13 +421,6 @@ hr {
         position: absolute;
         left: 50%;
         top: 50%;
-    }
-
-    .scroller {
-        width: 100%;
-        height: 100%;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
     }
 
     .minimize, .maximize {
@@ -582,3 +569,36 @@ hr {
     }
 }
 
+.map-help-link {
+    position: absolute;
+    right: 2em;
+}
+
+#map-help {
+    display: none;
+    position: absolute;
+    z-index: 111111;
+    width: 350px;
+    background-color: $white;
+    right: 0;
+    padding: 10px;
+    height: 60%;
+
+    &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        right: 2em;
+        top: -20px;
+        border: 10px solid $white;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-top-color: transparent;
+    }
+
+    h3 {
+        font-family: $headerFont;
+    }
+}

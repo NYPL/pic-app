@@ -225,6 +225,7 @@ module PIC {
             $("#constituents .maximize").click(() => this.maximizeResults());
             $("#bounds .button.apply").click(() => this.applyBounds());
             $("#bounds .button.cancel").click(() => this.cancelBounds());
+            $(".map-help-link").click(() => this.toggleHelp());
 
             this.tooltipElement = $("#constituents");
             this.facetsElement = $("#facets");
@@ -271,6 +272,10 @@ module PIC {
             }
             this.canvas.addEventListener(_wheelEvent, _bindRepaint, false);
             this.showSpinner();
+        }
+
+        toggleHelp () {
+            $("#map-help").fadeToggle();
         }
 
         resetBounds () {

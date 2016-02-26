@@ -8,7 +8,11 @@
   <%= javascript_include_tag "PIC" %>
 
 <% end %>
-<% content_for :page_name do %>&nbsp;&nbsp;/&nbsp;&nbsp;Map<% end %>
+<% content_for :page_name do %>
+&nbsp;&nbsp;/&nbsp;&nbsp;Map<%= link_to "Help", "#", :class => "map-help-link" %>
+<% end %>
+
+    <%= render partial: "help_popup" %>
 
     <div id="credits"></div>
     <div id="cesiumContainer">

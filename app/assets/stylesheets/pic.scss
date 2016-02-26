@@ -66,7 +66,7 @@ h3 {
 
 hr {
     border: none;
-    border-bottom: 1px solid $darkGray;
+    border-bottom: 1px solid $black;
 }
 
 #cesiumContainer {
@@ -417,6 +417,10 @@ hr {
     @include transition-duration(0.2s);
     @include transition-timing-function(ease-in);
 
+    strong {
+        font-family: $headerFont;
+    }
+
     .spinner {
         position: absolute;
         left: 50%;
@@ -486,9 +490,6 @@ hr {
             margin-left: 7px;
         }
 
-        strong {
-            font-family: $headerFont;
-        }
     }
 
     .link-list {

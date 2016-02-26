@@ -900,7 +900,7 @@ module PIC {
             var constituents = data.hits.hits;
             var total = data.hits.total;
             this.totalPhotographers = total;
-            var str = "<p>Found " + this.totalPhotographers.toLocaleString() + " constituents.";
+            var str = "<p>Found " + this.totalPhotographers.toLocaleString() + (this.totalPhotographers != 1 ? " constituents. " : " constituent. ");
             if (total > this.tooltipLimit) {
                 str = str + " Showing first " + this.tooltipLimit + ".";
             }
@@ -917,7 +917,7 @@ module PIC {
         addTooltipResults (results, start, total) {
             var l = results.length;
             if (start > 0) {
-                this.tooltipElement.find(".results").append("<p>Results " + (start) + " to " + (start + l) + "</p>");
+                this.tooltipElement.find(".results").append("<p><strong>Results " + (start) + " to " + (start + l) + "</strong></p>");
             }
             for (var i = 0; i < l; i++) {
                 this.buildTooltipConstituent(results[i]._source);

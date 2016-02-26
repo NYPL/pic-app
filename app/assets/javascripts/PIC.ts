@@ -1603,7 +1603,7 @@ module PIC {
                 subject += "<em>" + this.facetValues[facet[0]][key] + "</em> ";
             }
 
-            subject += "locations ";
+            subject += this.elasticResults.total != 1 ? " locations " : " location ";
 
             // country
             facet = this.facets[1];

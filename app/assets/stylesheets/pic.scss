@@ -224,6 +224,8 @@ hr {
     color: $gray;
     font-size: 1em;
     margin-bottom: $generalMargin;
+    background-color: transparentize($black, .25);
+    padding: $generalMargin;
 
     @include transition-property(all);
     @include transition-duration(0.2s);

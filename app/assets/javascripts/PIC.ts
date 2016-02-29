@@ -326,7 +326,7 @@ module PIC {
                 enabled : true
               },
               depthMask : false,
-              blending : Cesium.BlendingState.ADDITIVE_BLEND
+              blending : Cesium.BlendingState.PRE_MULTIPLIED_ALPHA_BLEND
             });
 
             this.lines = new Cesium.Primitive();
@@ -341,27 +341,6 @@ module PIC {
         }
 
         showMoon () {
-            this.moonLayer = new Cesium.Primitive({
-                geometryInstances: new Cesium.GeometryInstance({
-                    geometry: new Cesium.RectangleGeometry({
-                        rectangle: Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460),
-                        height: this.moonHeight - 1000
-                    })
-                }),
-                appearance: new Cesium.MaterialAppearance({
-                    material: new Cesium.Material({
-                        translucent: true,
-                        fabric : {
-                            type : 'Image',
-                            uniforms : {
-                                image : this.meliesMoonPath
-                            }
-                        }
-                    })
-                })
-            });
-            this.scene.primitives.add(this.moonLayer);
-
             this.spaceLayer = new Cesium.Primitive({
                 geometryInstances: new Cesium.GeometryInstance({
                     geometry: new Cesium.RectangleGeometry({
@@ -369,19 +348,27 @@ module PIC {
                         height: this.spaceHeight - 1000
                     })
                 }),
-                appearance: new Cesium.MaterialAppearance({
-                    material: new Cesium.Material({
-                        translucent: true,
-                        fabric : {
-                            type : 'Image',
-                            uniforms : {
-                                image : this.meliesSpacePath
-                            }
-                        }
-                    })
-                })
+                appearance: this.imageAppearance(this.meliesSpacePath)
             });
             this.scene.primitives.add(this.spaceLayer);
+            
+            this.moonLayer = new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
+                    geometry: new Cesium.RectangleGeometry({
+                        rectangle: Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460),
+                        height: this.moonHeight - 1000
+                    })
+                }),
+                appearance: this.imageAppearance(this.meliesMoonPath)
+            });
+
+            var moon = this.scene.primitives.add(this.moonLayer);
+            // moon._rs = Cesium.RenderState.fromCache({
+            //     depthTest : {
+            //         enabled: true
+            //     },
+            //     depthMask: true
+            // });
 
             // this.viewer.imageryLayers.remove(this.moonLayer);
             // this.moonLayer = this.viewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
@@ -389,6 +376,60 @@ module PIC {
             //     rectangle : Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460)
             // }));
             // this.moonLayer.alpha = 0.75;
+        }
+        
+        imageAppearance (imagePath: string) {
+            return new Cesium.EllipsoidSurfaceAppearance({
+                aboveGround : true,
+                material: new Cesium.Material({
+                    translucent: true,
+                    fabric : {
+                        type : 'Image',
+                        uniforms : {
+                            image : imagePath
+                        }
+                    }
+                }),
+                // renderState: {
+                //     depthMask: false,
+                //     depthTest: {
+                //         enabled: true
+                //     }
+                // }
+            });
+        }
+        
+        randomPoints (n = 200) {
+            for (var i = 0; i < n; i++) {
+                this.randomPoint();
+            }
+        }
+        
+        randomPoint () {
+            var phi = Math.random() * 2 * Math.PI;
+            var rho = Math.random();
+            var x = Math.sqrt(rho) * Math.cos(phi);
+            var y = Math.sqrt(rho) * Math.sin(phi);
+            var xmin = -122.4190541;
+            var xmax = -93.1480924;
+            var dx = xmax - xmin;
+            var ymin = -48.4356558;
+            var ymax = -31.0020460;
+            var dy = ymax - ymin;
+            var centerx = xmin + dx * .5;
+            var centery = ymin + dy * .5;
+            var r = dx * .5;
+            var px = centerx + x * r;
+            var py = centery + y * r;
+            var pt = Cesium.Cartesian3.fromDegrees(px, py, this.moonHeight);
+            console.log(px, py);
+            this.points.add({
+                    position : pt,
+                    color: new Cesium.Color(1, 0.01, 1, 1),
+                    pixelSize : this.pixelSize,
+                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.maxScale, 8.0e6, this.minScale)
+                });
+            this.notifyRepaintRequired();
         }
 
         hideMooon () {

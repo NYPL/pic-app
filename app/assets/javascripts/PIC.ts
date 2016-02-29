@@ -326,7 +326,7 @@ module PIC {
                 enabled : true
               },
               depthMask : false,
-              blending : Cesium.BlendingState.PRE_MULTIPLIED_ALPHA_BLEND
+              blending : Cesium.BlendingState.ADDITIVE_BLEND
             });
 
             this.lines = new Cesium.Primitive();

@@ -3266,6 +3266,8 @@ declare module Cesium {
 
   function createOpenStreetMapImageryProvider(options: { url?: string, fileExtension?: string, proxy?: any, rectangle?: Rectangle, minimumLevel?: number, maximumLevel?: number, ellipsoid?: Ellipsoid, credit?: Credit | string }): ImageryProvider;
 
+  function createTileMapServiceImageryProvider(options: { url?: string, fileExtension?: string, proxy?: any, rectangle?: Rectangle, minimumLevel?: number, maximumLevel?: number, ellipsoid?: Ellipsoid, credit?: Credit | string }): ImageryProvider;
+
   class MapboxImageryProvider {
     url: string;
     mapId: string;
@@ -3606,7 +3608,7 @@ declare module Cesium {
       destroy();
   }
 
-  class SingleTileImageryProvider {
+  class SingleTileImageryProvider extends ImageryProvider {
       url: string;
       proxy: Proxy;
       tileWidth: number;

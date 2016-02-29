@@ -76,6 +76,7 @@ module PIC {
         lastQuery;
 
         rootPath = '';
+        meliesPath = '';
 
         tileUrl = '';
         mapboxKey = '';
@@ -306,6 +307,13 @@ module PIC {
                 ,skyBox : false
                 ,sceneMode : Cesium.SceneMode.SCENE2D
             });
+
+            var tms = this.viewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
+                url : this.meliesPath,
+                rectangle : Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460)
+            }));
+            
+            tms.alpha = 0.75;
 
             this.scene = this.viewer.scene;
             this.canvas = this.viewer.canvas;

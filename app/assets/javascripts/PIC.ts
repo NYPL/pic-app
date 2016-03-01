@@ -362,7 +362,7 @@ module PIC {
                 appearance: this.imageAppearance(this.meliesMoonPath)
             });
 
-            var moon = this.scene.primitives.add(this.moonLayer);
+            this.scene.primitives.add(this.moonLayer);
             // moon._rs = Cesium.RenderState.fromCache({
             //     depthTest : {
             //         enabled: true
@@ -376,6 +376,11 @@ module PIC {
             //     rectangle : Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460)
             // }));
             // this.moonLayer.alpha = 0.75;
+        }
+        
+        hideMoon () {
+            this.scene.primitives.remove(this.spaceLayer);
+            this.scene.primitives.remove(this.moonLayer);
         }
         
         imageAppearance (imagePath: string) {
@@ -406,19 +411,21 @@ module PIC {
         }
         
         randomPoint () {
+            var bboxbig = "-118.6062_-46.6204_-99.3110_-31.6635";
+            var bboxsml = "-116.4891_-45.0273_-101.4461_-33.1833";//-111.0687_-40.2230_-101.8181_-33.9660
             var phi = Math.random() * 2 * Math.PI;
             var rho = Math.random();
             var x = Math.sqrt(rho) * Math.cos(phi);
             var y = Math.sqrt(rho) * Math.sin(phi);
-            var xmin = -122.4190541;
-            var xmax = -93.1480924;
+            var xmin = -111.0687;
+            var xmax = -101.8181;
             var dx = xmax - xmin;
-            var ymin = -48.4356558;
-            var ymax = -31.0020460;
+            var ymin = -40.2230;
+            var ymax = -33.9660;
             var dy = ymax - ymin;
             var centerx = xmin + dx * .5;
             var centery = ymin + dy * .5;
-            var r = dx * .5;
+            var r = dy * .5;
             var px = centerx + x * r;
             var py = centery + y * r;
             var pt = Cesium.Cartesian3.fromDegrees(px, py, this.moonHeight);
@@ -430,10 +437,6 @@ module PIC {
                     scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.maxScale, 8.0e6, this.minScale)
                 });
             this.notifyRepaintRequired();
-        }
-
-        hideMooon () {
-            // this.viewer.imageryLayers.remove(this.moonLayer);
         }
 
         makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.Primitive {

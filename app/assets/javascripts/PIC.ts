@@ -1890,7 +1890,7 @@ module PIC {
             this.resetDateQuery();
             this.scene.morphStart.addEventListener( () => {
                 if (this.scene.mode === 2) {
-                    this.hideMooon();
+                    this.hideMoon();
                 } else {
                     this.showMoon();
                 }

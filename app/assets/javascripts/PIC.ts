@@ -61,8 +61,9 @@ module PIC {
         isPenDown = false;
         spaceLayer : Cesium.ImageryLayer;
         moonLayer : Cesium.ImageryLayer;
-        spaceCircle: Cesium.Primitive;
-        moonCircle: Cesium.Primitive;
+        spaceCircle : Cesium.Primitive;
+        moonCircle : Cesium.Primitive;
+        textLabels : Cesium.LabelCollection;
 
         minYear = 1700;
         maxYear = new Date().getFullYear();
@@ -324,7 +325,18 @@ module PIC {
             this.camera = this.viewer.camera;
 
             this.addNullIsland();
+
+            this.spaceCircle = new Cesium.Primitive();
+            this.scene.primitives.add(this.spaceCircle);
+
+            this.moonCircle = new Cesium.Primitive();
+            this.scene.primitives.add(this.moonCircle);
+            
+            this.textLabels = new Cesium.LabelCollection();
+            this.scene.primitives.add(this.textLabels);
+            
             this.showMoon();
+            this.updateTextLabels();
 
             this.points = this.scene.primitives.add(new Cesium.PointPrimitiveCollection());
             this.points._rs = Cesium.RenderState.fromCache({
@@ -338,12 +350,6 @@ module PIC {
             this.lines = new Cesium.Primitive();
             this.scene.primitives.add(this.lines);
 
-            this.spaceCircle = new Cesium.Primitive();
-            this.scene.primitives.add(this.spaceCircle);
-
-            this.moonCircle = new Cesium.Primitive();
-            this.scene.primitives.add(this.moonCircle);
-            
             this.boundsSelectionPrimitive = new Cesium.Primitive();
             this.scene.primitives.add(this.boundsSelectionPrimitive);
 
@@ -383,6 +389,7 @@ module PIC {
             
             this.scene.primitives.remove(this.spaceCircle);
             this.scene.primitives.remove(this.moonCircle);
+            this.textLabels.removeAll();
 
             this.viewer.imageryLayers.remove(this.moonLayer);
             this.moonLayer = this.viewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
@@ -421,7 +428,7 @@ module PIC {
         showSpaceFloatingPrimitives () {
             this.scene.primitives.remove(this.spaceCircle);
             this.scene.primitives.remove(this.moonCircle);
-
+            
             var xmin = -111.0687;
             var xmax = -101.8181;
             var dx = xmax - xmin;
@@ -485,6 +492,45 @@ module PIC {
             });
             
             this.scene.primitives.add(this.moonCircle);
+
+            this.notifyRepaintRequired();
+        }
+        
+        updateTextLabels () {
+            var xmin = -111.0687;
+            var xmax = -101.8181;
+            var dx = xmax - xmin;
+            var ymax = -33.9660;
+            var centerx = xmin + dx * .2;
+
+            this.textLabels.removeAll();
+            
+            if (this.scene.mode !== 2) {
+                this.textLabels.add({
+                    position : Cesium.Cartesian3.fromDegrees(centerx, ymax+3, this.spaceHeight),
+                    text     : 'Outer Space',
+                    font : '20px sans-serif',
+                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                    translucencyByDistance : new Cesium.NearFarScalar(1.5e2, 1.0, 1.5e8, 0.1)
+                });
+
+                this.textLabels.add({
+                    position : Cesium.Cartesian3.fromDegrees(centerx, ymax+1, this.moonHeight),
+                    text     : 'The Moon!',
+                    font : '20px sans-serif',
+                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                    translucencyByDistance : new Cesium.NearFarScalar(1.5e2, 1.0, 1.5e8, 0.1)
+                });
+            }
+
+            this.textLabels.add({
+                position: Cesium.Cartesian3.fromDegrees(0.01, 0),
+                text: 'Null Island',
+                font: '12px sans-serif',
+                horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                translucencyByDistance: new Cesium.NearFarScalar(1.5e4, 1.0, 1.5e6, 0)
+            });
+
             this.notifyRepaintRequired();
         }
         
@@ -2001,6 +2047,7 @@ module PIC {
                 } else {
                     this.showMoon();
                 }
+                this.updateTextLabels();
             } );
             var from = $("#" + this.fromDateElement);
             var to = $("#" + this.toDateElement);

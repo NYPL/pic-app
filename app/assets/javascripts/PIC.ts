@@ -414,7 +414,7 @@ module PIC {
             var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
             var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
             var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
-            console.log("%c %s,%s ", 'background: #222; color: #bada55; font-size: 28pt', lat.toString(), lon.toString());
+            console.log("\n%c clicked: %s,%s ", 'background: #222; color: #bada55; font-size: 28pt', lat.toString(), lon.toString());
             console.log(lat, lon);
         }
         

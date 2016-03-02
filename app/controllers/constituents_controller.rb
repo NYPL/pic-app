@@ -6,6 +6,7 @@ class ConstituentsController < ApplicationController
   end
 
   def map
+    @admin = params[:admin] != nil
   end
 
   def export

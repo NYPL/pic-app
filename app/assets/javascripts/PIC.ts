@@ -33,6 +33,8 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
+        
+        adminMode = false;
 
         bounds;
         totalPhotographers = 0;
@@ -59,11 +61,15 @@ module PIC {
         isPenDown = false;
         spaceLayer : Cesium.ImageryLayer;
         moonLayer : Cesium.ImageryLayer;
+        spaceCircle: Cesium.Primitive;
+        moonCircle: Cesium.Primitive;
 
         minYear = 1700;
         maxYear = new Date().getFullYear();
         spaceHeight = 400000;
         moonHeight = 3850000;
+        spaceRadius =  850000.0;
+        moonRadius =  700000.0;
 
         debug = false;
 
@@ -330,9 +336,14 @@ module PIC {
             });
 
             this.lines = new Cesium.Primitive();
-
             this.scene.primitives.add(this.lines);
 
+            this.spaceCircle = new Cesium.Primitive();
+            this.scene.primitives.add(this.spaceCircle);
+
+            this.moonCircle = new Cesium.Primitive();
+            this.scene.primitives.add(this.moonCircle);
+            
             this.boundsSelectionPrimitive = new Cesium.Primitive();
             this.scene.primitives.add(this.boundsSelectionPrimitive);
 
@@ -370,6 +381,9 @@ module PIC {
             //     depthMask: true
             // });
             
+            this.scene.primitives.remove(this.spaceCircle);
+            this.scene.primitives.remove(this.moonCircle);
+
             this.viewer.imageryLayers.remove(this.moonLayer);
             this.moonLayer = this.viewer.imageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
                 url : this.meliesMoonPath,
@@ -391,6 +405,87 @@ module PIC {
             // this.scene.primitives.remove(this.moonLayer);
             this.viewer.imageryLayers.remove(this.moonLayer);
             this.viewer.imageryLayers.remove(this.spaceLayer);
+            this.showSpaceFloatingPrimitives();
+        }
+
+        clickMoon(position: Cesium.Cartesian2) {
+            var cartesian = this.camera.pickEllipsoid(position, this.scene.globe.ellipsoid);
+            if (cartesian === undefined) return;
+            var cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+            var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
+            var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
+            console.log("%c %s,%s ", 'background: #222; color: #bada55; font-size: 28pt', lat.toString(), lon.toString());
+            console.log(lat, lon);
+        }
+        
+        showSpaceFloatingPrimitives () {
+            this.scene.primitives.remove(this.spaceCircle);
+            this.scene.primitives.remove(this.moonCircle);
+
+            var xmin = -111.0687;
+            var xmax = -101.8181;
+            var dx = xmax - xmin;
+            var ymin = -40.2230;
+            var ymax = -33.9660;
+            var dy = ymax - ymin;
+            var centerx = xmin + dx * .2;
+            var centery = ymin + dy * .2;
+            
+            // the space outline
+            
+            var spaceCircle = new Cesium.CircleOutlineGeometry({
+                center : Cesium.Cartesian3.fromDegrees(centerx, centery),
+                radius : this.spaceRadius,
+                height : this.spaceHeight
+            });
+
+            var spaceGeometry = Cesium.CircleOutlineGeometry.createGeometry(spaceCircle);
+
+            this.spaceCircle = new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
+                geometry: spaceGeometry,
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.WHITE.withAlpha(0.5))
+                }
+            }),
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat : true,
+                    renderState : {
+                        lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
+                    }
+                }),
+                releaseGeometryInstances: false
+            });
+            
+            this.scene.primitives.add(this.spaceCircle);
+
+            // the moon outline
+            var moonCircle = new Cesium.CircleOutlineGeometry({
+                center : Cesium.Cartesian3.fromDegrees(centerx, centery),
+                radius : this.moonRadius,
+                height : this.moonHeight
+            });
+
+            var moonGeometry = Cesium.CircleOutlineGeometry.createGeometry(moonCircle);
+
+            this.moonCircle = new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
+                geometry: moonGeometry,
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.WHITE.withAlpha(0.5))
+                }
+            }),
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat : true,
+                    renderState : {
+                        lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
+                    }
+                }),
+                releaseGeometryInstances: false
+            });
+            
+            this.scene.primitives.add(this.moonCircle);
+            this.notifyRepaintRequired();
         }
         
         imageAppearance (imagePath: string) {
@@ -425,6 +520,7 @@ module PIC {
             var bboxsml = "-116.4891_-45.0273_-101.4461_-33.1833";//-111.0687_-40.2230_-101.8181_-33.9660
             var phi = Math.random() * 2 * Math.PI;
             var rho = Math.random();
+            rho = Math.random()*(1-0.823529412)+0.823529412;
             var x = Math.sqrt(rho) * Math.cos(phi);
             var y = Math.sqrt(rho) * Math.sin(phi);
             var xmin = -111.0687;
@@ -433,13 +529,13 @@ module PIC {
             var ymin = -40.2230;
             var ymax = -33.9660;
             var dy = ymax - ymin;
-            var centerx = xmin + dx * .5;
-            var centery = ymin + dy * .5;
+            var centerx = xmin + dx * .2;
+            var centery = ymin + dy * .2;
             var r = dy * .5;
             var px = centerx + x * r;
             var py = centery + y * r;
             var pt = Cesium.Cartesian3.fromDegrees(px, py, this.moonHeight);
-            console.log(px, py);
+            // console.log(px, py);
             this.points.add({
                     position : pt,
                     color: new Cesium.Color(1, 0.01, 1, 1),
@@ -569,7 +665,7 @@ module PIC {
         }
 
         buildElasticQuery (normal:Array<string>, filter:Array<string>) {
-            console.log("buildEQ", normal, filter);
+            // console.log("buildEQ", normal, filter);
 
             var normalString = "*";
             if (normal.length > 0) normalString = "(" + normal.join(" AND ") + ")";
@@ -761,6 +857,7 @@ module PIC {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 // this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawEnd(c);
+                if (this.adminMode) this.clickMoon(c);
                 this.positionBoundsDialog(e.layerX, e.layerY);
             }
 
@@ -1921,7 +2018,7 @@ module PIC {
         notifyRepaintRequired () {
             // console.log("repaint");
             if (this.verboseRendering && !this.viewer.useDefaultRenderLoop) {
-                console.log('starting rendering @ ' + Cesium.getTimestamp());
+                // console.log('starting rendering @ ' + Cesium.getTimestamp());
             }
             this.lastCameraMoveTime = Cesium.getTimestamp();
             this.viewer.useDefaultRenderLoop = true;
@@ -1949,7 +2046,7 @@ module PIC {
             // console.log("postrender", cameraMovedInLastSecond, tilesWaiting, this.viewer.clock.shouldAnimate, this.scene.tweens.length === 0);
             if (!cameraMovedInLastSecond && !tilesWaiting && this.scene.tweens.length === 0) {
                 if (this.verboseRendering) {
-                    console.log('stopping rendering @ ' + Cesium.getTimestamp());
+                    // console.log('stopping rendering @ ' + Cesium.getTimestamp());
                 }
                 this.viewer.useDefaultRenderLoop = false;
                 this.stoppedRendering = true;

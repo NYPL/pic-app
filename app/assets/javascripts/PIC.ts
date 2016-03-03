@@ -696,7 +696,7 @@ module PIC {
 
         getData(filters, data, callback, parameter = undefined) {
             var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc&"+filters;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();

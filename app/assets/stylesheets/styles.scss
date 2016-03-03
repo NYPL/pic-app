@@ -101,11 +101,6 @@ p {
         font-size: 2em;
         margin-top: 1em;
         margin-bottom: 1em;
-
-        // @include media($tablet) {
-        //     @include span-columns(8);
-        //     @include shift(0);
-        // }
     }
 
     p a {
@@ -150,6 +145,10 @@ p {
             @include omega(2n);
             margin-bottom: 3em;
 
+            @include media($tablet) {
+                @include span-columns(10 of 10);
+            }
+
             img {
                 width: 100%;
                 border-top: 2px solid white;
@@ -157,13 +156,13 @@ p {
 
             a.sample-link {
                 display: block;
-                font-size: 1.1em;
-                padding: 8px 12px 6px;
+                font-size: 1.5em;
+                padding: 16px 18px 12px;
                 margin: 0 auto;
-                text-transform: uppercase;
-                width: 100px;
+                width: 140px;
                 text-align: center;
-                border-radius: 40px;
+                border-radius: 60px;
+                text-transform: uppercase;
                 clear: both;
                 // @include box-shadow(0, 0, 0px, 0, $linkColor);
 
@@ -253,8 +252,16 @@ p {
         border-radius: 0 0 6px 6px;
         text-align: center;
 
+        @include media($tablet) {
+            @include span-columns(2);
+        }
+
         &:first-child {
             @include shift(3);
+
+            @include media($tablet) {
+                @include shift(1);
+            }
         }
 
         &.samples {

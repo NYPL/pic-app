@@ -151,11 +151,16 @@ module PIC {
             this.notifyRepaintRequired();
             this.historyState = Historyjs.getState();
 
-            var filterString = location.search;// decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+4));
+            var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2));
+
+            if (filterString.lastIndexOf("#") !== -1) filterString = filterString.substring(0, filterString.lastIndexOf("#"));
 
             console.log("str:", filterString, "hist:", this.historyState);
             
             var keyVals = filterString.split("&");
+
+            // console.log(filterString);
+            // console.log(keyVals);
 
             for (var filter in keyVals) {
                 var pair = keyVals[filter].split("=");

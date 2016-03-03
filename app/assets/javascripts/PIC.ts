@@ -33,7 +33,7 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
-        
+
         adminMode = false;
 
         bounds;
@@ -151,10 +151,10 @@ module PIC {
             this.notifyRepaintRequired();
             this.historyState = Historyjs.getState();
 
-            var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2));
+            var filterString = location.search;// decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+4));
 
             console.log("str:", filterString, "hist:", this.historyState);
-
+            
             var keyVals = filterString.split("&");
 
             for (var filter in keyVals) {
@@ -182,7 +182,7 @@ module PIC {
                     if (pair[0] != "bbox") {
                         widget.setValue(pair[1]);
                     } else {
-                        console.log("pair", pair);
+                        // console.log("pair", pair);
                         if (this.boundsPrimitive) this.scene.primitives.remove(this.boundsPrimitive);
                         if (pair[1] !== "*") {
                             var eswnArray = pair[1].split("_");
@@ -1171,6 +1171,12 @@ module PIC {
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
+            // now to see if a line should be shown
+            var lineID = parseInt(location.hash.replace("#",""));
+            console.log(lineID);
+            if (!isNaN(lineID)) {
+                this.getAddressList(lineID);
+            }
         }
 
         addTooltipResults (results, start, total) {
@@ -1307,6 +1313,8 @@ module PIC {
 
         getAddressList (id) {
             // console.log(id);
+            // change url without commiting new state change
+            location.hash = id;
             var filters = "filter_path=hits.hits._source";
             var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
             this.getData(filters, data, this.parseConstituentAddresses, id);

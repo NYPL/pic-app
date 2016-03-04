@@ -39,7 +39,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 1500;
+        elasticSize = 5000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 100;
         tooltipLimit = 50;
@@ -755,6 +755,8 @@ module PIC {
         updateTotals (total) {
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
+            $(".spinner").find(".text").remove();
+            $(".spinner").append("<span class='text'><em>" + total.toLocaleString() + "</em><br />locations for<br />" + this.totalPhotographers.toLocaleString() + "<br />constituents<br />loaded</span>");
             this.notifyRepaintRequired();
         }
 
@@ -1678,10 +1680,10 @@ module PIC {
 
         showSpinner () {
             var opts = {
-                lines: 11, // The number of lines to draw
+                lines: 20, // The number of lines to draw
                 length: 0, // The length of each line
                 width: 12, // The line thickness
-                radius: 24, // The radius of the inner circle
+                radius: 60, // The radius of the inner circle
                 corners: 1, // Corner roundness (0..1)
                 rotate: 0, // The rotation offset
                 color: '#fff', // #rgb or #rrggbb

@@ -425,6 +425,22 @@ hr {
         position: absolute;
         left: 50%;
         top: 50%;
+
+        .text {
+            font-size: 0.9em;
+            position: absolute;
+            left: -50px;
+            top: -2.5em;
+            width: 100px;
+            display: block;
+            text-align: center;
+
+            em {
+                color: $linkColor;
+                font-style: normal;
+                font-size: 2em;
+            }
+        }
     }
 
     .minimize, .maximize {

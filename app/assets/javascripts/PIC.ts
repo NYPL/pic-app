@@ -39,7 +39,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 5000;
+        elasticSize = 20000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 100;
         tooltipLimit = 50;
@@ -694,25 +694,36 @@ module PIC {
             r.send();
         }
 
-        getData(filters, data, callback, parameter = undefined) {
-            var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc&"+filters;
+        getData(filters, data, callback, source, size = this.elasticSize, exclude = "address", from = 0, parameter = undefined) {
+            var url = this.baseUrl
             // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
 
             r.open("POST", url, true);
-            r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-            r.setRequestHeader('Authorization', 'Basic ' + btoa('readonly:aee8wm0320m'));
+            // r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            r.setRequestHeader('Content-Type', 'application/json');
+            // r.responseType = "json";
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
+                // console.log(JSON.parse(r.responseText).results)
                 if (parameter === undefined) {
                     callback.apply(pic, [r.responseText]);
                 } else {
                     callback.apply(pic, [r.responseText, parameter]);
                 }
             };
-            r.send(JSON.stringify(data));
+            var req = {
+                "q": data,
+                "type": "constituent",
+                "filter_path": filters,
+                "size": size,
+                "from": from,
+                "source": source,
+                "source_exclude": exclude
+            }
+            r.send(JSON.stringify(req));
         }
 
         buildElasticQuery (normal:Array<string>, filter:Array<string>) {
@@ -753,6 +764,7 @@ module PIC {
         }
 
         updateTotals (total) {
+            // console.log("total", total, this.elasticResults);
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
             $(".spinner").find(".text").remove();
@@ -1021,35 +1033,35 @@ module PIC {
             return undefined;
         };
 
-        refreshPicked (picked) {
-            var showHover = false;
-            if (this.isDrawing) return;
-            if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
-                if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
-                    this.pickedEntity = {
-                        color: Cesium.clone(picked.primitive.color),
-                        entity: picked
-                    };
-                    this.buildHover();
-                }
-                showHover = true;
-            } else {
-                this.pickedEntity = undefined;
-            }
-            this.positionHover(showHover);
-        }
+        // refreshPicked (picked) {
+        //     var showHover = false;
+        //     if (this.isDrawing) return;
+        //     if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
+        //         if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
+        //             this.pickedEntity = {
+        //                 color: Cesium.clone(picked.primitive.color),
+        //                 entity: picked
+        //             };
+        //             this.buildHover();
+        //         }
+        //         showHover = true;
+        //     } else {
+        //         this.pickedEntity = undefined;
+        //     }
+        //     this.positionHover(showHover);
+        // }
 
-        buildHover () {
-            var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var filter = "filter_path=hits.total,hits.hits._source&_source=DisplayName&size=3";
-            // TODO: fix hover query
-            var query = '(address.Remarks:"' + position + '")';
-            var facetList = this.buildFacetList();
-            facetList.push(query);
-            var data = this.buildFacetQuery(facetList);
-            // console.log("hover", data);
-            this.getData(filter, data, this.buildHoverContent);
-        }
+        // buildHover () {
+        //     var position = this.pickedEntity.entity.primitive.originalLatlon;
+        //     var filter = "hits.total,hits.hits._source";
+        //     // TODO: fix hover query
+        //     var query = '(address.Remarks:"' + position + '")';
+        //     var facetList = this.buildFacetList();
+        //     facetList.push(query);
+        //     var data = this.buildFacetQuery(facetList);
+        //     // console.log("hover", data);
+        //     this.getData(filter, data, this.buildHoverContent, "DisplayName", 3);
+        // }
 
         buildHoverContent (responseText) {
             var el = $("#hover");
@@ -1180,7 +1192,7 @@ module PIC {
             this.updateTotals(-1);
             // now to see if a line should be shown
             var lineID = parseInt(location.hash.replace("#",""));
-            console.log(lineID);
+            // console.log(lineID);
             if (!isNaN(lineID)) {
                 this.getAddressList(lineID);
             }
@@ -1213,7 +1225,7 @@ module PIC {
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
-            });
+            }, "", this.tooltipLimit, "address", start);
         }
 
         buildTooltipConstituent (p) {
@@ -1322,9 +1334,9 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             location.hash = id;
-            var filters = "filter_path=hits.hits._source";
+            var filters = "hits.hits._source";
             var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
-            this.getData(filters, data, this.parseConstituentAddresses, id);
+            this.getData(filters, data, this.parseConstituentAddresses, "address", this.elasticSize, "", 0, id);
         }
 
         parseConstituentAddresses (responseText, id) {
@@ -1562,7 +1574,7 @@ module PIC {
         }
 
         buildBaseQueryFilters(start: number) {
-            return "filter_path=hits.total,hits.hits._source&_source_exclude=address&from=" + start + "&size=" + this.tooltipLimit;
+            return "hits.total,hits.hits._source";
         }
 
         clearTooltip() {
@@ -1607,7 +1619,7 @@ module PIC {
             this.showSpinner();
             var addresses = [];
             var data = this.buildFacetQuery();
-            var filters = "filter_path=hits.total,hits.hits._source&_source=address.ConAddressID&size=" + this.elasticSize;
+            var filters = "hits.total,hits.hits._source";
             this.start = new Date().getTime();
             // console.log("apply", data);
             // clear
@@ -1624,7 +1636,7 @@ module PIC {
             if (facetList.length === 0) {
                 this.displayBaseData();
             } else {
-                this.getData(filters, data, this.getNextSet);
+                this.getData(filters, data, this.getNextSet, "address.ConAddressID");
             }
             this.updateTotals(-1);
         }
@@ -1655,8 +1667,8 @@ module PIC {
                 // keep going
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
-                var filters = this.elasticResults.filters + "&from=" + this.elasticResults.from;
-                this.getData(filters, data, this.getNextSet);
+                var filters = this.elasticResults.filters;
+                this.getData(filters, data, this.getNextSet, "address.ConAddressID", this.elasticSize, "", this.elasticResults.from);
             } else {
                 var end = new Date().getTime();
                 var time = end - this.start;
@@ -1675,7 +1687,7 @@ module PIC {
             var data = this.buildFacetQuery();
             var filters = this.buildBaseQueryFilters(0);
             // console.log("tooltip", data);
-            this.getData(filters, data, this.updateTooltip);
+            this.getData(filters, data, this.updateTooltip, "", this.tooltipLimit);
         }
 
         showSpinner () {
@@ -1730,6 +1742,7 @@ module PIC {
         }
 
         addPoints (newPoints) {
+            // console.log("addpoints",newPoints)
             if (newPoints.length === 0) return;
             var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
@@ -2038,7 +2051,7 @@ module PIC {
 
         onFacetChanged(widget: Facet) {
             if (widget === this.facetWidgets["bbox"]) {
-                console.log("ch-ch-ch-changes!", widget.value);
+                // console.log("ch-ch-ch-changes!", widget.value);
                 if (widget.value !== "*") {
                     // nothing happens until drawing ends
                     this.startDrawing();

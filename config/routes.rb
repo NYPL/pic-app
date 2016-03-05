@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
     get 'map' => 'constituents#map'
     get 'export' => 'constituents#export'
+    match 'search' => 'constituents#search', :via => [:get, :post]
 
     match 'save' => 'feedback#save_spreadsheet', :via => [:get, :post]
 

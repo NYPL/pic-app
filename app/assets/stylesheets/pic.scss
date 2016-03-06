@@ -473,7 +473,6 @@ hr {
                 top: 2px;
                 width: 20px;
                 float: left;
-                margin-right: 10px;
             }
 
             &.open:before {
@@ -501,12 +500,36 @@ hr {
     .constituent-content {
         margin: 0 0 ($generalMargin * 2);
         padding-left: 2em;
-        border-bottom: 4px solid $black;
+        border-bottom: 2px solid $black;
+        background-color: white;
+        padding-top: 10px;
+        position: relative;
+
+        @include pic-arrow($darkGray);
 
         p {
             margin-left: 7px;
         }
 
+    }
+
+    .toggle {
+        padding: 6px 0em 10px 6px;
+
+        // &:before {
+        //     @include drr-icon('');
+        //     display: inline-block;
+        //     background-size: 100%;
+        //     position: relative;
+        //     top: -2px;
+        //     width: 10px;
+        //     float: left;
+        //     margin-left: -20px;
+        // }
+
+        // &.open:before {
+        //     @include transform(rotateZ(90deg) translateY(-3px) translateX(-3px));
+        // }
     }
 
     .link-list {
@@ -529,25 +552,13 @@ hr {
 }
 
 .addresses {
-    background: $whiter;
+    background: $gray;
     padding: $generalMargin;
     padding-left: 40px;
     margin-left: -2em;
     position: relative;
 
-    &:before {
-        content: "";
-        display: block;
-        width: 0;
-        height: 0;
-        position: absolute;
-        left: 10px;
-        top: 0;
-        border: 10px solid $darkGray;
-        border-left-color: transparent;
-        border-right-color: transparent;
-        border-bottom-color: transparent;
-    }
+    @include pic-arrow();
 
     .address-item {
         margin-bottom: $generalMargin;

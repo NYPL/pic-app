@@ -1261,6 +1261,7 @@ module PIC {
             if (!isNaN(lineID)) {
                 this.getAddressList(lineID);
             }
+            this.scrollResults();
         }
 
         addTooltipResults (results, start, total) {
@@ -1286,10 +1287,13 @@ module PIC {
             var data = this.buildFacetQuery();
             // console.log(start, data);
             this.getData(filters, data, function(responseText) {
+                var scroll = $("#constituents .scroller").scrollTop();
+                var height = $("#constituents .scroller").height();
                 var data = JSON.parse(responseText);
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
+                this.scrollResults(scroll + height - 100);
             }, "", this.tooltipLimit, "address", start);
         }
 
@@ -1304,10 +1308,16 @@ module PIC {
             str += '</h3>';
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
             str += "<p>";
-            // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
-            str += "<strong>ID:</strong> " + p.ConstituentID + "<br />";
-            if (p.gender) str += p.gender[0].Term + "<br />";
+            str += "<strong>ID:</strong> " + p.ConstituentID;
             str += "</p>";
+//
+            str += '<div id="constituent-metadata-toggle-' + p.ConstituentID +'" class="toggle link"><strong>';
+            str += 'View constituent information';
+            str += '</strong></div>';
+//
+            str += '<div class="hidden constituent-metadata-' + p.ConstituentID + '">';
+            // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
+            if (p.gender) str += "<p>" + p.gender[0].Term + "</p>";
             if (p.role) {
                 str += "<p>";
                 str += "<strong>Roles:</strong><br />";
@@ -1345,7 +1355,7 @@ module PIC {
                     if (p.collection[i].URL == "") {
                         continue;
                     }
-                    var link = '<li><a target="_blank" class="external" href="'+ p.collection[i].URL +'">';
+                    var link = '<li><a target="_blank" class="external" title="this link opens in a new window" href="'+ p.collection[i].URL +'">';
                     link += p.collection[i].Term;
                     link += '</a></li>';
                     links.push(link);
@@ -1365,7 +1375,7 @@ module PIC {
                 str += "<strong>Data from:</strong>";
                 var links = [];
                 for (var i in p.biography) {
-                    var link = '<li><a target="_blank" class="external" href="'+ p.biography[i].URL +'">';
+                    var link = '<li><a target="_blank" class="external" title="this link opens in a new window" href="'+ p.biography[i].URL +'">';
                     link += p.biography[i].Term;
                     link += '</a></li>';
                     links.push(link);
@@ -1374,6 +1384,7 @@ module PIC {
                 str += "</ul>";
                 // str += "</p>";
             }
+            str += "</div>"; // metadata end
             if (p.addressTotal > 0) {
                 str += '<div class="addresses">';
                 // if (p.addressTotal > 1) str += '<span class="link" id="constituent-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
@@ -1391,6 +1402,16 @@ module PIC {
                 $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
                 $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
                 // window.open("/constituents/" + p.ConstituentID);
+            } );
+            $("#constituent-metadata-toggle-" + p.ConstituentID).click( () => {
+                $(".constituent-metadata-" + p.ConstituentID).fadeToggle(200);
+                var toggle = $("#constituent-metadata-toggle-" + p.ConstituentID);
+                toggle.toggleClass("open");
+                if (toggle.hasClass("open")) {
+                    toggle.find("strong").text("Hide constituent information");
+                } else {
+                    toggle.find("strong").text("View constituent information");
+                }
             } );
             $("#constituent-addresslist-" + p.ConstituentID + " .address-header").click( () => this.getAddressList(parseInt(p.ConstituentID)) );
         }
@@ -1675,6 +1696,10 @@ module PIC {
             }
             url += keyVals.join("&");
             Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+        }
+        
+        scrollResults (value = 0) {
+            $("#constituents .scroller").animate({scrollTop:value}, 500, 'swing');
         }
 
         changeState () {

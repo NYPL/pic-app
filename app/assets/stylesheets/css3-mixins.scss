@@ -39,6 +39,22 @@ $iconFontFamily:        "nyplicons";
   font-variant: normal;
 }
 
+@mixin pic-arrow($color: white, $size: 10px, $direction: "down", $left: 10px) {
+        &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        left: $left;
+        top: 0;
+        border: $size solid $color;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+    }
+}
+
 /* -------------------------------------------------------------
   Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
   By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets

@@ -76,7 +76,8 @@
       _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
       _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
       _pic.rootPath = "http://d2ulwm5zh6plnr.cloudfront.net/";
-      _pic.baseUrl = "/search";
+      _pic.baseUrl = "https://ad4dc8ff4b124bbeadb55e68d9df1966-us-east-1.foundcluster.com:9243/pic";
+      _pic.authHeader = '<%= Base64.strict_encode64(ENV['ELASTIC_USER']+":"+ENV['ELASTIC_PASSWORD']) %>';
       _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
       _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
       _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';

@@ -39,7 +39,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 1500;
+        elasticSize = 10000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 100;
         tooltipLimit = 50;
@@ -96,6 +96,7 @@ module PIC {
         nullIslandPath = '';
         meliesMoonPath = '';
         meliesSpacePath = '';
+        authHeader = '';
 
         tooltipElement;
         facetsElement;
@@ -695,15 +696,21 @@ module PIC {
         }
 
         getData(filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined) {
-            var url = this.baseUrl
+            var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc";
+            url = url + "&filter_path="+filters;
+            url = url + "&size="+size;
+            url = url + "&from="+from;
+            url = url + "&_source="+source;
+            url = url + "&_source_exclude="+exclude;
             // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
 
             r.open("POST", url, true);
-            // r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-            r.setRequestHeader('Content-Type', 'application/json');
+            r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            r.setRequestHeader('Authorization', 'Basic ' + this.authHeader);
+            // r.setRequestHeader('Content-Type', 'application/json');
             // r.responseType = "json";
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
@@ -714,16 +721,16 @@ module PIC {
                     callback.apply(pic, [r.responseText, parameter]);
                 }
             };
-            var req = {
-                "q": data,
-                "type": "constituent",
-                "filter_path": filters,
-                "size": size,
-                "from": from,
-                "source": source,
-                "source_exclude": exclude
-            }
-            r.send(JSON.stringify(req));
+            // var req = {
+            //     "q": data,
+            //     "type": "constituent",
+            //     "filter_path": filters,
+            //     "size": size,
+            //     "from": from,
+            //     "source": source,
+            //     "source_exclude": exclude
+            // }
+            r.send(JSON.stringify(data));
         }
 
         buildElasticQuery (normal:Array<string>, filter:Array<string>) {
@@ -766,7 +773,7 @@ module PIC {
 
             if (nestedArray.length > 0) {
                 nestedString = "(" + nestedArray.join(" AND ") + ")";
-                nestedQuery["nested"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
+                nestedQuery["nested"]["query"]["filtered"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
             }
 
             if (filter.length !== 0 && filter[0].indexOf("*") === -1) {
@@ -793,7 +800,7 @@ module PIC {
             }
             
             if (hasNestedFilter) {
-                nestedQuery["nested"]["query"]["bool"]["filter"] = nestedFilter;
+                nestedQuery["nested"]["query"]["filtered"]["filter"] = nestedFilter;
             }
             
             if (hasNestedFilter || nestedArray.length > 0) {
@@ -807,10 +814,14 @@ module PIC {
             return {
                 "nested": {
                     "path": "address",
-                    "inner_hits": {},
+                    // "inner_hits": {},
                     "query": {
-                        "bool": {
-                            "must": []
+                        "filtered": {
+                            "query": {
+                                "bool": {
+                                    "must": []
+                                }
+                            }
                         }
                     }
                 }
@@ -1388,7 +1399,7 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             location.hash = id;
-            var filters = "hits.total,hits.hits._source.address";
+            var filters = "hits.total,hits.hits";
             var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
             this.getData(filters, data, this.parseConstituentAddresses, "address", this.elasticSize, "", 0, id);
         }
@@ -1674,7 +1685,7 @@ module PIC {
             this.showSpinner();
             var addresses = [];
             var data = this.buildFacetQuery();
-            var filters = "hits.total,hits.hits";
+            var filters = "hits.total,hits.hits._source";
             this.start = new Date().getTime();
             // console.log("apply", data);
             // clear

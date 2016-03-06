@@ -13,6 +13,9 @@ class ConstituentsController < ApplicationController
 
   def search
     client = Elasticsearch::Client.new host: connection_string
+    # puts "\n\n\n\n\n"
+    # puts params
+    # puts "\n\n\n\n\n"
     begin
       q = params[:q]
       filter_path = params[:filter_path]
@@ -21,14 +24,36 @@ class ConstituentsController < ApplicationController
       size = params[:size]
       source = params[:source]
       type = params[:type]
-      exclude = params[:exclude]
+      exclude = params[:source_exclude]
       sort = "AlphaSort.raw:asc"
       r = client.search index: 'pic', type: type, body: q, size: size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
     rescue
       @results = nil
     end
     if r
-      @results = r
+      # puts r
+      # replace the addresses with the inner_hits
+      @results = {
+        hits: {
+          total: r["hits"]["total"],
+          hits: []
+        }
+      }
+      # puts "\n\n\n\n\n\n\n\n\n\n\n\n"
+      # puts r
+      r["hits"]["hits"].each do |hit|
+        tmp = {
+          _source: hit["_source"]
+        }
+        # puts "\n\n\n\n\n\n\n\n\n\n\n\n"
+        # puts hit
+      #   # puts "\n\n\n\n\n\n\n\n\n\n\n\n"
+        if (hit["inner_hits"] != nil)
+          tmp[:_source]["address"] = hit["inner_hits"]["address"]["hits"]["hits"].map { |a| a["_source"]}
+        end
+        @results[:hits][:hits].push(tmp)
+      end
+      # @results = r
     end
     render :json => @results
   end

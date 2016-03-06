@@ -39,7 +39,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 20000;
+        elasticSize = 1500;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 100;
         tooltipLimit = 50;
@@ -694,7 +694,7 @@ module PIC {
             r.send();
         }
 
-        getData(filters, data, callback, source, size = this.elasticSize, exclude = "address", from = 0, parameter = undefined) {
+        getData(filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined) {
             var url = this.baseUrl
             // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
@@ -729,38 +729,92 @@ module PIC {
         buildElasticQuery (normal:Array<string>, filter:Array<string>) {
             // console.log("buildEQ", normal, filter);
 
-            var normalString = "*";
-            if (normal.length > 0) normalString = "(" + normal.join(" AND ") + ")";
-
-            var data = {
-                "query": {
-                    "bool": {
-                        "must": [
-                            { "query_string": { "query": normalString } }
-                        ]
+            var baseString = "*";
+            var nestedString = "";
+            var baseArray = [];
+            var nestedArray = [];
+            if (normal.length > 0) {
+                for (var f in normal) {
+                    if (normal[f].indexOf("address.") === -1 || normal[f].indexOf("BeginDate") !== -1) {
+                        baseArray.push(normal[f]);
+                    } else {
+                        nestedArray.push(normal[f]);
                     }
                 }
+            }
+            
+            // console.log(baseArray);
+            // console.log(nestedArray);
+
+            var data = {};
+            var baseQuery = {};
+            var nestedFilter = {};
+            var nestedQuery = this.makeEmptyNestedQuery();
+            var hasNestedFilter = false;
+
+            data["query"] = {
+                "bool": {
+                    "must": []
+                }
             };
+ 
+            if (baseArray.length > 0) {
+                baseString = "(" + baseArray.join(" AND ") + ")";
+                baseQuery = { "query_string": { "query": baseString } };
+                data["query"]["bool"]["must"].push(baseQuery);
+            }
 
-            if (filter.length === 0 || filter[0].indexOf("*") !== -1) return data;
+            if (nestedArray.length > 0) {
+                nestedString = "(" + nestedArray.join(" AND ") + ")";
+                nestedQuery["nested"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
+            }
 
-            // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
+            if (filter.length !== 0 && filter[0].indexOf("*") === -1) {
+                // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
+                var filterSplit = filter[0].split(":")
+                
+                var edgesArray = [];
+                
+                if (filterSplit.length === 2) edgesArray = filterSplit[1].split("_");
 
-            var edgesArray = filter[0].split(":")[1].split("_");
-
-            if (filter[0] !== "*" && filter[0] !== "(*)" && edgesArray.length === 4) {
-                data["filter"] = {
-                    "geo_bounding_box": {
-                        "address.Location": {
-                            "left": Number(edgesArray[0]),
-                            "bottom": Number(edgesArray[1]),
-                            "right": Number(edgesArray[2]),
-                            "top": Number(edgesArray[3])
+                if (filter[0] !== "*" && filter[0] !== "(*)" && edgesArray.length === 4) {
+                    hasNestedFilter = true;
+                    nestedFilter = {
+                        "geo_bounding_box": {
+                            "address.Location": {
+                                "left": Number(edgesArray[0]),
+                                "bottom": Number(edgesArray[1]),
+                                "right": Number(edgesArray[2]),
+                                "top": Number(edgesArray[3])
+                            }
                         }
                     }
                 }
             }
+            
+            if (hasNestedFilter) {
+                nestedQuery["nested"]["query"]["bool"]["filter"] = nestedFilter;
+            }
+            
+            if (hasNestedFilter || nestedArray.length > 0) {
+                data["query"]["bool"]["must"].push(nestedQuery);
+            }
+
             return data;
+        }
+        
+        makeEmptyNestedQuery () {
+            return {
+                "nested": {
+                    "path": "address",
+                    "inner_hits": {},
+                    "query": {
+                        "bool": {
+                            "must": []
+                        }
+                    }
+                }
+            };
         }
 
         updateTotals (total) {
@@ -1217,7 +1271,7 @@ module PIC {
 
         loadMoreResults (start) {
             this.tooltipElement.find(".more").empty();
-            var filters = this.buildBaseQueryFilters(start);
+            var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
             var data = this.buildFacetQuery();
             // console.log(start, data);
             this.getData(filters, data, function(responseText) {
@@ -1334,7 +1388,7 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             location.hash = id;
-            var filters = "hits.hits._source";
+            var filters = "hits.total,hits.hits._source.address";
             var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
             this.getData(filters, data, this.parseConstituentAddresses, "address", this.elasticSize, "", 0, id);
         }
@@ -1529,7 +1583,8 @@ module PIC {
             for (var k in this.filters) {
                 if (this.filters[k] != "*") {
                     if (k === "Date") {
-                        facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + " OR BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
+                        facetList.push("((address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + ") OR (BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + "))");
+                        // facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
                     } else if (k === "bbox") {
                         var bbox = this.filters[k];
                         facetList.push("bbox:" + bbox);
@@ -1573,9 +1628,9 @@ module PIC {
             return facetQuery;
         }
 
-        buildBaseQueryFilters(start: number) {
-            return "hits.total,hits.hits._source";
-        }
+        // buildBaseQueryFilters() {
+        //     return "hits.total,hits.hits";
+        // }
 
         clearTooltip() {
             this.tooltipElement.find(".results").empty();
@@ -1619,7 +1674,7 @@ module PIC {
             this.showSpinner();
             var addresses = [];
             var data = this.buildFacetQuery();
-            var filters = "hits.total,hits.hits._source";
+            var filters = "hits.total,hits.hits";
             this.start = new Date().getTime();
             // console.log("apply", data);
             // clear
@@ -1685,7 +1740,7 @@ module PIC {
 
         showTooltip () {
             var data = this.buildFacetQuery();
-            var filters = this.buildBaseQueryFilters(0);
+            var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
             // console.log("tooltip", data);
             this.getData(filters, data, this.updateTooltip, "", this.tooltipLimit);
         }
@@ -1769,10 +1824,13 @@ module PIC {
                 var tid = p[4];
                 var cid = p[5];
                 var loc = p[0] + "," + p[1];
+                // console.log("type",addressType, tid, tid != addressType);
                 if (addressType != "*" && tid != addressType) continue;
+                // console.log("country",country, cid, cid != country);
                 if (country != "*" && cid != country) continue;
-                if (country != "*" && cid != country) continue;
+                // console.log("latlon", w, e, s, n, "p", p, w <= p[0], e >= p[0], n >= p[1], s <= p[1]);
                 if (!(w <= p[0] && e >= p[0] && n >= p[1] && s <= p[1])) continue;
+                // console.log("yea");
                 // end hack
                 var height;
                 // point has no real height

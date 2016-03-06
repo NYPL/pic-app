@@ -1317,7 +1317,7 @@ module PIC {
 //
             str += '<div class="hidden constituent-metadata-' + p.ConstituentID + '">';
             // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
-            if (p.gender) str += "<p>" + p.gender[0].Term + "</p>";
+            if (p.gender) str += "<p><strong>Gender:</strong><br />" + p.gender[0].Term + "</p>";
             if (p.role) {
                 str += "<p>";
                 str += "<strong>Roles:</strong><br />";

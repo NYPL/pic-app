@@ -20,6 +20,9 @@ html, body {
     font-size: 18px;
     line-height: 1.75em;
     background: $white;
+    @include media($tablet) {
+        font-size: 36px;
+    }
 }
 
 a:link {
@@ -79,6 +82,10 @@ p {
     // @include box-shadow(0, 0, 0px, 0, $linkColor);
 
     @include transition(all, .1s);
+
+    @include media($tablet) {
+        width: 340px;
+    }
 
     &:link, &:visited {
         background-color: $linkColor;
@@ -167,6 +174,10 @@ p {
                 // @include box-shadow(0, 0, 0px, 0, $linkColor);
 
                 @include transition(all, .1s);
+
+                @include media($tablet) {
+                    width: 240px;
+                }
 
                 &:link, &:visited {
                     background-color: $linkColor;
@@ -317,6 +328,10 @@ header {
     @include flex-direction(row);
     @include align-items(center);
     border-top: 2px solid $nyplRed;
+
+    @include media($tablet) {
+        font-size: 24px;
+    }
 
     a:link, a:visited, a:hover {
         color: $white;

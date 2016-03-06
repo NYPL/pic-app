@@ -11,6 +11,12 @@ html, body {
     line-height: normal;
 }
 
+header {
+        @include media($tablet) {
+        font-size: 16px;
+    }
+}
+
 /* map stuff */
 
 // override cesium toolbar
@@ -272,7 +278,10 @@ hr {
     padding: $generalMargin;
     background: $linkColor;
     color: $white;
-    border-radius: 3px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    max-width: 200px;
+    margin: 0 auto;
 }
 
 #facets-clear {

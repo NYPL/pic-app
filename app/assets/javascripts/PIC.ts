@@ -118,7 +118,7 @@ module PIC {
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
             ["date", "", "Date", "", ""],
-            ["bbox", "Within bounds", "bbox", "", ""],
+            ["bbox", "In Map Area", "bbox", "", ""],
         ];
 
         facetValues = {};
@@ -2004,7 +2004,7 @@ module PIC {
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
-                subject += " <em>within the selected bounds</em> ";
+                subject += " <em>within the selected area</em> ";
             }
 
             predicate = "for " + this.totalPhotographers.toLocaleString() + " ";

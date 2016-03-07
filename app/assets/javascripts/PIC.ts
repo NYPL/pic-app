@@ -55,7 +55,7 @@ module PIC {
         nullIsland: any;
         boundsFrom: Cesium.Cartographic;
         boundsTo: Cesium.Cartographic;
-        boundsSelectionPrimitive: Cesium.Primitive;
+        boundsSelectionEntity: Cesium.Entity;
         boundsPrimitive: Cesium.Primitive;
         isDrawing = false;
         isPenDown = false;
@@ -356,8 +356,8 @@ module PIC {
             this.lines = new Cesium.Primitive();
             this.scene.primitives.add(this.lines);
 
-            this.boundsSelectionPrimitive = new Cesium.Primitive();
-            this.scene.primitives.add(this.boundsSelectionPrimitive);
+            this.boundsSelectionEntity = new Cesium.Entity();
+            this.viewer.entities.add(this.boundsSelectionEntity);
 
             this.boundsPrimitive = new Cesium.Primitive();
             this.scene.primitives.add(this.boundsPrimitive);
@@ -597,24 +597,31 @@ module PIC {
             this.notifyRepaintRequired();
         }
 
-        makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.Primitive {
-            return new Cesium.Primitive({
-                geometryInstances: new Cesium.GeometryInstance({
-                geometry: new Cesium.RectangleOutlineGeometry({
-                    rectangle: Cesium.Rectangle.fromCartographicArray([from, to])
-                }),
-                attributes: {
-                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOW.withAlpha(0.5))
-                }
-            }),
-                appearance: new Cesium.PerInstanceColorAppearance({
-                    flat : true,
-                    renderState : {
-                        lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
-                    }
-                }),
-                releaseGeometryInstances: false
+        makeBoundsRect (from:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(0,0), to:Cesium.Cartographic = Cesium.Cartographic.fromDegrees(1,1)):Cesium.RectangleGraphics {
+            return new Cesium.RectangleGraphics({
+                coordinates: Cesium.Rectangle.fromCartographicArray([from, to]),
+                outline: true,
+                material: Cesium.Color.WHITE.withAlpha(0.0),
+                outlineColor: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOW.withAlpha(0.5)),
+                outlineWidth: Math.min(2.0, this.scene.maximumAliasedLineWidth)
             });
+            // return new Cesium.Primitive({
+            //     geometryInstances: new Cesium.GeometryInstance({
+            //     geometry: new Cesium.RectangleOutlineGeometry({
+            //         rectangle: Cesium.Rectangle.fromCartographicArray([from, to])
+            //     }),
+            //     attributes: {
+            //         color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.YELLOW.withAlpha(0.5))
+            //     }
+            // }),
+            //     appearance: new Cesium.PerInstanceColorAppearance({
+            //         flat : true,
+            //         renderState : {
+            //             lineWidth : Math.min(2.0, this.scene.maximumAliasedLineWidth)
+            //         }
+            //     }),
+            //     releaseGeometryInstances: false
+            // });
         }
 
         addNullIsland () {
@@ -1032,7 +1039,9 @@ module PIC {
 
         drawStart(position: Cesium.Cartesian2) {
             this.isPenDown = true;
-            this.scene.primitives.remove(this.boundsSelectionPrimitive);
+            this.viewer.entities.remove(this.boundsSelectionEntity);
+            this.boundsSelectionEntity = new Cesium.Entity();
+            this.viewer.entities.add(this.boundsSelectionEntity);
             if (!position) return;
             var cartesian = this.camera.pickEllipsoid(position, this.scene.globe.ellipsoid);
             if (cartesian === undefined) return;
@@ -1058,9 +1067,9 @@ module PIC {
         }
 
         drawSelection () {
-            this.scene.primitives.remove(this.boundsSelectionPrimitive);
-            this.boundsSelectionPrimitive = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
-            this.scene.primitives.add(this.boundsSelectionPrimitive);
+            // this.scene.primitives.remove(this.boundsSelectionEntity);
+            this.boundsSelectionEntity.rectangle = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
+            // this.scene.primitives.add(this.boundsSelectionEntity);
             this.notifyRepaintRequired();
         }
         
@@ -1225,7 +1234,7 @@ module PIC {
             this.scene.screenSpaceCameraController.enableRotate = true;
             this.scene.screenSpaceCameraController.enableTranslate = true;
             this.scene.screenSpaceCameraController.enableTilt = true;
-            this.scene.primitives.remove(this.boundsSelectionPrimitive);
+            this.viewer.entities.remove(this.boundsSelectionEntity);
             this.enableFacets();
         }
 

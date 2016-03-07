@@ -158,7 +158,7 @@ module PIC {
             if (filterString.lastIndexOf("#") !== -1) filterString = filterString.substring(0, filterString.lastIndexOf("#"));
 
             // console.log("str:", filterString, "hist:", this.historyState);
-            
+
             var keyVals = filterString.split("&");
 
             // console.log(filterString);
@@ -338,10 +338,10 @@ module PIC {
 
             this.moonCircle = new Cesium.Primitive();
             this.scene.primitives.add(this.moonCircle);
-            
+
             this.textLabels = new Cesium.LabelCollection();
             this.scene.primitives.add(this.textLabels);
-            
+
             this.showMoon();
             this.updateTextLabels();
 
@@ -376,7 +376,7 @@ module PIC {
             //     appearance: this.imageAppearance(this.meliesSpacePath)
             // });
             // this.scene.primitives.add(this.spaceLayer);
-            
+
             // this.moonLayer = new Cesium.Primitive({
             //     geometryInstances: new Cesium.GeometryInstance({
             //         geometry: new Cesium.RectangleGeometry({
@@ -394,7 +394,7 @@ module PIC {
             //     },
             //     depthMask: true
             // });
-            
+
             this.scene.primitives.remove(this.spaceCircle);
             this.scene.primitives.remove(this.moonCircle);
             this.textLabels.removeAll();
@@ -414,7 +414,7 @@ module PIC {
             this.moonLayer.alpha = 0.75;
             this.spaceLayer.alpha = 0.75;
         }
-        
+
         hideMoon () {
             // this.scene.primitives.remove(this.spaceLayer);
             // this.scene.primitives.remove(this.moonLayer);
@@ -432,11 +432,11 @@ module PIC {
             console.log("\n%c clicked: %s,%s ", 'background: #222; color: #bada55; font-size: 28pt', lat.toString(), lon.toString());
             console.log(lat, lon);
         }
-        
+
         showSpaceFloatingPrimitives () {
             this.scene.primitives.remove(this.spaceCircle);
             this.scene.primitives.remove(this.moonCircle);
-            
+
             var xmin = -111.0687;
             var xmax = -101.8181;
             var dx = xmax - xmin;
@@ -445,9 +445,9 @@ module PIC {
             var dy = ymax - ymin;
             var centerx = xmin + dx * .2;
             var centery = ymin + dy * .2;
-            
+
             // the space outline
-            
+
             var spaceCircle = new Cesium.CircleOutlineGeometry({
                 center : Cesium.Cartesian3.fromDegrees(centerx, centery),
                 radius : this.spaceRadius,
@@ -471,7 +471,7 @@ module PIC {
                 }),
                 releaseGeometryInstances: false
             });
-            
+
             this.scene.primitives.add(this.spaceCircle);
 
             // the moon outline
@@ -498,12 +498,12 @@ module PIC {
                 }),
                 releaseGeometryInstances: false
             });
-            
+
             this.scene.primitives.add(this.moonCircle);
 
             this.notifyRepaintRequired();
         }
-        
+
         updateTextLabels () {
             var xmin = -111.0687;
             var xmax = -101.8181;
@@ -512,7 +512,7 @@ module PIC {
             var centerx = xmin + dx * .2;
 
             this.textLabels.removeAll();
-            
+
             if (this.scene.mode !== 2) {
                 this.textLabels.add({
                     position : Cesium.Cartesian3.fromDegrees(centerx, ymax+3, this.spaceHeight),
@@ -541,7 +541,7 @@ module PIC {
 
             this.notifyRepaintRequired();
         }
-        
+
         imageAppearance (imagePath: string) {
             return new Cesium.EllipsoidSurfaceAppearance({
                 aboveGround : true,
@@ -562,13 +562,13 @@ module PIC {
                 // }
             });
         }
-        
+
         randomPoints (n = 200) {
             for (var i = 0; i < n; i++) {
                 this.randomPoint();
             }
         }
-        
+
         randomPoint () {
             var bboxbig = "-118.6062_-46.6204_-99.3110_-31.6635";
             var bboxsml = "-116.4891_-45.0273_-101.4461_-33.1833";//-111.0687_-40.2230_-101.8181_-33.9660
@@ -758,7 +758,7 @@ module PIC {
                     }
                 }
             }
-            
+
             // console.log(baseArray);
             // console.log(nestedArray);
 
@@ -773,7 +773,7 @@ module PIC {
                     "must": []
                 }
             };
- 
+
             if (baseArray.length > 0) {
                 baseString = "(" + baseArray.join(" AND ") + ")";
                 baseQuery = { "query_string": { "query": baseString } };
@@ -788,9 +788,9 @@ module PIC {
             if (filter.length !== 0 && filter[0].indexOf("*") === -1) {
                 // TODO: for now the filter assumes only ["w|s|e|n"] or ["*"]
                 var filterSplit = filter[0].split(":")
-                
+
                 var edgesArray = [];
-                
+
                 if (filterSplit.length === 2) edgesArray = filterSplit[1].split("_");
 
                 if (filter[0] !== "*" && filter[0] !== "(*)" && edgesArray.length === 4) {
@@ -807,18 +807,18 @@ module PIC {
                     }
                 }
             }
-            
+
             if (hasNestedFilter) {
                 nestedQuery["nested"]["query"]["filtered"]["filter"] = nestedFilter;
             }
-            
+
             if (hasNestedFilter || nestedArray.length > 0) {
                 data["query"]["bool"]["must"].push(nestedQuery);
             }
 
             return data;
         }
-        
+
         makeEmptyNestedQuery () {
             return {
                 "nested": {
@@ -1073,7 +1073,7 @@ module PIC {
             if (this.boundsFrom != this.boundsTo) this.boundsSelectionEntity.rectangle = this.makeBoundsRect(this.boundsFrom, this.boundsTo);
             this.notifyRepaintRequired();
         }
-        
+
         drawBounds (north:number, south:number, east:number, west:number) {
             this.scene.primitives.remove(this.boundsPrimitive);
             this.boundsPrimitive = new Cesium.Primitive({
@@ -1707,7 +1707,7 @@ module PIC {
             url += keyVals.join("&");
             Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
         }
-        
+
         scrollResults (value = 0) {
             $("#constituents .scroller").animate({scrollTop:value}, 500, 'swing');
         }

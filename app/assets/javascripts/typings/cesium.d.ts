@@ -2455,7 +2455,7 @@ declare module Cesium {
       outlineWidth: Property;
       closeTop: Property;
       closeBottom: Property;
-      constructor(options?: { coordinates?: Property; height?: Property; extrudedHeight?: Property; closeTop?: Property; closeBottom?: Property; show?: Property; fill?: Property; material?: MaterialProperty; outline?: Property; outlineColor?: Property; outlineWidth?: Property; rotation?: Property; stRotation?: Property; granularity?: Property });
+      constructor(options?: { coordinates?: Property|Rectangle; height?: Property; extrudedHeight?: Property; closeTop?: Property; closeBottom?: Property; show?: Property; fill?: Property | boolean; material?: MaterialProperty|Color; outline?: Property|boolean; outlineColor?: Property|ColorGeometryInstanceAttribute; outlineWidth?: Property|number; rotation?: Property; stRotation?: Property; granularity?: Property });
       clone(result?: RectangleGraphics): RectangleGraphics;
       merge(source: RectangleGraphics);
   }

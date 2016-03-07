@@ -157,7 +157,7 @@ module PIC {
 
             if (filterString.lastIndexOf("#") !== -1) filterString = filterString.substring(0, filterString.lastIndexOf("#"));
 
-            // console.log("str:", filterString, "hist:", this.historyState);
+            console.log("str:", filterString, "hist:", this.historyState);
 
             var keyVals = filterString.split("&");
 
@@ -751,7 +751,7 @@ module PIC {
             var nestedArray = [];
             if (normal.length > 0) {
                 for (var f in normal) {
-                    if (normal[f].indexOf("address.") === -1 || normal[f].indexOf("BeginDate") !== -1) {
+                    if (normal[f].indexOf("address.") === -1) {
                         baseArray.push(normal[f]);
                     } else {
                         nestedArray.push(normal[f]);
@@ -1625,7 +1625,8 @@ module PIC {
             for (var k in this.filters) {
                 if (this.filters[k] != "*") {
                     if (k === "Date") {
-                        facetList.push("((address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + ") OR (BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + "))");
+                        facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
+                        facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + ")");
                         // facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
                     } else if (k === "bbox") {
                         var bbox = this.filters[k];

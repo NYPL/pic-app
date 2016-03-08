@@ -1900,7 +1900,7 @@ module PIC {
                     position : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
                     color: this.addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                     pixelSize : this.pixelSize,
-                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.maxScale, 8.0e5, this.minScale)
+                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.maxScale, 8.0e6, this.minScale)
                 });
                 pt.originalLatlon = p[0] + "," + p[1] + (p[6] ? "," + p[6] : "");
             }

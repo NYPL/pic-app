@@ -41,13 +41,13 @@ module PIC {
 
         elasticSize = 10000;
         padding = 0.01; // to extend the boundary a bit
-        maxExport = 100;
+        maxExport = 1000;
         tooltipLimit = 50;
         heightDelta = 100;
         lineWidth = 2;
         pixelSize = 2;
         pixelScale = 4;
-        minScale = 0.5;
+        minScale = 0.75;
         maxScale = 2;
         generalMargin = 10;
         defaultValue = "*";

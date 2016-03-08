@@ -235,7 +235,7 @@ hr {
 
     .number {
         color: $white;
-        font-size: 3em;
+        font-size: 2em;
     }
 }
 
@@ -273,19 +273,19 @@ hr {
 }
 
 .more span {
-    display: block;
-    text-align: center;
-    padding: $generalMargin;
-    background: $linkColor;
-    color: $white;
-    text-transform: uppercase;
-    border-radius: 30px;
+    @include pic-button(1em, $white, $linkColor);
     max-width: 200px;
     margin: 0 auto;
 }
 
 #facets-clear {
-    cursor: pointer;
+    @include pic-button(.8em, $white, $linkColor);
+    max-width: 140px;
+    margin: 10px auto;
+
+    &.disabled {
+        margin-left: -100000px;
+    }
 }
 
 #facets {
@@ -463,6 +463,12 @@ hr {
         .results, .more {
             display: none;
         }
+    }
+
+    .export-links {
+        display: block;
+        font-size: .8em;
+        margin: 7px 0;
     }
 
     .constituent-item {

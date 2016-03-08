@@ -20,7 +20,6 @@ class ConstituentsController < ApplicationController
       q = params[:q]
       filter_path = params[:filter_path]
       from = params[:from]
-      to = params[:to]
       size = params[:size]
       source = params[:source]
       type = params[:type]
@@ -60,17 +59,47 @@ class ConstituentsController < ApplicationController
 
   def export
     client = Elasticsearch::Client.new host: connection_string
+    type = "json"
+    if params[:type] != nil
+      type = params[:type]
+    end
     begin
-      q = URI.unescape(params[:q])
-      fields = ["*"]
-      r = client.search index: 'pic', size: 100, body: q, _source: fields
+      q = JSON.parse(params[:q])
+      filter_path = params[:filter_path]
+      from = 0
+      size = 1000
+      source = params[:source]
+      exclude = params[:source_exclude]
+      sort = "AlphaSort.raw:asc"
+      r = client.search index: 'pic', type: "constituent", body: q, size: size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
     rescue
       @results = nil
     end
+      puts r
     if r && r["hits"]["total"] > 0
-      @results = r["hits"]["hits"]
+      puts "fuck yeah"
+      puts "type: #{params} |#{params[:type]==nil}|"
+      temp = r["hits"]["hits"]
+      if type == "json"
+        @results = temp
+      elsif type == "geojson"
+        @results = {
+          :type => "FeatureCollection", :features => []
+        }
+        temp.each do |hit|
+          r = {}
+          r[:type] = "Feature"
+          r[:properties] = hit
+          r[:geometry] = { :type => "MultiPoint", :coordinates => [] }
+          next if hit["_source"]["address"] == nil
+          hit["_source"]["address"].each do |address|
+            r[:geometry][:coordinates].push([address["Location"]["lon"], address["Location"]["lat"]]) if address["Location"] != nil
+          end
+          @results[:features].push(r)
+        end
+      end
     end
-    render :json => {:results => @results}
+    render :json => @results
   end
 
   def show

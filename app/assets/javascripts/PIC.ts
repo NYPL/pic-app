@@ -108,8 +108,8 @@ module PIC {
         toDateElement = "toDate";
 
         facets : string[][] = [
-            ["addresstypes", "Address Type", "AddressTypeID", "AddressType", "address"],
-            ["countries", "Address Country", "CountryID", "Country", "address"],
+            ["addresstypes", "Type", "AddressTypeID", "AddressType", "address"],
+            ["countries", "Country", "CountryID", "Country", "address"],
             ["nationalities", "Nationality", "Nationality", "Nationality", ""],
             ["genders", "Gender", "TermID", "Term", "gender"],
             ["processes", "Process", "TermID", "Term", "process"],
@@ -711,7 +711,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -841,8 +841,8 @@ module PIC {
             // console.log("total", total, this.elasticResults);
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
-            $(".spinner").find(".text").remove();
-            $(".spinner").append("<span class='text'><em>" + total.toLocaleString() + "</em><br />locations for<br />" + this.totalPhotographers.toLocaleString() + "<br />constituents<br />loaded</span>");
+            this.tooltipElement.find(".spinner").find(".text").remove();
+            this.tooltipElement.find(".spinner").append("<span class='text'><em>" + total.toLocaleString() + "</em><br />locations for<br />" + this.totalPhotographers.toLocaleString() + "<br />constituents<br />loaded</span>");
             this.notifyRepaintRequired();
         }
 
@@ -1258,9 +1258,10 @@ module PIC {
                 str = str + " Showing first " + this.tooltipLimit + ".";
             }
             var url = "/export/?q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
-            var exportStr = "Export results as JSON";
-            if (total > this.maxExport) exportStr = "Export first " + this.maxExport + " results as JSON";
-            str = str + '<br /><a href="'+url+'" target="_blank">'+exportStr+'</a>';
+            var urlGeo = "/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
+            var exportStr = "Export results as";
+            if (total > this.maxExport) exportStr = "Export first " + this.maxExport.toLocaleString() + " results as";
+            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" class="export link">GeoJSON</a></span>';
             str = str + "</p>";
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
@@ -1556,7 +1557,7 @@ module PIC {
 
             if (facet[0] !== "bbox") {
                 // hack for ignoring the bbox (has no csv)
-                var url = this.rootPath + "csv/" + facet[0] + ".csv";
+                var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.round(Math.random() * 100000);
                 this.loadTextFile(url, this.updateFacet, facet);
             } else {
                 this.initFacetWidget(widget);
@@ -1719,6 +1720,11 @@ module PIC {
             this.disableFacets();
             this.removePoints();
             this.showSpinner();
+            if (this.buildFacetList().length == 0) {
+                $("#facets-clear").addClass("disabled");
+            } else {
+                $("#facets-clear").removeClass("disabled");
+            }
             var addresses = [];
             var data = this.buildFacetQuery();
             var filters = "hits.total,hits.hits._source";

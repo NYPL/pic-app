@@ -55,6 +55,18 @@ $iconFontFamily:        "nyplicons";
     }
 }
 
+@mixin pic-button($fontSize, $color, $backgroundColor) {
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    padding: .8em 0 .6em;
+    background: $backgroundColor;
+    color: $color;
+    text-transform: uppercase;
+    border-radius: 60px;
+    font-size: $fontSize;
+}
+
 /* -------------------------------------------------------------
   Sass CSS3 Mixins! The Cross-Browser CSS3 Sass Library
   By: Matthieu Aussaguel, http://www.mynameismatthieu.com, @matthieu_tweets

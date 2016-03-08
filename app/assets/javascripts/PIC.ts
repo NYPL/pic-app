@@ -411,7 +411,7 @@ module PIC {
                 rectangle : Cesium.Rectangle.fromDegrees(-122.4190541, -48.4356558, -93.1480924, -31.0020460)
             }));
 
-            this.moonLayer.alpha = 0.75;
+            this.moonLayer.alpha = 0.5;
             this.spaceLayer.alpha = 0.75;
         }
 

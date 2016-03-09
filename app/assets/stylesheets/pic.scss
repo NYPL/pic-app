@@ -284,7 +284,9 @@ hr {
     margin: 10px auto;
 
     &.disabled {
-        margin-left: -100000px;
+        // margin-left: -100000px;
+        background-color: $darkGray;
+        cursor: default;
     }
 }
 

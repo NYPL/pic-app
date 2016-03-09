@@ -2198,6 +2198,7 @@ module PIC {
             name.keyup((e) => this.onNameQueryKeyUp(e));
             name.blur(() => this.updateNameFilter());
             $("#facets-clear").click(() => this.clearFilters());
+            this.viewer.geocoder.viewModel.search.afterExecute.addEventListener(() => {this.notifyRepaintRequired()});
             // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }
 

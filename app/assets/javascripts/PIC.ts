@@ -636,7 +636,7 @@ module PIC {
         }
 
         loadBaseData () {
-            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.round(Math.random()*10000), function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.round(Math.random() * 100000000), function (responseText) {
                 var baseData = JSON.parse(responseText)[1];
                 this.parseBaseData(baseData);
             });
@@ -661,7 +661,7 @@ module PIC {
                 this.allIDs.push(id);
             }
 
-            this.loadTextFile(this.rootPath + "csv/heights.txt?i=" + Math.round(Math.random() * 10000), function(responseText) {
+            this.loadTextFile(this.rootPath + "csv/heights.txt?i=" + Math.round(Math.random() * 100000000), function(responseText) {
                 var heightData = JSON.parse(responseText)[1];
                 this.parseHeightData(heightData);
             });
@@ -1557,7 +1557,7 @@ module PIC {
 
             if (facet[0] !== "bbox") {
                 // hack for ignoring the bbox (has no csv)
-                var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.round(Math.random() * 100000);
+                var url = this.rootPath + "csv/" + facet[0] + ".csv?i=" + Math.round(Math.random() * 100000000);
                 this.loadTextFile(url, this.updateFacet, facet);
             } else {
                 this.initFacetWidget(widget);

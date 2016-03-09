@@ -157,7 +157,7 @@ module PIC {
 
             if (filterString.lastIndexOf("#") !== -1) filterString = filterString.substring(0, filterString.lastIndexOf("#"));
 
-            console.log("str:", filterString, "hist:", this.historyState);
+            // console.log("str:", filterString, "hist:", this.historyState);
 
             var keyVals = filterString.split("&");
 
@@ -711,7 +711,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();

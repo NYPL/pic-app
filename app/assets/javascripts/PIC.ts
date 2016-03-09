@@ -636,7 +636,7 @@ module PIC {
         }
 
         loadBaseData () {
-            this.loadTextFile(this.rootPath + "csv/latlons.txt", function (responseText) {
+            this.loadTextFile(this.rootPath + "csv/latlons.txt?i=" + Math.round(Math.random()*10000), function (responseText) {
                 var baseData = JSON.parse(responseText)[1];
                 this.parseBaseData(baseData);
             });
@@ -661,7 +661,7 @@ module PIC {
                 this.allIDs.push(id);
             }
 
-            this.loadTextFile(this.rootPath + "csv/heights.txt", function(responseText) {
+            this.loadTextFile(this.rootPath + "csv/heights.txt?i=" + Math.round(Math.random() * 10000), function(responseText) {
                 var heightData = JSON.parse(responseText)[1];
                 this.parseHeightData(heightData);
             });

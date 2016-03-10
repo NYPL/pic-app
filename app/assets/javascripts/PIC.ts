@@ -976,7 +976,7 @@ module PIC {
             //     this.refreshPicked(pickedObject);
             // };
 
-            this.canvas.onmousemove = (e) => {
+            this.canvas.onmousemove = this.canvas.ontouchmove = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 if (!c) return;
                 // this.mousePosition = c;
@@ -985,14 +985,14 @@ module PIC {
                 if (this.isDrawing) this.drawMove(c);
             }
 
-            this.canvas.onmousedown = (e) => {
+            this.canvas.onmousedown = this.canvas.ontouchstart = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 // this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawStart(c);
                 this.hideBoundsDialog();
             }
 
-            this.canvas.onmouseup = (e) => {
+            this.canvas.onmouseup = this.canvas.ontouchend = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 // this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawEnd(c);

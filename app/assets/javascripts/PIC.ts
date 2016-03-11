@@ -856,6 +856,7 @@ module PIC {
                 destination : Cesium.Rectangle.fromDegrees(west, south, east, north),
                 duration : 1
             });
+            this.notifyRepaintRequired();
         }
 
         minimizeFacets () {

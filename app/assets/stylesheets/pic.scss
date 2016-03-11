@@ -524,7 +524,7 @@ hr {
         margin: 0 0 ($generalMargin * 2);
         padding-left: 2em;
         border-bottom: 4px solid $black;
-        background-color: $darkGray;
+        background-color: $linkColor;
         padding-top: 10px;
         position: relative;
 
@@ -550,12 +550,12 @@ hr {
             .address-toggle, .metadata-toggle {
                 float: left;
                 width: 45%;
-                margin-right: 5px;
-                margin-left: 5px;
+                margin-right: 1%;
+                margin-left: 3%;
                 text-align: center;
                 height: 2em;
                 line-height: 1.6em;
-                background-color: $gray;
+                background-color: $darkGray;
 
                 &.active {
                     background-color: white;

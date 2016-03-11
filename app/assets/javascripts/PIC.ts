@@ -15,6 +15,41 @@ module PIC {
         [ID: string]: Facet;
     }
 
+    export class StoredView {
+            position = undefined;
+            direction = undefined;
+            up = undefined;
+            right = undefined;
+            transform = undefined;
+            frustum = undefined;
+
+            save (camera:Cesium.Camera) {
+                if(typeof camera === 'undefined') {
+                    throw new Cesium.DeveloperError('camera is required');
+                }
+
+                this.position = camera.position.clone(this.position);
+                this.direction = camera.direction.clone(this.direction);
+                this.up = camera.up.clone(this.up);
+                this.right = camera.right.clone(this.right);
+                this.transform = camera.transform.clone(this.transform);
+                this.frustum = camera.frustum.clone(this.frustum);
+            }
+
+            load (camera:Cesium.Camera) {
+                if(typeof this.position === 'undefined') {
+                    throw new Cesium.DeveloperError('no view has been stored');
+                }
+
+                this.position.clone(camera.position);
+                this.direction.clone(camera.direction);
+                this.up.clone(camera.up);
+                this.right.clone(camera.right);
+                this.transform.clone(camera.transform);
+                this.frustum.clone(camera.frustum);
+            }
+    }
+
     export class PIC {
         viewer : Cesium.Viewer;
         scene : Cesium.Scene;
@@ -33,6 +68,8 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
+        
+        storedView: StoredView = new StoredView();
 
         adminMode = false;
 
@@ -98,6 +135,7 @@ module PIC {
         meliesMoonPath = '';
         meliesSpacePath = '';
         authHeader = '';
+        geoJsonPrefix = '';
 
         tooltipElement;
         facetsElement;
@@ -1259,10 +1297,10 @@ module PIC {
                 str = str + " Showing first " + this.tooltipLimit + ".";
             }
             var url = "/export/?q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
-            var urlGeo = "/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
+            var urlGeo = this.geoJsonPrefix + encodeURIComponent("/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery())));
             var exportStr = "Export results as";
             if (total > this.maxExport) exportStr = "Export first " + this.maxExport.toLocaleString() + " results as";
-            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" class="export link">GeoJSON</a></span>';
+            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
             str = str + "</p>";
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
@@ -1271,7 +1309,7 @@ module PIC {
             var lineID = parseInt(location.hash.replace("#",""));
             // console.log(lineID);
             if (!isNaN(lineID)) {
-                this.getAddressList(lineID);
+                this.connectAddresses(lineID);
             }
             this.scrollResults();
         }
@@ -2208,7 +2246,11 @@ module PIC {
                     this.showMoon();
                 }
                 this.updateTextLabels();
-            } );
+            });
+            this.camera.moveEnd.addEventListener( () => {
+                this.storedView.save(this.camera);
+                // console.log(JSON.stringify(this.storedView));
+            })
             var from = $("#" + this.fromDateElement);
             var to = $("#" + this.toDateElement);
             from.keyup((e) => this.onFromDateKeyUp(e));

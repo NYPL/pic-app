@@ -84,6 +84,7 @@
       _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';
       _pic.meliesSpacePath = '<%= asset_url('melies-space.png') %>';
       _pic.meliesMoonPath = '<%= asset_url('melies-moon.png') %>';
+      _pic.geoJsonPrefix = 'http://geojson.io/#data=data:text/x-url,<%= CGI.escape("#{request.protocol}#{request.host_with_port}") %>';
       _pic.adminMode = <%= @admin %>
       _pic.init();
   }

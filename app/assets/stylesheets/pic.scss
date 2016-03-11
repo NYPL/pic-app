@@ -475,6 +475,12 @@ hr {
 
     .constituent-item {
         margin: 0 0 ($generalMargin * 2) 0;
+        padding: 5px 0 0 5px;
+        border-radius: 15px 15px 0 0;
+
+        &.open {
+            background-color: white;
+        }
 
         h3 {
             margin-bottom: 10px;
@@ -517,15 +523,45 @@ hr {
     .constituent-content {
         margin: 0 0 ($generalMargin * 2);
         padding-left: 2em;
-        border-bottom: 2px solid $black;
-        background-color: white;
+        border-bottom: 4px solid $black;
+        background-color: $darkGray;
         padding-top: 10px;
         position: relative;
 
-        @include pic-arrow($darkGray);
+        // @include pic-arrow($white);
 
         p {
             margin-left: 7px;
+        }
+
+        .constituent-metadata {
+            display: none;
+
+            &.open {
+                display: block;
+            }
+        }
+
+        .tabs {
+            margin-left: -2em;
+            position: relative;
+            @include clearfix();
+
+            .address-toggle, .metadata-toggle {
+                float: left;
+                width: 45%;
+                margin-right: 5px;
+                margin-left: 5px;
+                text-align: center;
+                height: 2em;
+                line-height: 1.6em;
+                background-color: $gray;
+
+                &.active {
+                    background-color: white;
+                    color: $black;
+                }
+            }
         }
 
     }
@@ -568,14 +604,24 @@ hr {
 
 }
 
-.addresses {
-    background: $gray;
+.constituent-metadata, .addresses {
+    background-color: white;
     padding: $generalMargin;
     padding-left: 40px;
     margin-left: -2em;
     position: relative;
+}
 
-    @include pic-arrow();
+.addresses {
+    // @include pic-arrow();
+
+    .constituent-addresslist {
+        display: none;
+
+        &.open {
+            display: block;
+        }
+    }
 
     .address-item {
         margin-bottom: $generalMargin;
@@ -592,6 +638,12 @@ hr {
 
     .address-item-content {
         margin-left: $generalMargin;
+    }
+
+    .connector {
+        @include pic-button(0.8em, $white, $linkColor);
+        margin: 10px 0;
+        max-width: 180px;
     }
 }
 

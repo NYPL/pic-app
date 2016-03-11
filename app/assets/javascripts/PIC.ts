@@ -1138,76 +1138,76 @@ module PIC {
         //     this.getData(filter, data, this.buildHoverContent, "DisplayName", 3);
         // }
 
-        buildHoverContent (responseText) {
-            var el = $("#hover");
-            if (this.pickedEntity === undefined) return;
-            var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var data = JSON.parse(responseText);
-            // console.log("hover", data);
-            var hits = data.hits.total;
-            var str = "<div>";
-            str += '<span class="hits">' + hits.toLocaleString() + '</span>';
-            str += hits === 1 ? " result" : " total constituents";
-            if (hits > 1) str += " including";
-            if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
-            str += "<br /><span id='geoname'>&nbsp;</span>";
-            // str += "<br />click dot to zoom and view list";
-            str += "</div>";
-            el.html(str);
-            var latlon = position.split(",");
-            var place;
-            if (latlon.length === 3 && latlon[2] > 10000) {
-                place = latlon[2] === "3850000" ? "near the Moon!" : "in Outer Space";
-                this.updateHoverLocation(place);
-                return;
-            }
-            if (latlon.length === 2 && latlon[0] === "0" && latlon[1] === "0") {
-                place = "This is a placeholder location";
-                this.updateHoverLocation(place);
-                return;
-            }
-            var lat = parseFloat(latlon[0]);
-            var lon = parseFloat(latlon[1]);
-            var north = Math.round((lat+0.02) * 100) / 100;
-            var south = Math.round((lat-0.02) * 100) / 100;
-            var east = Math.round((lon+0.02) * 100) / 100;
-            var west = Math.round((lon-0.02) * 100) / 100;
-            // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
-            var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
-            console.log(reverseGeo);
-            this.loadTextFile(reverseGeo, this.parseHoverLocation);
-        }
+        // buildHoverContent (responseText) {
+        //     var el = $("#hover");
+        //     if (this.pickedEntity === undefined) return;
+        //     var position = this.pickedEntity.entity.primitive.originalLatlon;
+        //     var data = JSON.parse(responseText);
+        //     // console.log("hover", data);
+        //     var hits = data.hits.total;
+        //     var str = "<div>";
+        //     str += '<span class="hits">' + hits.toLocaleString() + '</span>';
+        //     str += hits === 1 ? " result" : " total constituents";
+        //     if (hits > 1) str += " including";
+        //     if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
+        //     str += "<br /><span id='geoname'>&nbsp;</span>";
+        //     // str += "<br />click dot to zoom and view list";
+        //     str += "</div>";
+        //     el.html(str);
+        //     var latlon = position.split(",");
+        //     var place;
+        //     if (latlon.length === 3 && latlon[2] > 10000) {
+        //         place = latlon[2] === "3850000" ? "near the Moon!" : "in Outer Space";
+        //         this.updateHoverLocation(place);
+        //         return;
+        //     }
+        //     if (latlon.length === 2 && latlon[0] === "0" && latlon[1] === "0") {
+        //         place = "This is a placeholder location";
+        //         this.updateHoverLocation(place);
+        //         return;
+        //     }
+        //     var lat = parseFloat(latlon[0]);
+        //     var lon = parseFloat(latlon[1]);
+        //     var north = Math.round((lat+0.02) * 100) / 100;
+        //     var south = Math.round((lat-0.02) * 100) / 100;
+        //     var east = Math.round((lon+0.02) * 100) / 100;
+        //     var west = Math.round((lon-0.02) * 100) / 100;
+        //     // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+        //     var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+        //     console.log(reverseGeo);
+        //     this.loadTextFile(reverseGeo, this.parseHoverLocation);
+        // }
 
-        parseHoverLocation (responseText) {
-            var data = JSON.parse(responseText);
-            // console.log(data);
-            var geo = data.geonames[0];
-            if (!geo) return;
-            this.updateHoverLocation("near " + geo.name + ", " + geo.countrycode);
-        }
+        // parseHoverLocation (responseText) {
+        //     var data = JSON.parse(responseText);
+        //     // console.log(data);
+        //     var geo = data.geonames[0];
+        //     if (!geo) return;
+        //     this.updateHoverLocation("near " + geo.name + ", " + geo.countrycode);
+        // }
 
-        updateHoverLocation (text) {
-            $("#geoname").text(text);
-            this.positionHover(true);
-        }
+        // updateHoverLocation (text) {
+        //     $("#geoname").text(text);
+        //     this.positionHover(true);
+        // }
 
-        positionHover (visible) {
-            var el = $("#hover");
-            var leftOffset = $("#cesiumContainer").position().left;
-            var margin = 50;
-            if (this.mousePosition === undefined) return;
-            var x = this.mousePosition.x-(el.width()*.5);
-            var y = this.mousePosition.y-el.height()-margin;
-            if (y < 0) {
-                y = this.mousePosition.y+margin;
-            }
-            if (!visible) {
-                x = -10000;
-                y = -10000;
-            }
-            x += leftOffset;
-            el.offset({left:x, top:y});
-        }
+        // positionHover (visible) {
+        //     var el = $("#hover");
+        //     var leftOffset = $("#cesiumContainer").position().left;
+        //     var margin = 50;
+        //     if (this.mousePosition === undefined) return;
+        //     var x = this.mousePosition.x-(el.width()*.5);
+        //     var y = this.mousePosition.y-el.height()-margin;
+        //     if (y < 0) {
+        //         y = this.mousePosition.y+margin;
+        //     }
+        //     if (!visible) {
+        //         x = -10000;
+        //         y = -10000;
+        //     }
+        //     x += leftOffset;
+        //     el.offset({left:x, top:y});
+        // }
 
         setBboxWidget (bbox:Array<Cesium.Cartographic>) {
             var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);
@@ -1309,7 +1309,7 @@ module PIC {
         }
 
         buildTooltipConstituent (p) {
-            var str = '<div class="constituent-item">';
+            var str = '<div id="constituent-item-' + p.ConstituentID + '" class="constituent-item">';
             str += '<h3 class="constituent-toggle-' + p.ConstituentID + '"><span class="title">' + p.DisplayName;
             str += '</span>';
             str += "<span class=\"subtitle\">";
@@ -1318,16 +1318,27 @@ module PIC {
             str += "</span>"
             str += '</h3>';
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
+//
+            str += '<div class="tabs">';
+            str += '<div class="metadata-toggle link active"><strong>';
+            str += 'Information';
+            str += '</strong></div>';
+            if (p.addressTotal > 0) {
+                str += '<div class="address-toggle link"><strong>';
+                if (p.addressTotal != 1) {
+                    str += 'Locations ('+p.addressTotal+')';
+                } else {
+                    str += 'Location';
+                }
+                str += '</strong></div>';
+            }
+            str += '</div>';
+//
+            str += '<div class="constituent-metadata open constituent-metadata-' + p.ConstituentID + '">';
+            // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
             str += "<p>";
             str += "<strong>ID:</strong> " + p.ConstituentID;
             str += "</p>";
-//
-            str += '<div id="constituent-metadata-toggle-' + p.ConstituentID +'" class="toggle link"><strong>';
-            str += 'View constituent information';
-            str += '</strong></div>';
-//
-            str += '<div class="hidden constituent-metadata-' + p.ConstituentID + '">';
-            // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
             if (p.gender) str += "<p><strong>Gender:</strong><br />" + p.gender[0].Term + "</p>";
             if (p.role) {
                 str += "<p>";
@@ -1397,40 +1408,37 @@ module PIC {
             }
             str += "</div>"; // metadata end
             if (p.addressTotal > 0) {
-                str += '<div class="addresses">';
-                // if (p.addressTotal > 1) str += '<span class="link" id="constituent-connector-'+p.ConstituentID+'"><strong>Connect locations</strong></span>';
-                str += '<div id="constituent-addresslist-'+p.ConstituentID+'"><span class="link address-header"><strong>';
-                if (p.addressTotal != 1) {
-                    str += 'List '+p.addressTotal+' locations';
-                } else {
-                    str += 'Show location';
-                }
-                str += '</strong></span></div></div>';
+                str += '<div class="addresses"><div id="constituent-addresslist-'+p.ConstituentID+'"></div></div>';
             }
             str += "</div>";
             this.tooltipElement.find(".results").append(str);
             $(".constituent-toggle-" + p.ConstituentID).click( () => {
                 $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
+                $("#constituent-item-" + p.ConstituentID).toggleClass("open");
                 $(".constituent-toggle-" + p.ConstituentID).toggleClass("open");
                 // window.open("/constituents/" + p.ConstituentID);
+            });
+            $("#constituent-item-" + p.ConstituentID + " .metadata-toggle").click( () => {
+                $("#constituent-item-" + p.ConstituentID + " .metadata-toggle").addClass("active");
+                $("#constituent-item-" + p.ConstituentID + " .address-toggle").removeClass("active");
+                $(".constituent-metadata-" + p.ConstituentID).addClass("open");
+                $("#constituent-addresslist-" + p.ConstituentID + " .constituent-addresslist").removeClass("open");
             } );
-            $("#constituent-metadata-toggle-" + p.ConstituentID).click( () => {
-                $(".constituent-metadata-" + p.ConstituentID).fadeToggle(200);
-                var toggle = $("#constituent-metadata-toggle-" + p.ConstituentID);
-                toggle.toggleClass("open");
-                if (toggle.hasClass("open")) {
-                    toggle.find("strong").text("Hide constituent information");
-                } else {
-                    toggle.find("strong").text("View constituent information");
+            $("#constituent-item-" + p.ConstituentID + " .address-toggle").click( () => {
+                if (!$("#constituent-addresslist-" + p.ConstituentID).hasClass("loaded")) {
+                    $("#constituent-addresslist-" + p.ConstituentID).addClass("loaded");
+                    this.getAddressList(parseInt(p.ConstituentID));
                 }
-            } );
-            $("#constituent-addresslist-" + p.ConstituentID + " .address-header").click( () => this.getAddressList(parseInt(p.ConstituentID)) );
+                $("#constituent-item-" + p.ConstituentID + " .metadata-toggle").removeClass("active");
+                $("#constituent-item-" + p.ConstituentID + " .address-toggle").addClass("active");
+                $(".constituent-metadata-" + p.ConstituentID).removeClass("open");
+                $("#constituent-addresslist-" + p.ConstituentID + " .constituent-addresslist").addClass("open");
+            });
         }
 
         getAddressList (id) {
             // console.log(id);
             // change url without commiting new state change
-            location.hash = id;
             var filters = "hits.total,hits.hits";
             var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
             this.getData(filters, data, this.parseConstituentAddresses, "address", this.elasticSize, "", 0, id);
@@ -1467,24 +1475,23 @@ module PIC {
                     addstring += "</div>";
                     addstring += "</div>";
                 }
-                var str = '<span class="link address-header"><strong>';
+                var str = '<div class="constituent-addresslist open">';
                 if (addresses.length != 1) {
+                    str += '<span class="link connector">';
                     str += 'Connect locations';
-                } else {
-                    str += 'Show location';
+                    str += "</span>";
                 }
-                str += "</strong></span>";
-                str += "<p>";
+                // str += "<p>";
                 // str += "<strong>Addresses:</strong>";
-                str += "</p>";
+                // str += "</p>";
                 str += addstring;
-                $("#constituent-addresslist-" + id + " .address-header").replaceWith(str);
-                $("#constituent-addresslist-" + id + " .address-header").click( () => this.connectAddresses(id) );
+                str += '</div>';
+                $("#constituent-addresslist-" + id).append(str);
+                $("#constituent-addresslist-" + id + " .connector").click( () => this.connectAddresses(id) );
                 $("#constituent-addresslist-" + id + " .link.constituent-address").click( (e) => {
                         var id = $(e.target).data("id");
                         this.flyToAddressID(id);
                 });
-                this.connectAddresses(id);
             }
         }
 
@@ -1501,6 +1508,7 @@ module PIC {
 
         connectAddresses (id) {
             // console.log(id);
+            location.hash = id;
             this.resetBounds();
             this.removeLines();
             var addresses = this.addressesForID(id);

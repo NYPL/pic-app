@@ -614,6 +614,10 @@ hr {
 
 .addresses {
     // @include pic-arrow();
+    .address-spinner {
+        @include clearfix();
+        min-height: 100px;
+    }
 
     .constituent-addresslist {
         display: none;

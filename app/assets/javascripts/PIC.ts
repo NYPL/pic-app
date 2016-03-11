@@ -291,7 +291,7 @@ module PIC {
                 _wheelEvent = 'DOMMouseScroll';
             }
             this.canvas.addEventListener(_wheelEvent, _bindRepaint, false);
-            this.showSpinner();
+            this.showSpinner(this.tooltipElement);
         }
 
         toggleHelp () {
@@ -1427,6 +1427,15 @@ module PIC {
             $("#constituent-item-" + p.ConstituentID + " .address-toggle").click( () => {
                 if (!$("#constituent-addresslist-" + p.ConstituentID).hasClass("loaded")) {
                     $("#constituent-addresslist-" + p.ConstituentID).addClass("loaded");
+                    $("#constituent-addresslist-" + p.ConstituentID).append('<div class="address-spinner"></div>');
+                    var spinner = $("#constituent-addresslist-" + p.ConstituentID + " .address-spinner");
+                    var opts = {
+                        lines: 10, // The number of lines to draw
+                        width: 6, // The line thickness
+                        radius: 20, // The radius of the inner circle
+                        color: "#000"
+                    };
+                    this.showSpinner(spinner, opts);
                     this.getAddressList(parseInt(p.ConstituentID));
                 }
                 $("#constituent-item-" + p.ConstituentID + " .metadata-toggle").removeClass("active");
@@ -1445,6 +1454,7 @@ module PIC {
         }
 
         parseConstituentAddresses (responseText, id) {
+            $("#constituent-addresslist-" + id + " .address-spinner").remove();
             var data = JSON.parse(responseText);
             this.buildConstituentAddresses(id, data.hits.hits[0]._source.address);
         }
@@ -1688,7 +1698,7 @@ module PIC {
             this.tooltipElement.find(".results").empty();
             this.tooltipElement.find(".more").empty();
             this.removeLines();
-            this.hideSpinner();
+            this.hideSpinner(this.tooltipElement);
         }
 
         updateFilter (facetName, value) {
@@ -1727,7 +1737,7 @@ module PIC {
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
-            this.showSpinner();
+            this.showSpinner(this.tooltipElement);
             if (this.buildFacetList().length == 0) {
                 $("#facets-clear").addClass("disabled");
             } else {
@@ -1806,8 +1816,8 @@ module PIC {
             this.getData(filters, data, this.updateTooltip, "", this.tooltipLimit);
         }
 
-        showSpinner () {
-            var opts = {
+        showSpinner (target, opts = {}) {
+            var defaults = {
                 lines: 20, // The number of lines to draw
                 length: 0, // The length of each line
                 width: 12, // The line thickness
@@ -1824,13 +1834,15 @@ module PIC {
                 // top: '100px', // Top position relative to parent in px
                 // left: '50%' // Left position relative to parent in px
             }
+            
+            $.extend(defaults, opts);
 
-            var spin = new Spinner(opts).spin();
-            this.tooltipElement.append(spin.el);
+            var spin = new Spinner(defaults).spin();
+            target.append(spin.el);
         }
 
-        hideSpinner () {
-            this.tooltipElement.find(".spinner").remove();
+        hideSpinner (target) {
+            target.find(".spinner").remove();
         }
 
         addressesForID (id) {

@@ -17,23 +17,21 @@ module PIC {
 
     export class StoredView {
             position = undefined;
-            direction = undefined;
-            up = undefined;
-            right = undefined;
+            heading = undefined;
+            pitch = undefined;
+            roll = undefined;
             transform = undefined;
-            frustum = undefined;
 
             save (camera:Cesium.Camera) {
                 if(typeof camera === 'undefined') {
                     throw new Cesium.DeveloperError('camera is required');
                 }
 
-                this.position = camera.position.clone(this.position);
-                this.direction = camera.direction.clone(this.direction);
-                this.up = camera.up.clone(this.up);
-                this.right = camera.right.clone(this.right);
-                this.transform = camera.transform.clone(this.transform);
-                this.frustum = camera.frustum.clone(this.frustum);
+                this.position = Cesium.Cartesian3.clone(camera.positionWC, this.position);
+                this.heading = camera.heading;
+                this.pitch = camera.pitch;
+                this.roll = camera.roll;
+                this.transform = Cesium.Matrix4.clone(camera.transform, this.transform);
             }
 
             load (camera:Cesium.Camera) {
@@ -41,12 +39,11 @@ module PIC {
                     throw new Cesium.DeveloperError('no view has been stored');
                 }
 
-                this.position.clone(camera.position);
-                this.direction.clone(camera.direction);
-                this.up.clone(camera.up);
-                this.right.clone(camera.right);
-                this.transform.clone(camera.transform);
-                this.frustum.clone(camera.frustum);
+                camera.position = Cesium.Cartesian3.clone(this.position, camera.position);
+                camera.heading = this.heading;
+                camera.pitch = this.pitch;
+                camera.roll = this.roll;
+                camera.transform = Cesium.Matrix4.clone(this.transform, camera.transform);
             }
     }
 

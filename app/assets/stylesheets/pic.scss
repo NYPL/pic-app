@@ -172,7 +172,7 @@ hr {
     position: absolute;
     z-index: 1;
     left: $generalMargin;
-    bottom: $generalMargin;
+    bottom: 40px;
     color: $white;
     @include text-shadow(-1px, 1px, 0px, $black);
     background-color: transparentize($black, .25);

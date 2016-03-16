@@ -356,7 +356,7 @@ module PIC {
                 ,navigationHelpButton : false
                 ,navigationInstructionsInitiallyVisible : false
                 ,mapProjection : new Cesium.WebMercatorProjection()
-                ,creditContainer : "credits"
+                // ,creditContainer : "credits"
                 ,selectionIndicator : false
                 ,skyBox : false
                 ,sceneMode : Cesium.SceneMode.SCENE2D

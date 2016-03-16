@@ -12,7 +12,7 @@ PIC does not track private collections or the stables of commercial galleries. I
 
 ### Why do some of my results not match my query?
 
-PIC uses "fuzzy search" to give you results, so if you search for "Mary" you'll also get "Marc". We understand, that can be a bit annoying. But if the search was too literal, you wouldn't find "Michèle" when you searched "Michele". We think having too many results is the better problem to have.
+PIC uses “fuzzy search” to give you results, so if you search for “Mary” you'll also get “Marc”. We understand, that can be a bit annoying. But if the search was too literal, you wouldn't find “Michèle” when you searched “Michele”. We think having too many results is the better problem to have.
 
 
 

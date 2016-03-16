@@ -205,6 +205,16 @@ p {
         @include span-columns(8);
         @include shift(2);
     }
+
+    ul {
+        @include span-columns(8);
+        @include shift(2);
+        margin-bottom: 1em;
+
+        li {
+            list-style: disc;
+        }
+    }
 }
 
 #background {

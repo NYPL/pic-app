@@ -120,7 +120,7 @@ class Feedback
             @txt_el.val( @txt_el.data("error") )
         else
             @wait_el.show()
-            @form_el.attr('action','http://pic.nypl.org/save')
+            @form_el.attr('action','/save')
             @form_el.submit((e) =>
                 e.preventDefault()
                 form  = $(e.target)

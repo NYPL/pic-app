@@ -1,7 +1,9 @@
 # PIC
 
-By David Lowe / [Mauricio Giraldo](https://github.com/mgiraldo)
+By [Mauricio Giraldo](https://github.com/mgiraldo), [NYPL Labs](//twitter.com/nypl_labs)
 
-view at: http://pic.heroku.com
+![/app/assets/images/sample-01.png]
+
+View at: http://pic.nypl.org
 
 [Data repository](https://github.com/nypl/pic-data)

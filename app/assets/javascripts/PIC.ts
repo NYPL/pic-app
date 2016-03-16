@@ -1206,16 +1206,16 @@ module PIC {
             }
             this.positionHover(true);
             var lat = parseFloat(latlon[0]);
-            var lon = parseFloat(latlon[1]);
-            var north = Math.round((lat+0.02) * 100) / 100;
-            var south = Math.round((lat-0.02) * 100) / 100;
-            var east = Math.round((lon+0.02) * 100) / 100;
-            var west = Math.round((lon-0.02) * 100) / 100;
-            // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
-            var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
-            // console.log(reverseGeo);
-            // TODO: only parse when mouse stopped moving 
-            this.loadTextFile(reverseGeo, this.parseHoverLocation);
+            // var lon = parseFloat(latlon[1]);
+            // var north = Math.round((lat+0.02) * 100) / 100;
+            // var south = Math.round((lat-0.02) * 100) / 100;
+            // var east = Math.round((lon+0.02) * 100) / 100;
+            // var west = Math.round((lon-0.02) * 100) / 100;
+            // // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+            // var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+            // // console.log(reverseGeo);
+            // // TODO: only parse when mouse stopped moving 
+            // this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
 
         parseHoverLocation (responseText) {

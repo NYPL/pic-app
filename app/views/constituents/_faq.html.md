@@ -10,6 +10,12 @@ PIC does not track private collections or the stables of commercial galleries. I
 
 
 
+### Why do some of my results not match my query?
+
+PIC uses "fuzzy search" to give you results, so if you search for "Mary" you'll also get "Marc". We understand, that can be a bit annoying. But if the search was too literal, you wouldn't find "Michèle" when you searched "Michele". We think having too many results is the better problem to have.
+
+
+
 ### Why are there so many people on a tiny island off the west coast of Africa?
 
 That’s not actually an island, and there’s not actually anyone there. That point is located at the coordinates 0’ latitude &amp; 0’ longitude, and we use it to map information when we don’t know a location (in the cartography world, it’s often called “[Null Island](https://en.wikipedia.org/wiki/Null_Island)”). If, for instance, we know someone was born in 1872, but we don’t know where, we put the point on Null Island. You can help us evacuate the island by finding locations we’re missing!
@@ -28,13 +34,23 @@ Time and place can be essential information if you’re trying to identify a pho
 
 
 
+### Why can’t I click a point on the map and see who’s there?
+
+We experimented with that, but for many reasons we concluded that it added more complexity and confusion to navigating the data. The good news is- there’s a neat workaround. Zoom in to the area or point you’re interested in and select “In Map Area: Select Area on Map”. Then you can use your mouse to draw a rectangle around it (click and drag), and click “Apply”. The results column will show you only the names within these boundaries. Try it yourself, search for your hometown in the Location search bar, and use this trick to see who’s there!
+
+
+
 ### Where did all these photographer biographies come from?
 
-We’ve listed all of our sources in each record so you can double check our work. It’s a mix of trusted books, databases and websites published by photography scholars, as well as Wikipedia and Wikidata. When a source is a US Census, City or Business Directory, Military Records or Death Records, that means NYPL staff has conducted original research on the subject. (See Background for more information on the George Eastman House database)
+We’ve listed all of our sources in each record so you can double check our work. It’s a mix of trusted books, databases and websites published by photography scholars, as well as Wikipedia and Wikidata. When a source is a US Census, City or Business Directory, Military Records or Death Records, that means NYPL staff has conducted original research on the subject. Other sources include: [Allgemeines Künstlerlexikon Online] (http://www.degruyter.com/databasecontent?dbid=akl&dbsource=%2Fdb%2Fakl), [Baltimore Daguerreans] (http://www.ssdaggers.com/HG/baltodagsa-j.html), [Craig's Daguerreian Registry] (http://craigcamera.com/dag/), [Cartes de visite in Ninteenth Century Photography] (http://www.worldcat.org/title/cartes-de-visite-in-ninteenth-century-photography/oclc/8012190&referer=brief_results) by William Culp Darrah, [Directory of Civil War Photographers] (http://www.worldcat.org/title/directory-of-civil-war-photographers/oclc/22114498&referer=brief_results) by Ross J. Kelbaugh, [Encyclopedia of Nineteenth-Century Photography] (http://www.worldcat.org/title/encyclopedia-of-nineteenth-century-photography/oclc/123968757)by John Hannavy, The Metropolitan Museum of Art’s [Heilbrunn Timeline of Art History] (https://www.metmuseum.org/toah/), [Library of Congress Authorities] (http://authorities.loc.gov/), [Minnesota Historical Society’s Directory of Minnesota Photographers] (http://www.mnhs.org/people/photographers/), [Photographers’ Association of America’s Classified Membership Directories] (http://www.worldcat.org/title/classified-membership-directory/oclc/22265589&referer=brief_results), [Photographers of the Pacific Northwest Database] (http://db.lib.washington.edu/pnwphotographers/), [PhotographyDatabase.org] (http://photographydatabase.org/), [photoLondon] (http://www.photolondon.org.uk/), [Pioneer Photographers from the Mississippi to the Continental Divide] (http://www.worldcat.org/title/pioneer-photographers-from-the-mississippi-to-the-continental-divide-a-biographical-dictionary-1839-1865/oclc/56334078&referer=brief_results), [Pioneer Photographers of the Far West] (http://www.worldcat.org/title/pioneer-photographers-of-the-far-west-a-biographical-dictionary-1840-1865/oclc/44089346&referer=brief_results), [Royal Commonwealth Society Index] (http://www.lib.cam.ac.uk/rcs_photographers/search.html), the Getty Research Institute's [Union List of Artist Names] (http://www.getty.edu/research/tools/vocabularies/ulan/), [Virtual International Authority File] (https://viaf.org/), [Wikidata] (https://www.wikidata.org/wiki/Wikidata:Main_Page), and [Wikipedia] (https://en.wikipedia.org/wiki/Main_Page). We'll announce other sources periodically.
+
+
 
 ### Can I get the data?
 
-Yes. The data is available for download from [this GitHub repository](https://github.com/NYPL/pic-data). You can also export the first 1000 search results from the [map interface](/map).
+Yes. The data is available for download from [this GitHub repository](https://github.com/NYPL/pic-data). You can also export the first 1000 search results from the [map interface](/map). Let us know if you've done something cool with the PIC data. We'd love to see it!
+
+
 
 ### What technology is behind this map?
 

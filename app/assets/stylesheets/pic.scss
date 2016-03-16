@@ -272,6 +272,11 @@ hr {
     }
 }
 
+.gh-link {
+    margin-top: 2em;
+    font-size: 0.8em;
+}
+
 .more span {
     @include pic-button(1em, $white, $linkColor);
     max-width: 200px;
@@ -279,7 +284,7 @@ hr {
 }
 
 #facets-clear {
-    @include pic-button(.8em, $white, $linkColor);
+    @include pic-button(0.8em, $white, $linkColor);
     max-width: 140px;
     margin: 10px auto;
 

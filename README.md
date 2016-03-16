@@ -2,7 +2,7 @@
 
 By [Mauricio Giraldo](https://github.com/mgiraldo), [NYPL Labs](//twitter.com/nypl_labs)
 
-![/app/assets/images/sample-01.png]
+![](https://raw.github.com/NYPL/pic-app/master/app/assets/images/sample-01.png)
 
 View at: http://pic.nypl.org
 

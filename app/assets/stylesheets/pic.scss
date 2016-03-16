@@ -663,6 +663,10 @@ hr {
     text-align: center;
     border-radius: 2px;
 
+    strong {
+        color: $linkColor;
+    }
+
     .geoname {
         white-space: nowrap;
     }

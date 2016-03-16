@@ -1002,7 +1002,9 @@ module PIC {
 
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
-            $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
+            $("#facet-container, #constituents").mousemove( () => {
+                this.positionHover(false);
+            } );
 
             // this.canvas.onclick = (e) => {
             //     this.canvas.focus();
@@ -1186,7 +1188,7 @@ module PIC {
             str += hits === 1 ? " result" : " total constituents";
             if (hits > 1) str += " including";
             if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
-            str += "<br /><span id='geoname'>&nbsp;</span>";
+            str += "<br /><span id='geoname'>&nbsp;</span><br />";
             str += "<br />Use <strong>In Map Area</strong> facet to select a region to display";
             str += "</div>";
             el.html(str);
@@ -1203,21 +1205,22 @@ module PIC {
                 return;
             }
             this.positionHover(true);
-            // var lat = parseFloat(latlon[0]);
-            // var lon = parseFloat(latlon[1]);
-            // var north = Math.round((lat+0.02) * 100) / 100;
-            // var south = Math.round((lat-0.02) * 100) / 100;
-            // var east = Math.round((lon+0.02) * 100) / 100;
-            // var west = Math.round((lon-0.02) * 100) / 100;
-            // // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
-            // var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
-            // // console.log(reverseGeo);
-            // this.loadTextFile(reverseGeo, this.parseHoverLocation);
+            var lat = parseFloat(latlon[0]);
+            var lon = parseFloat(latlon[1]);
+            var north = Math.round((lat+0.02) * 100) / 100;
+            var south = Math.round((lat-0.02) * 100) / 100;
+            var east = Math.round((lon+0.02) * 100) / 100;
+            var west = Math.round((lon-0.02) * 100) / 100;
+            // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+            var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+            // console.log(reverseGeo);
+            // TODO: only parse when mouse stopped moving 
+            this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
 
         parseHoverLocation (responseText) {
             var data = JSON.parse(responseText);
-            console.log(data);
+            // console.log(data);
             if (!data.geonames) return;
             var geo = data.geonames[0];
             if (!geo) return;

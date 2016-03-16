@@ -1359,7 +1359,7 @@ module PIC {
             str += "</span>"
             str += '</h3>';
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
-//
+
             str += '<div class="tabs">';
             str += '<div class="metadata-toggle link active"><strong>';
             str += 'Information';
@@ -1374,7 +1374,7 @@ module PIC {
                 str += '</strong></div>';
             }
             str += '</div>';
-//
+
             str += '<div class="constituent-metadata open constituent-metadata-' + p.ConstituentID + '">';
             // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
             str += "<p>";
@@ -1498,6 +1498,7 @@ module PIC {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
             var data = JSON.parse(responseText);
             this.buildConstituentAddresses(id, data.hits.hits[0]._source.address);
+            this.connectAddresses(id);
         }
 
         buildConstituentAddresses (id, addresses) {

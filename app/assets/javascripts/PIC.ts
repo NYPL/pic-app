@@ -1002,7 +1002,7 @@ module PIC {
 
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
-            // $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
+            $("#facet-container, #constituents").mousemove( () => this.positionHover(false) );
 
             // this.canvas.onclick = (e) => {
             //     this.canvas.focus();
@@ -1015,22 +1015,22 @@ module PIC {
             this.canvas.onmousemove = this.canvas.ontouchmove = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
                 if (!c) return;
-                // this.mousePosition = c;
-                // var pickedObject = this.scene.pick(c);
-                // this.refreshPicked(pickedObject);
+                this.mousePosition = c;
+                var pickedObject = this.scene.pick(c);
+                this.refreshPicked(pickedObject);
                 if (this.isDrawing) this.drawMove(c);
             }
 
             this.canvas.onmousedown = this.canvas.ontouchstart = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
-                // this.mousePosition = this.startMousePosition = c;
+                this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawStart(c);
                 this.hideBoundsDialog();
             }
 
             this.canvas.onmouseup = this.canvas.ontouchend = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);
-                // this.mousePosition = this.startMousePosition = c;
+                this.mousePosition = this.startMousePosition = c;
                 if (this.isDrawing) this.drawEnd(c);
                 if (this.adminMode) this.clickMoon(c);
                 this.positionBoundsDialog(e.layerX, e.layerY);
@@ -1144,106 +1144,108 @@ module PIC {
             return undefined;
         };
 
-        // refreshPicked (picked) {
-        //     var showHover = false;
-        //     if (this.isDrawing) return;
-        //     if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
-        //         if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
-        //             this.pickedEntity = {
-        //                 color: Cesium.clone(picked.primitive.color),
-        //                 entity: picked
-        //             };
-        //             this.buildHover();
-        //         }
-        //         showHover = true;
-        //     } else {
-        //         this.pickedEntity = undefined;
-        //     }
-        //     this.positionHover(showHover);
-        // }
+        refreshPicked (picked) {
+            var showHover = false;
+            if (this.isDrawing) return;
+            if (Cesium.defined(picked) && picked.id &&  (picked.id.toString().indexOf("P_") === 0)) {
+                if (this.pickedEntity === undefined || picked !== this.pickedEntity.entity) {
+                    this.pickedEntity = {
+                        color: Cesium.clone(picked.primitive.color),
+                        entity: picked
+                    };
+                    this.buildHover();
+                }
+                showHover = true;
+            } else {
+                this.pickedEntity = undefined;
+            }
+            this.positionHover(showHover);
+        }
 
-        // buildHover () {
-        //     var position = this.pickedEntity.entity.primitive.originalLatlon;
-        //     var filter = "hits.total,hits.hits._source";
-        //     // TODO: fix hover query
-        //     var query = '(address.Remarks:"' + position + '")';
-        //     var facetList = this.buildFacetList();
-        //     facetList.push(query);
-        //     var data = this.buildFacetQuery(facetList);
-        //     // console.log("hover", data);
-        //     this.getData(filter, data, this.buildHoverContent, "DisplayName", 3);
-        // }
+        buildHover () {
+            var position = this.pickedEntity.entity.primitive.originalLatlon;
+            var filter = "hits.total,hits.hits._source";
+            // TODO: fix hover query
+            var query = '(address.Remarks:"' + position + '")';
+            var facetList = this.buildFacetList();
+            facetList.push(query);
+            var data = this.buildFacetQuery(facetList);
+            // console.log("hover", data);
+            this.getData(filter, data, this.buildHoverContent, "DisplayName", 3);
+        }
 
-        // buildHoverContent (responseText) {
-        //     var el = $("#hover");
-        //     if (this.pickedEntity === undefined) return;
-        //     var position = this.pickedEntity.entity.primitive.originalLatlon;
-        //     var data = JSON.parse(responseText);
-        //     // console.log("hover", data);
-        //     var hits = data.hits.total;
-        //     var str = "<div>";
-        //     str += '<span class="hits">' + hits.toLocaleString() + '</span>';
-        //     str += hits === 1 ? " result" : " total constituents";
-        //     if (hits > 1) str += " including";
-        //     if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
-        //     str += "<br /><span id='geoname'>&nbsp;</span>";
-        //     // str += "<br />click dot to zoom and view list";
-        //     str += "</div>";
-        //     el.html(str);
-        //     var latlon = position.split(",");
-        //     var place;
-        //     if (latlon.length === 3 && latlon[2] > 10000) {
-        //         place = latlon[2] === "3850000" ? "near the Moon!" : "in Outer Space";
-        //         this.updateHoverLocation(place);
-        //         return;
-        //     }
-        //     if (latlon.length === 2 && latlon[0] === "0" && latlon[1] === "0") {
-        //         place = "This is a placeholder location";
-        //         this.updateHoverLocation(place);
-        //         return;
-        //     }
-        //     var lat = parseFloat(latlon[0]);
-        //     var lon = parseFloat(latlon[1]);
-        //     var north = Math.round((lat+0.02) * 100) / 100;
-        //     var south = Math.round((lat-0.02) * 100) / 100;
-        //     var east = Math.round((lon+0.02) * 100) / 100;
-        //     var west = Math.round((lon-0.02) * 100) / 100;
-        //     // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
-        //     var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
-        //     console.log(reverseGeo);
-        //     this.loadTextFile(reverseGeo, this.parseHoverLocation);
-        // }
+        buildHoverContent (responseText) {
+            var el = $("#hover");
+            if (this.pickedEntity === undefined) return;
+            var position = this.pickedEntity.entity.primitive.originalLatlon;
+            var data = JSON.parse(responseText);
+            // console.log("hover", data);
+            var hits = data.hits.total;
+            var str = "<div>";
+            str += '<span class="hits">' + hits.toLocaleString() + '</span>';
+            str += hits === 1 ? " result" : " total constituents";
+            if (hits > 1) str += " including";
+            if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
+            str += "<br /><span id='geoname'>&nbsp;</span>";
+            str += "<br />Use <strong>In Map Area</strong> facet to select a region to display";
+            str += "</div>";
+            el.html(str);
+            var latlon = position.split(",");
+            var place;
+            if (latlon.length === 3 && latlon[2] > 10000) {
+                place = latlon[2] === "3850000" ? "in the Moon!" : "in Outer Space";
+                this.updateHoverLocation(place);
+                return;
+            }
+            if (latlon.length === 2 && latlon[0] === "0" && latlon[1] === "0") {
+                place = "(placeholder location)";
+                this.updateHoverLocation(place);
+                return;
+            }
+            this.positionHover(true);
+            // var lat = parseFloat(latlon[0]);
+            // var lon = parseFloat(latlon[1]);
+            // var north = Math.round((lat+0.02) * 100) / 100;
+            // var south = Math.round((lat-0.02) * 100) / 100;
+            // var east = Math.round((lon+0.02) * 100) / 100;
+            // var west = Math.round((lon-0.02) * 100) / 100;
+            // // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
+            // var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
+            // // console.log(reverseGeo);
+            // this.loadTextFile(reverseGeo, this.parseHoverLocation);
+        }
 
-        // parseHoverLocation (responseText) {
-        //     var data = JSON.parse(responseText);
-        //     // console.log(data);
-        //     var geo = data.geonames[0];
-        //     if (!geo) return;
-        //     this.updateHoverLocation("near " + geo.name + ", " + geo.countrycode);
-        // }
+        parseHoverLocation (responseText) {
+            var data = JSON.parse(responseText);
+            console.log(data);
+            if (!data.geonames) return;
+            var geo = data.geonames[0];
+            if (!geo) return;
+            this.updateHoverLocation("near " + geo.name + ", " + geo.countrycode);
+        }
 
-        // updateHoverLocation (text) {
-        //     $("#geoname").text(text);
-        //     this.positionHover(true);
-        // }
+        updateHoverLocation (text) {
+            $("#geoname").text(text);
+            this.positionHover(true);
+        }
 
-        // positionHover (visible) {
-        //     var el = $("#hover");
-        //     var leftOffset = $("#cesiumContainer").position().left;
-        //     var margin = 50;
-        //     if (this.mousePosition === undefined) return;
-        //     var x = this.mousePosition.x-(el.width()*.5);
-        //     var y = this.mousePosition.y-el.height()-margin;
-        //     if (y < 0) {
-        //         y = this.mousePosition.y+margin;
-        //     }
-        //     if (!visible) {
-        //         x = -10000;
-        //         y = -10000;
-        //     }
-        //     x += leftOffset;
-        //     el.offset({left:x, top:y});
-        // }
+        positionHover (visible) {
+            var el = $("#hover");
+            var leftOffset = $("#cesiumContainer").position().left;
+            var margin = 5;
+            if (this.mousePosition === undefined) return;
+            var x = this.mousePosition.x-(el.width()*.5);
+            var y = this.mousePosition.y-el.height()-margin;
+            if (y < 0) {
+                y = this.mousePosition.y+margin;
+            }
+            if (!visible) {
+                x = -10000;
+                y = -10000;
+            }
+            x += leftOffset;
+            el.offset({left:x, top:y});
+        }
 
         setBboxWidget (bbox:Array<Cesium.Cartographic>) {
             var rectangle = Cesium.Rectangle.fromCartographicArray(bbox);

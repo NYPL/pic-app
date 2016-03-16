@@ -117,6 +117,9 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    markdown-rails (0.2.1)
+      rails
+      rdiscount (>= 1.6.8, < 2.0)
     memoist (0.12.0)
     mime-types (2.6.2)
     mini_portile (0.6.2)
@@ -166,6 +169,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     raindrops (0.15.0)
     rake (10.4.2)
+    rdiscount (1.6.8)
     rdoc (4.2.0)
       json (~> 1.4)
     responders (2.1.1)
@@ -234,6 +238,7 @@ DEPENDENCIES
   google_drive (= 1.0.2)
   jbuilder (~> 2.0)
   jquery-rails
+  markdown-rails
   neat
   pg
   rails (= 4.2.2)

@@ -33,6 +33,8 @@ gem 'unicorn'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'markdown-rails'
+
 gem 'responders', '~> 2.0'
 
 gem 'elasticsearch'

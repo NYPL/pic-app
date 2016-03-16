@@ -9,6 +9,7 @@ class Feedback
         @toggle_el = $("#feedback #feedback-toggle")
         @form_el = $("#feedback-form")
         @txt_el = @form_el.find("textarea")
+        @id_el = @form_el.find("input.textfield")
         @open_el = @toggle_el.find("a.open")
         @close_el = @toggle_el.find("a.close")
         @submit_el = @el.find("#feedback-send")
@@ -105,6 +106,7 @@ class Feedback
 
     reset: () =>
         @txt_el.val( @txt_el.data("placeholder") )
+        @id_el.val( "" )
         @txt_el.removeClass("error")
         @counter_el.text(@txt_el.attr("maxlength"))
         @el.find(".step1").show()

@@ -1534,7 +1534,7 @@ module PIC {
                 var str = '<div class="constituent-addresslist open">';
                 if (addresses.length != 1) {
                     str += '<span class="link connector">';
-                    str += 'Connect locations';
+                    str += 'SHOW LINES';
                     str += "</span>";
                 }
                 // str += "<p>";
@@ -1567,6 +1567,19 @@ module PIC {
             location.hash = id;
             this.resetBounds();
             this.removeLines();
+            var connector = $("#constituent-addresslist-" + id + " .connector");
+            if (connector.length !== 0 && connector.hasClass("connected")) {
+                // thing is somewhere on the page and is activated
+                // probably user wants to hide lines
+                connector.removeClass("connected");
+                connector.text("SHOW LINES");
+                return;
+            } else {
+                $(".link.connector").removeClass("connected");
+                $(".link.connector").text("SHOW LINES");
+                connector.addClass("connected");
+                connector.text("HIDE LINES");
+            }
             var addresses = this.addressesForID(id);
             var lastPoint = addresses[0];
             var positions = [];

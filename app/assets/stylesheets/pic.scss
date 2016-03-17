@@ -654,6 +654,10 @@ hr {
         @include pic-button(0.8em, $white, $linkColor);
         margin: 10px 0;
         max-width: 180px;
+
+        &.connected {
+            background-color: $darkGray;
+        }
     }
 }
 

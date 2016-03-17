@@ -206,7 +206,7 @@ p {
         @include shift(2);
     }
 
-    ul {
+    ul:last-of-type {
         @include span-columns(8);
         @include shift(2);
         margin-bottom: 1em;

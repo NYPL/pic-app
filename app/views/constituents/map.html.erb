@@ -12,7 +12,11 @@
 &nbsp;&nbsp;/&nbsp;&nbsp;Map<%= link_to "Help", "#", :class => "map-help-link" %>
 <% end %>
 
-    <%= render partial: "help_popup" %>
+    <div id="map-help">
+    <div class="scroller">
+        <%= render partial: "help_popup" %>
+    </div>
+    </div>
 
     <div id="credits"></div>
     <div id="cesiumContainer">

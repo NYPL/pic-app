@@ -1235,12 +1235,16 @@ module PIC {
         positionHover (visible) {
             var el = $("#hover");
             var leftOffset = $("#cesiumContainer").position().left;
+            var topOffset = $("#cesiumContainer").position().top;
             var margin = 5;
             if (this.mousePosition === undefined) return;
             var x = this.mousePosition.x-(el.width()*.5);
             var y = this.mousePosition.y-el.height()-margin;
-            if (y < 0) {
-                y = this.mousePosition.y+margin;
+            if (y < topOffset) {
+                y = this.mousePosition.y+100;
+            }
+            if (x + el.width() > $("#cesiumContainer").width()) {
+                x = $("#cesiumContainer").width() - el.width() - 20;
             }
             if (!visible) {
                 x = -10000;
@@ -2236,7 +2240,7 @@ module PIC {
         }
 
         onCameraMoved (event:Cesium.Event) {
-            console.log("moved",this.camera.position);
+            // console.log("moved",this.camera.position);
         }
 
         initListeners () {
@@ -2249,9 +2253,11 @@ module PIC {
                     this.showMoon();
                 }
                 this.updateTextLabels();
+                this.viewer.sceneModePicker.viewModel.dropDownVisible = true;
             });
             this.camera.moveEnd.addEventListener( () => {
                 this.storedView.save(this.camera);
+                this.viewer.sceneModePicker.viewModel.dropDownVisible = true;
                 // console.log(JSON.stringify(this.storedView));
             })
             var from = $("#" + this.fromDateElement);

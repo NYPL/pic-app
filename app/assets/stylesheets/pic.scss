@@ -660,7 +660,7 @@ hr {
 #hover {
     width: $facetsWidth * 2;
     position: absolute;
-    z-index: 1;
+    z-index: 11111;
     background: $white;
     padding: $generalMargin;
     left: -1000px;

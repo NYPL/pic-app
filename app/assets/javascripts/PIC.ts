@@ -1166,14 +1166,14 @@ module PIC {
 
         buildHover () {
             var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var filter = "hits.total,hits.hits._source";
+            var filter = "hits.total";
             // TODO: fix hover query
             var query = '(address.Remarks:"' + position + '")';
             var facetList = this.buildFacetList();
             facetList.push(query);
             var data = this.buildFacetQuery(facetList);
             // console.log("hover", data);
-            this.getData(filter, data, this.buildHoverContent, "DisplayName", 3);
+            this.getData(filter, data, this.buildHoverContent, "", 3);
         }
 
         buildHoverContent (responseText) {
@@ -1185,10 +1185,11 @@ module PIC {
             var hits = data.hits.total;
             var str = "<div>";
             str += '<span class="hits">' + hits.toLocaleString() + '</span>';
-            str += hits === 1 ? " result" : " total constituents";
-            if (hits > 1) str += " including";
-            if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
-            str += "<br /><span id='geoname'>&nbsp;</span><br />";
+            str += hits === 1 ? " constituent" : " total constituents";
+            str += " here";
+            // if (hits > 1) str += " including";
+            // if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
+            str += "<br /><span id='geoname'>&nbsp;</span>";
             str += "<br />Use <strong>In Map Area</strong> facet to select a region to display";
             str += "</div>";
             el.html(str);

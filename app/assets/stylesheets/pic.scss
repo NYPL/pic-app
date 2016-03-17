@@ -662,7 +662,7 @@ hr {
 }
 
 #hover {
-    width: $facetsWidth * 2;
+    width: $facetsWidth * 1.5;
     position: absolute;
     z-index: 11111;
     background: $white;
@@ -681,7 +681,9 @@ hr {
     }
 
     .hits {
-        font-weight: bold;
+        color: $linkColor;
+        font-size: 2em;
+        display: block;
     }
 }
 

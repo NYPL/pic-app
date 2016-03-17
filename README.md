@@ -4,7 +4,7 @@ By [Mauricio Giraldo](https://github.com/mgiraldo), [NYPL Labs](//twitter.com/ny
 
 ## View at: [pic.nypl.org](http://pic.nypl.org)
 
-[Data repository](https://github.com/nypl/pic-data)
+See also the [PIC data repository](https://github.com/nypl/pic-data).
 
 ![](app/assets/images/sample-04.png)
 

@@ -6,7 +6,7 @@ By [Mauricio Giraldo](https://github.com/mgiraldo), [NYPL Labs](//twitter.com/ny
 
 [Data repository](https://github.com/nypl/pic-data)
 
-![](https://raw.github.com/NYPL/pic-app/master/app/assets/images/sample-04.png)
+![](app/assets/images/sample-04.png)
 
 ## License
 

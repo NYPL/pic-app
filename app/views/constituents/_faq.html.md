@@ -36,7 +36,7 @@ Time and place can be essential information if you’re trying to identify a pho
 
 ### Why can’t I click a point on the map and see who’s there?
 
-We experimented with that, but for many reasons we concluded that it added more complexity and confusion to navigating the data. The good news is- there’s a neat workaround. Zoom in to the area or point you’re interested in and select “In Map Area: Select Area on Map”. Then you can use your mouse to draw a rectangle around it (click and drag), and click “Apply”. The results column will show you only the names within these boundaries. Try it yourself, search for your hometown in the Location search bar, and use this trick to see who’s there!
+We experimented with that, but for many reasons we concluded that it added more complexity and confusion to navigating the data. The good news is- there’s a neat workaround. Zoom into the area or point you’re interested in and to the left, select “In Map Area: Select Area on Map”. Then use your mouse to draw a rectangle around the area or point (click and drag), and click “Apply”.  The results column will show you only the names within these boundaries. Try it yourself, search for your hometown in the Location search bar, and use this trick to see who’s there!
 
 
 

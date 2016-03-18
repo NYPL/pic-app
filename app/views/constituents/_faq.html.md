@@ -6,7 +6,7 @@ Given the ubiquity of cameras in the digital age, it’s simply not possible for
 
 ### I have a collection of photographs. Will PIC link to it?
 
-PIC does not track private collections or the stables of commercial galleries. If you are a museum, library, historical society, or other archive which is open to the public, we’d love to learn more about your photograph collection. Contact us!
+PIC does not track private collections or the stables of commercial galleries. If you are a museum, library, historical society, or other archive which is open to the public, we’d love to learn more about your photograph collection. Contact us at pic@nypl.org!
 
 
 
@@ -65,6 +65,12 @@ We’ve listed all of our sources in each record so you can double check our wor
 - [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page), and [Wikipedia](https://en.wikipedia.org/wiki/Main_Page)
 
 We'll announce other sources periodically.
+
+
+
+### Where can I learn more about the history of photography or photographic processes?
+
+Glad you asked! The Miraim and Ira D. Wallach Division of Art, Prints and Photographs: [Photography Collection](http://www.nypl.org/locations/divisions/wallach-division/photography-collection) staff have compiled some some information on [processes, a timeline of photo history and a bibliography](http://www.nypl.org/collections/nypl-recommendations/guides/photographic-processes) to get you started.  If you want to see original photographs or photo books in the Photography Collection, search our holdings in the [Prints and Photographs Online Catalog](http://wallachprintsandphotos.nypl.org/catalog). Once you've found what you want and are ready to make an appointment, or if you need further research assistance, email us at photography@nypl.org.
 
 
 

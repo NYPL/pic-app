@@ -25,7 +25,7 @@ module PIC {
             save (camera:Cesium.Camera) {
                 if(typeof camera === 'undefined') {
                     throw new Cesium.DeveloperError('camera is required');
-                }
+                }r
 
                 this.position = Cesium.Cartesian3.clone(camera.positionWC, this.position);
                 this.heading = camera.heading;
@@ -2294,6 +2294,7 @@ module PIC {
                 // console.log('starting rendering @ ' + Cesium.getTimestamp());
             }
             this.lastCameraMoveTime = Cesium.getTimestamp();
+            this.viewer.sceneModePicker.viewModel.dropDownVisible = true;
             this.viewer.useDefaultRenderLoop = true;
         }
 

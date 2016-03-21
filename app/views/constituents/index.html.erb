@@ -6,13 +6,9 @@
 
 <div class="wrapper">
 
-<div id="intro">
-<p class="intro">Photographers’ Identities Catalog (PIC) is a collection of biographical data describing photographers, studios, manufacturers, and others involved in the production of photographic images. Consisting of names, nationalities, dates, locations and more, PIC is a vast and growing resource for the historian, student, genealogist, or any lover of photography's history. The information has been culled from trusted biographical dictionaries, catalogs and databases, and from extensive original research by NYPL Photography Collection staff.</p>
-
-<a data-no-turbolink href="/map" class="enter-link">Enter PIC</a>
-
-<p class="intro more">Learn more about PIC below.</p>
-</div>
+    <div id="intro">
+    <%= render :partial => "intro" %>
+    </div>
 </div>
 
 <div class="wrap-sample" id="samples">
@@ -26,35 +22,7 @@
 
         <h2>Sample Searches</h2>
 
-        <div class="cases">
-            <div class="use-case">
-            <%= link_to (image_tag "sample-01.png"), "/map/?address.AddressTypeID=*&address.CountryID=12&Nationality=*&gender.TermID=2027998&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=*&Date=[1700 TO 1900]", :data => {no_turbolink: true} %>
-            <h3>Learn about a topic of interest</h3>
-            <p>Want to read about 19th century female photographers in England? Select Female from the Gender options, England from the Address Country options, and set the end date to 1900. You could also select Wikipedia from the Sources, and within each entry, you’ll find a link directly to the article. In fact, many of the Sources have great biographies, so check them out!</p>
-            <%= link_to "Try it!", "/map/?address.AddressTypeID=*&address.CountryID=12&Nationality=*&gender.TermID=2027998&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=*&Date=[1700 TO 1900]", {:class => "sample-link", :data => {no_turbolink: true}} %>
-            </div>
-
-            <div class="use-case">
-            <%= link_to (image_tag "sample-02.png"), "/map/?address.AddressTypeID=*&address.CountryID=*&Nationality=*&gender.TermID=*&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=(James~1 AND Presley~1 AND Ball~1 AND Sr.~1)&Date=*#17456", :data => {no_turbolink: true} %>
-            <h3 id="find-photographs-by-a-particular-photographer">Find photographs by a particular photographer</h3>
-            <p>Trying to locate work by James Presley Ball Sr.? Search his name in the search bar, then click his name to learn what collections we know that have his photographs. Click List Locations and you'll see the zig-zagging arc of his career; try contacting museums or libraries in these places, and you may find more work by him.</p>
-            <%= link_to "Try it!", "/map/?address.AddressTypeID=*&address.CountryID=*&Nationality=*&gender.TermID=*&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=(James~1 AND Presley~1 AND Ball~1 AND Sr.~1)&Date=*#17456", {:class => "sample-link", :data => {no_turbolink: true}} %>
-            </div>
-
-            <div class="use-case">
-            <%= link_to (image_tag "sample-03.png"), "/map/?address.AddressTypeID=*&address.CountryID=*&Nationality=*&gender.TermID=*&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=(William~1 AND Watson~1 AND Washburn~1)&Date=*#4626", :data => {no_turbolink: true} %>
-            <h3 id="identify-and-date-your-photographs">Identify and date your photographs</h3>
-            <p> Have old family photographs you’re trying to date? Many studio portraits print the photographer’s name and address on the photo. Often, PIC has the dates a studio occupied a specific address. For instance, William Watson Washburn operated a studio at 26 Camp Street, New Orleans from 1849-1853. After that he moved to 120 Canal Street.</p>
-            <%= link_to "Try it!", "/map/?address.AddressTypeID=*&address.CountryID=*&Nationality=*&gender.TermID=*&process.TermID=*&role.TermID=*&format.TermID=*&biography.TermID=*&collection.TermID=*&bbox=*&DisplayName=(William~1 AND Watson~1 AND Washburn~1)&Date=*#4626", {:class => "sample-link", :data => {no_turbolink: true}} %>
-            </div>
-
-            <div class="use-case">
-            <%= link_to (image_tag "sample-04.png"), map_url, :data => {no_turbolink: true} %>
-            <h3 id="have-fun-explore">Have fun &amp; explore!</h3>
-            <p>PIC has information on more than 110,000 photographers and studios, and it's growing daily. So spin the globe & have a look around. You might find world traveling photographers like Chester Burger and Kay Simmon Blumberg, photographers at the North or South Pole, or even in outer space!<br />&nbsp;</p>
-            <%= link_to "Try it!", map_url, {:class => "sample-link", :data => {no_turbolink: true}} %>
-            </div>
-        </div>
+        <%= render :partial => "samples" %>
 
     </div>
 </div>

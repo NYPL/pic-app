@@ -1333,11 +1333,11 @@ module PIC {
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
             // now to see if a line should be shown
-            var lineID = parseInt(location.hash.replace("#",""));
+            // var lineID = parseInt(location.hash.replace("#",""));
             // console.log(lineID);
-            if (!isNaN(lineID)) {
-                this.connectAddresses(lineID);
-            }
+            // if (!isNaN(lineID)) {
+            //     this.connectAddresses(lineID);
+            // }
             this.scrollResults();
         }
 
@@ -1585,7 +1585,7 @@ module PIC {
 
         connectAddresses (id) {
             // console.log(id);
-            location.hash = id;
+            // location.hash = id;
             this.resetBounds();
             this.removeLines();
             var connector = $("#constituent-addresslist-" + id + " .connector");

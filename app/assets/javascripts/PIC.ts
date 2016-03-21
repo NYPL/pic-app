@@ -1332,12 +1332,12 @@ module PIC {
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
-            // now to see if a line should be shown
-            var lineID = parseInt(location.hash.replace("#",""));
-            // console.log(lineID);
-            if (!isNaN(lineID)) {
-                this.connectAddresses(lineID);
-            }
+            // // now to see if a line should be shown
+            // var lineID = parseInt(location.hash.replace("#",""));
+            // // console.log(lineID);
+            // if (!isNaN(lineID)) {
+            //     this.connectAddresses(lineID);
+            // }
             this.scrollResults();
         }
 

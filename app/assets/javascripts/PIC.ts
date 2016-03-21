@@ -746,7 +746,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();

@@ -746,7 +746,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -775,6 +775,26 @@ module PIC {
             //     "source_exclude": exclude
             // }
             r.send(JSON.stringify(data));
+        }
+        
+        parseInnerHits (results) {
+            var parsed = {
+                hits: {
+                    total: results.hits.total,
+                    hits: []
+                }
+            }
+            for (var hit in results.hits.hits) {
+                var tmp = {
+                    _source: results.hits.hits[hit]._source
+                }
+                if (results.hits.hits[hit].inner_hits != undefined) {
+                    // console.log(results.hits.hits[hit])
+                    tmp._source.address = results.hits.hits[hit].inner_hits.address.hits.hits.map( a => a._source )
+                }
+                parsed.hits.hits.push(tmp)
+            } 
+            return parsed
         }
 
         buildElasticQuery (normal:Array<string>, filter:Array<string>) {
@@ -858,7 +878,7 @@ module PIC {
             return {
                 "nested": {
                     "path": "address",
-                    // "inner_hits": {},
+                    "inner_hits": {},
                     "query": {
                         "filtered": {
                             "query": {
@@ -1180,7 +1200,7 @@ module PIC {
             var el = $("#hover");
             if (this.pickedEntity === undefined) return;
             var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var data = JSON.parse(responseText);
+            var data = this.parseInnerHits(JSON.parse(responseText));
             // console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
@@ -1295,7 +1315,7 @@ module PIC {
 
         updateTooltip (responseText) {
             this.clearTooltip();
-            var data = JSON.parse(responseText);
+            var data = this.parseInnerHits(JSON.parse(responseText));
             var constituents = data.hits.hits;
             var total = data.hits.total;
             this.totalPhotographers = total;
@@ -1346,7 +1366,7 @@ module PIC {
             this.getData(filters, data, function(responseText) {
                 var scroll = $("#constituents .scroller").scrollTop();
                 var height = $("#constituents .scroller").height();
-                var data = JSON.parse(responseText);
+                var data = this.parseInnerHits(JSON.parse(responseText));
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
@@ -1501,7 +1521,7 @@ module PIC {
 
         parseConstituentAddresses (responseText, id) {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
-            var data = JSON.parse(responseText);
+            var data = this.parseInnerHits(JSON.parse(responseText));
             this.buildConstituentAddresses(id, data.hits.hits[0]._source.address);
             this.connectAddresses(id);
         }
@@ -1704,7 +1724,7 @@ module PIC {
             for (var k in this.filters) {
                 if (this.filters[k] != "*") {
                     if (k === "Date") {
-                        facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
+                        // facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
                         facetList.push("(address.BeginDate:" + this.filters[k] + " OR address.EndDate:" + this.filters[k] + ")");
                         // facetList.push("(BeginDate:" + this.filters[k] + " OR EndDate:" + this.filters[k] + ")");
                     } else if (k === "bbox") {
@@ -1805,7 +1825,7 @@ module PIC {
             }
             var addresses = [];
             var data = this.buildFacetQuery();
-            var filters = "hits.total,hits.hits._source";
+            var filters = "hits.total,hits.hits";
             this.start = new Date().getTime();
             // console.log("apply", data);
             // clear
@@ -1845,8 +1865,8 @@ module PIC {
         }
 
         getNextSet (re) {
-            var results = JSON.parse(re);
-            // console.log(results);
+            var results = this.parseInnerHits(JSON.parse(re));
+            // console.log(this.parseInnerHits(results));
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
@@ -1953,18 +1973,18 @@ module PIC {
                 var index = this.pointHash[newPoints[i]];
                 var p = this.pointArray[index];
                 if (!p) continue;
-                // hack, because elastic returns all addresses of a given id
-                var tid = p[4];
-                var cid = p[5];
-                var loc = p[0] + "," + p[1];
-                // console.log("type",addressType, tid, tid != addressType);
-                if (addressType != "*" && tid != addressType) continue;
-                // console.log("country",country, cid, cid != country);
-                if (country != "*" && cid != country) continue;
-                // console.log("latlon", w, e, s, n, "p", p, w <= p[0], e >= p[0], n >= p[1], s <= p[1]);
-                if (!(w <= p[0] && e >= p[0] && n >= p[1] && s <= p[1])) continue;
-                // console.log("yea");
-                // end hack
+                // // hack, because elastic returns all addresses of a given id
+                // var tid = p[4];
+                // var cid = p[5];
+                // var loc = p[0] + "," + p[1];
+                // // console.log("type",addressType, tid, tid != addressType);
+                // if (addressType != "*" && tid != addressType) continue;
+                // // console.log("country",country, cid, cid != country);
+                // if (country != "*" && cid != country) continue;
+                // // console.log("latlon", w, e, s, n, "p", p, w <= p[0], e >= p[0], n >= p[1], s <= p[1]);
+                // if (!(w <= p[0] && e >= p[0] && n >= p[1] && s <= p[1])) continue;
+                // // console.log("yea");
+                // // end hack
                 var height;
                 // point has no real height
                 if (p[6] === undefined) {
@@ -2177,7 +2197,7 @@ module PIC {
             if (key !== "*") {
                 var dates = $("#" + this.fromDateElement).val();
                 dates += " to " + $("#" + this.toDateElement).val();
-                predicate += "who were alive or active <em>from " + dates + "</em> ";
+                predicate += "between the years <em>" + dates + "</em> ";
             }
 
             // biography

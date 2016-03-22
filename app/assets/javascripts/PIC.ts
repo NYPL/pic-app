@@ -395,6 +395,7 @@ module PIC {
             this.boundsSelectionEntity = new Cesium.Entity();
             this.boundsSelectionEntity.rectangle = this.makeBoundsRect(Cesium.Cartographic.fromDegrees(0,0),Cesium.Cartographic.fromDegrees(0.1,0.1));
             this.viewer.entities.add(this.boundsSelectionEntity);
+            this.boundsSelectionEntity.show = false;
 
             this.boundsPrimitive = new Cesium.Primitive();
             this.scene.primitives.add(this.boundsPrimitive);

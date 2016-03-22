@@ -12,6 +12,16 @@
 &nbsp;&nbsp;/&nbsp;&nbsp;Map<%= link_to "Help", "#", :class => "map-help-link" %>
 <% end %>
 
+    <div id="webgl-overlay">
+        <p>PIC requires a browser that supports the <a href="https://www.khronos.org/webgl/">WebGL 3D graphics API</a>.<br />Unfortunately your browser seems not to support it (or it is disabled).<br />Please update your browser:<br /><br />
+            <a class="browser" href="//firefox.com">Get Firefox</a>
+            <a class="browser" href="//www.apple.com/safari/">Get Safari</a>
+            <a class="browser" href="//www.microsoft.com/en-us/windows/microsoft-edge">Get Microsoft Edge</a>
+            <a class="browser" href="//www.google.com/chrome/">Get Google Chrome</a>
+            <a class="browser" href="//www.opera.com/">Get Opera</a>
+        </p>
+    </div>
+
     <div id="map-help">
     <div class="scroller">
         <%= render partial: "help_popup" %>
@@ -74,26 +84,53 @@
     <div id="feedback" class="preload"></div>
 
   <script type="text/javascript">
-  window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
-  var _pic;
-  function init () {
-      _pic = new PIC.PIC();
-      _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
-      _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
-      _pic.rootPath = "http://d2ulwm5zh6plnr.cloudfront.net/";
-      _pic.baseUrl = "https://<%= ENV['ELASTIC_HOST'] %>/pic";
-      _pic.authHeader = '<%= Base64.strict_encode64(ENV['ELASTIC_USER']+":"+ENV['ELASTIC_PASSWORD']) %>';
-      _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
-      _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
-      _pic.mapboxMap = 'nypllabs.8e20560b';
-      _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';
-      _pic.meliesSpacePath = '<%= asset_url('melies-space.png') %>';
-      _pic.meliesMoonPath = '<%= asset_url('melies-moon.png') %>';
-      _pic.geoJsonPrefix = 'http://geojson.io/#data=data:text/x-url,<%= CGI.escape("#{request.protocol}#{request.host_with_port}") %>';
-      _pic.adminMode = <%= @admin %>
-      _pic.init();
-  }
+    window.CESIUM_BASE_URL = '/assets/lib/Cesium/';
+    var _pic;
+    function init () {
+        _pic = new PIC.PIC();
+        _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
+        _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
+        _pic.rootPath = "http://d2ulwm5zh6plnr.cloudfront.net/";
+        _pic.baseUrl = "https://<%= ENV['ELASTIC_HOST'] %>/pic";
+        _pic.authHeader = '<%= Base64.strict_encode64(ENV['ELASTIC_USER']+":"+ENV['ELASTIC_PASSWORD']) %>';
+        _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
+        _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
+        _pic.mapboxMap = 'nypllabs.8e20560b';
+        _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';
+        _pic.meliesSpacePath = '<%= asset_url('melies-space.png') %>';
+        _pic.meliesMoonPath = '<%= asset_url('melies-moon.png') %>';
+        _pic.geoJsonPrefix = 'http://geojson.io/#data=data:text/x-url,<%= CGI.escape("#{request.protocol}#{request.host_with_port}") %>';
+        _pic.adminMode = <%= @admin %>
+        _pic.init();
+    }
+
+    function webgl_detect() {
+        if (!!window.WebGLRenderingContext) {
+            var canvas = document.createElement("canvas"),
+                 names = ["webgl", "experimental-webgl", "moz-webgl"],
+                    gl = false;
+            for(var i in names) {
+                try {
+                    gl = canvas.getContext(names[i]);
+                    if (gl && typeof gl.getParameter == "function") {
+                        /* WebGL is enabled */
+                        /* return true; */
+                        return names[i];
+                    }
+                } catch(e) {}
+            }
+            /* WebGL is supported, but disabled */
+            return false;
+        }
+        /* WebGL not supported*/
+        return false;
+    }
+
   $(function() {
-    init();
+    var has_webgl = webgl_detect();
+    if (has_webgl) {
+        $("#webgl-overlay").remove();
+        init();
+    }
   });
   </script>

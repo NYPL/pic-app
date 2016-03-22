@@ -17,6 +17,31 @@ header {
     }
 }
 
+#webgl-overlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    z-index: 111111;
+    background-color: gray;
+    text-align: center;
+    font-size: 2em;
+    // font-family: $headerFont;
+
+    p {
+        padding: 10%;
+        line-height: 1.2em;
+
+        a.browser {
+            @include pic-button(0.7em, $white, $linkColor);
+            width: 300px;
+            display: inline-block;
+            margin: 0 10px 20px 0;
+        }
+    }
+}
+
 /* map stuff */
 
 // override cesium toolbar

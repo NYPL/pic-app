@@ -96,6 +96,7 @@
         _pic.geonamesUrl = "http://api.geonames.org/citiesJSON?username=mgiraldo";
         _pic.mapboxKey = "<%= ENV['MAPBOX_KEY'] %>";
         _pic.mapboxMap = 'nypllabs.8e20560b';
+        _pic.minYear = <%= @min_year %>;
         _pic.nullIslandPath = '<%= asset_url('null-island.json') %>';
         _pic.meliesSpacePath = '<%= asset_url('melies-space.png') %>';
         _pic.meliesMoonPath = '<%= asset_url('melies-moon.png') %>';

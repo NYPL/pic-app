@@ -182,10 +182,6 @@ module PIC {
         };
 
         constructor() {
-            this.loadTextFile(this.rootPath + "csv/minyear.txt?i=" + Math.round(Math.random() * 100000000), function(responseText) {
-                var year = JSON.parse(responseText);
-                this.minYear = parseInt(year);
-            });
         }
 
         processStateChange () {

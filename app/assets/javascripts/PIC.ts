@@ -99,7 +99,7 @@ module PIC {
         moonCircle : Cesium.Primitive;
         textLabels : Cesium.LabelCollection;
 
-        minYear = 1700;
+        minYear = 0;
         maxYear = new Date().getFullYear();
         spaceHeight = 400000;
         moonHeight = 3850000;
@@ -182,6 +182,10 @@ module PIC {
         };
 
         constructor() {
+            this.loadTextFile(this.rootPath + "csv/minyear.txt?i=" + Math.round(Math.random() * 100000000), function(responseText) {
+                var year = JSON.parse(responseText);
+                this.minYear = parseInt(year);
+            });
         }
 
         processStateChange () {

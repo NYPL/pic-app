@@ -67,6 +67,11 @@ We’ve listed all of our sources in each record so you can double check our wor
 We'll announce other sources periodically.
 
 
+### Is PIC an Authority File? 
+
+You will notice many of the PIC entries contain links to external authorities such as [VIAF](http://viaf.org/), [ULAN](http://www.getty.edu/research/tools/vocabularies/ulan/) and [Wikidata](https://www.wikidata.org/). These authority files provide useful persistent identifiers that ensure we are all talking about the same thing, [Dorothea Lange](http://viaf.org/viaf/77594538) [for](https://www.wikidata.org/wiki/Q230673) [example](http://vocab.getty.edu/ulan/500007674). When used in the cataloging of materials, these identifiers begin to form a web of data across institutions. In the future, as NYPL’s linked data program grows, we hope to contribute to this web of data by publishing our own identifiers and RDF data for the entities found in PIC, especially for those not found in other authorities. Until then PIC can aid in connecting you to these existing authority files. 
+
+
 
 ### Where can I learn more about the history of photography or photographic processes?
 

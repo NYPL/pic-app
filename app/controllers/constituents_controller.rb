@@ -10,7 +10,7 @@ class ConstituentsController < ApplicationController
   def map
     require 'open-uri'
     @admin = params[:admin] != nil
-    @min_year = open("http://d2ulwm5zh6plnr.cloudfront.net/csv/minyear.txt"){|f| f.read}
+    @min_year = open("#{ENV['CLOUDFRONT_URL']}csv/minyear.txt"){|f| f.read}
     @min_year = @min_year.to_i
   end
 

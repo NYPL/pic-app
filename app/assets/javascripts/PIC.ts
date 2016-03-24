@@ -243,7 +243,7 @@ module PIC {
                         var str = "";
                         var rawName = pair[1];
                         rawName = rawName.replace(/[\(\)]/ig, "");
-                        rawName = rawName.replace(/~1/g, "");
+                        rawName = rawName.replace(/\*/g, "");
                         var isNumeric = !isNaN(Number(rawName));
                         if (pair[1] != "*" && !isNumeric) {
                             var names = rawName.split(" AND ");
@@ -741,7 +741,13 @@ module PIC {
         }
 
         getData(filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined) {
-            var url = this.baseUrl+"/constituent/_search?sort=AlphaSort.raw:asc";
+            var hasName = (this.buildFacetList().map( a => a.indexOf("DisplayName:") != -1 )).indexOf(true) != -1;
+            // console.log(hasName);
+            var sort = "AlphaSort.raw:asc";
+            if (hasName) {
+                sort = "_score," + sort;
+            }
+            var url = this.baseUrl+"/constituent/_search?sort=" + sort;
             url = url + "&filter_path="+filters;
             url = url + "&size="+size;
             url = url + "&from="+from;
@@ -2220,15 +2226,15 @@ module PIC {
                 var isNumeric = !isNaN(Number(str));
                 if (!isNumeric) {
                     str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
-                    str = str.trim().replace(/\s/g, "~1 ");
-                    str = str + "~1";
+                    str = str.trim().replace(/\s/g, " ");
+                    str = str + "*";
                     var f = str.split(" ");
                     var legit = [];
                     for (var thing in f) {
                         var trimmed = f[thing].trim();
                         if (trimmed !== "") legit.push(trimmed);
                     }
-                    str = '(' + legit.join(" AND ") + ')';
+                    str = '(' + legit.join(" ") + ')';
                 }
             } else {
                 str = "*";

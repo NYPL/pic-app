@@ -16,6 +16,12 @@ PIC uses “fuzzy search” to give you results, so if you search for “Mary”
 
 
 
+### It looks like there are fewer than 115,000 names in PIC. Why is that?
+
+We "refresh" the data frequently, so you'll always see our most recent, corrected information. That process takes about 7 to 9 minutes (it's a bunch of data!). If you happen to search PIC while this is happening, you may see a lower number of constituents. Refresh your browser, and that number will grow. As of March, 2016 you should be seeing about 115,700 names.
+
+
+
 ### Why are there so many people on a tiny island off the west coast of Africa?
 
 That’s not actually an island, and there’s not actually anyone there. That point is located at the coordinates 0’ latitude &amp; 0’ longitude, and we use it to map information when we don’t know a location (in the cartography world, it’s often called “[Null Island](https://en.wikipedia.org/wiki/Null_Island)”). If, for instance, we know someone was born in 1872, but we don’t know where, we put the point on Null Island. You can help us evacuate the island by finding locations we’re missing!

@@ -1812,6 +1812,7 @@ module PIC {
                 keyVals.push(filter + "=" + this.filters[filter]);
             }
             url += keyVals.join("&");
+            url += "&mode=" + this.scene.mode;
             Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
         }
 

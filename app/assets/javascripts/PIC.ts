@@ -187,6 +187,14 @@ module PIC {
         processStateChange () {
             this.notifyRepaintRequired();
             this.historyState = Historyjs.getState();
+            
+            // console.log("state:",this.historyState.data,Object.getOwnPropertyNames(this.historyState.data).length)
+
+                // change of view?
+
+            if (this.historyState.data.ignore) {
+                return;
+            }
 
             var filterString = decodeURI(this.historyState.hash.substr(this.historyState.hash.lastIndexOf("/")+2));
 
@@ -201,6 +209,13 @@ module PIC {
 
             for (var filter in keyVals) {
                 var pair = keyVals[filter].split("=");
+
+                if (pair[0] === "mode") {
+                    var mode = Number(pair[1])
+                    this.changeViewTo(mode)
+                    continue
+                }
+
                 // find the facet this belongs to
                 var key = pair[0] + ".";
                 var key1 = key.substring(0, key.indexOf("."));
@@ -1806,6 +1821,11 @@ module PIC {
         }
 
         applyFilters () {
+            var url = this.buildQueryString();
+            Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+        }
+        
+        buildQueryString ():string {
             var url = "?";
             var keyVals = [];
             for (var filter in this.filters) {
@@ -1813,7 +1833,7 @@ module PIC {
             }
             url += keyVals.join("&");
             url += "&mode=" + this.scene.mode;
-            Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
+            return url;
         }
 
         scrollResults (value = 0) {
@@ -2284,6 +2304,22 @@ module PIC {
         onCameraMoved (event:Cesium.Event) {
             // console.log("moved",this.camera.position);
         }
+        
+        changeViewTo (mode) {
+            if (mode !== Number(this.scene.mode)) {
+                switch (mode) {
+                    case 1:
+                        this.scene.morphToColumbusView();
+                        break
+                    case 2:
+                        this.scene.morphTo2D();
+                        break
+                    case 3:
+                        this.scene.morphTo3D();
+                        break
+                }
+            }
+        }
 
         initListeners () {
             this.resetNameQuery();
@@ -2294,6 +2330,8 @@ module PIC {
                 } else {
                     this.showMoon();
                 }
+                var url = this.buildQueryString();
+                Historyjs.pushState({ignore:true,mode:this.scene.mode}, "PIC - Photographers’ Identities Catalog", url);
                 this.updateTextLabels();
                 this.viewer.sceneModePicker.viewModel.dropDownVisible = true;
             });

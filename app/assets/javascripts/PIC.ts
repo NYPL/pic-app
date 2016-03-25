@@ -73,7 +73,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 10000;
+        elasticSize = 1000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 1000;
         tooltipLimit = 50;

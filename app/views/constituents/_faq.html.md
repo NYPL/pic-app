@@ -81,7 +81,7 @@ You will notice many of the PIC entries contain links to external authorities su
 
 ### Where can I learn more about the history of photography or photographic processes?
 
-Glad you asked! The Miraim and Ira D. Wallach Division of Art, Prints and Photographs: [Photography Collection](http://www.nypl.org/locations/divisions/wallach-division/photography-collection) staff have compiled information on [processes, a timeline of photo history and a bibliography](http://www.nypl.org/collections/nypl-recommendations/guides/photographic-processes) to get you started.  If you want to see original photographs or photo books in the Photography Collection, search our holdings in the [Prints and Photographs Online Catalog](http://wallachprintsandphotos.nypl.org/catalog). Once you've found what you want and are ready to make an appointment, or if you need further research assistance, email us at photography@nypl.org.
+Glad you asked! The Miriam and Ira D. Wallach Division of Art, Prints and Photographs: [Photography Collection](http://www.nypl.org/locations/divisions/wallach-division/photography-collection) staff have compiled information on [processes, a timeline of photo history and a bibliography](http://www.nypl.org/collections/nypl-recommendations/guides/photographic-processes) to get you started.  If you want to see original photographs or photo books in the Photography Collection, search our holdings in the [Prints and Photographs Online Catalog](http://wallachprintsandphotos.nypl.org/catalog). Once you've found what you want and are ready to make an appointment, or if you need further research assistance, email us at photography@nypl.org.
 
 
 

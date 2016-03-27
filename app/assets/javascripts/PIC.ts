@@ -257,7 +257,7 @@ module PIC {
                     if (pair[0] == "DisplayName") {
                         var str = "";
                         var rawName = pair[1];
-                        rawName = rawName.replace(/[\(\)]\~/ig, "");
+                        rawName = rawName.replace(/[\(\)~]/ig, "");
                         rawName = rawName.replace(/\*/g, "");
                         var isNumeric = !isNaN(Number(rawName));
                         if (pair[1] != "*" && !isNumeric) {

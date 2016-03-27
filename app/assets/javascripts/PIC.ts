@@ -2248,7 +2248,7 @@ module PIC {
                 if (!isNumeric) {
                     str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
                     str = str.trim().replace(/\s/g, " ");
-                    str = str + "*";
+                    str = str + "~";
                     var f = str.split(" ");
                     var legit = [];
                     for (var thing in f) {

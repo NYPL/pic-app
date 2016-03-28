@@ -1232,7 +1232,7 @@ module PIC {
             // if (hits > 1) str += " including";
             // if (hits > 0) str += " " + data.hits.hits.map(function(ob) { return ob._source.DisplayName }).join(", ");
             str += "<br /><span id='geoname'>&nbsp;</span>";
-            str += "<br />Use <strong>In Map Area</strong> facet to select a region to display";
+            str += "<br />Use <strong>In Map Area</strong> filter to select a region to display";
             str += "</div>";
             el.html(str);
             var latlon = position.split(",");

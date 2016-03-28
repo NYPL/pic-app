@@ -690,15 +690,16 @@ hr {
     width: $facetsWidth * 1.5;
     position: absolute;
     z-index: 11111;
-    background: $white;
+    background: white;
     padding: $generalMargin;
     left: -1000px;
     top: -1000px;
     text-align: center;
     border-radius: 2px;
+    color: $darkGray;
 
     strong {
-        color: $linkColor;
+        color: $black;
     }
 
     .geoname {
@@ -706,7 +707,7 @@ hr {
     }
 
     .hits {
-        color: $linkColor;
+        color: $black;
         font-size: 2em;
         display: block;
     }

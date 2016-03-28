@@ -128,8 +128,8 @@ class Feedback
                     form.attr("action") + '.json',
                         frompage:document.location.href
                         feedback_text:msg
-                        feedback_id:document.forms[1]["feedback_id"].value
-                        type: document.forms[1].type.value
+                        feedback_id:form[0]["feedback_id"].value
+                        type: form[0].type.value
                     , (data) =>
                         # console.log "done", data
                         @changeStep()

@@ -308,7 +308,7 @@ module PIC {
             // url history management
             $("#facet-container").on("overlays:ready", (e) => {
                 var state = Historyjs.getState();
-                if (state.hash == "/") {
+                if (state.hash == "/map/") {
                     this.displayBaseData();
                     this.applyFilters();
                 } else {

@@ -257,7 +257,8 @@ module PIC {
                     if (pair[0] == "DisplayName") {
                         var str = "";
                         var rawName = pair[1];
-                        rawName = rawName.replace(/[\(\)~]/ig, "");
+                        rawName = rawName.replace(/[\(\)]/ig, "");
+                        rawName = rawName.replace(/~1/g, "");
                         rawName = rawName.replace(/\*/g, "");
                         var isNumeric = !isNaN(Number(rawName));
                         if (pair[1] != "*" && !isNumeric) {
@@ -2251,14 +2252,14 @@ module PIC {
                 if (!isNumeric) {
                     str = str.replace(/([\+\-=&\|><!\(\)\{\}\[\]\^"~\*\?:\\\/])/g, ' ');
                     str = str.trim().replace(/\s/g, " ");
-                    str = str + "~";
+                    str = str + "~1";
                     var f = str.split(" ");
                     var legit = [];
                     for (var thing in f) {
                         var trimmed = f[thing].trim();
                         if (trimmed !== "") legit.push(trimmed);
                     }
-                    str = '(' + legit.join(" ") + ')';
+                    str = '(' + legit.join("~1 AND ") + ')';
                 }
             } else {
                 str = "*";

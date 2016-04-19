@@ -765,7 +765,7 @@ module PIC {
             if (hasName) {
                 sort = "_score," + sort;
             }
-            var url = this.baseUrl+"/constituent/_search?sort=" + sort;
+            var url = this.baseUrl+"/_search?sort=" + sort;
             url = url + "&filter_path="+filters;
             url = url + "&size="+size;
             url = url + "&from="+from;
@@ -862,7 +862,7 @@ module PIC {
 
             if (nestedArray.length > 0) {
                 nestedString = "(" + nestedArray.join(" AND ") + ")";
-                nestedQuery["nested"]["query"]["filtered"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
+                nestedQuery["has_child"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
             }
 
             if (filter.length !== 0 && filter[0].indexOf("*") === -1) {
@@ -889,7 +889,7 @@ module PIC {
             }
 
             if (hasNestedFilter) {
-                nestedQuery["nested"]["query"]["filtered"]["filter"] = nestedFilter;
+                nestedQuery["has_child"]["filter"] = nestedFilter;
             }
 
             if (hasNestedFilter || nestedArray.length > 0) {
@@ -901,17 +901,17 @@ module PIC {
 
         makeEmptyNestedQuery () {
             return {
-                "nested": {
-                    "path": "address",
-                    "inner_hits": {},
+                "has_child": {
+                    "type": "address",
+                    // "inner_hits": {},
                     "query": {
-                        "filtered": {
-                            "query": {
+                        // "filtered": {
+                        //     "query": {
                                 "bool": {
                                     "must": []
                                 }
-                            }
-                        }
+                        //     }
+                        // }
                     }
                 }
             };

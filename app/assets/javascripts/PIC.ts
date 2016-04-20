@@ -938,11 +938,18 @@ module PIC {
         }
 
         updateTotals (total) {
-            console.log("total", total, this.elasticResults);
+            // console.log("total", total, this.elasticResults);
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
             this.tooltipElement.find(".spinner").find(".text").remove();
-            this.tooltipElement.find(".spinner").append("<span class='text'><em>" + total.toLocaleString() + "</em><br />locations for<br />" + this.totalPhotographers.toLocaleString() + "<br />constituents<br />loaded</span>");
+            var photographerHTML = "<span class='text'>"
+            photographerHTML += "<em>" + total.toLocaleString() + "</em><br />locations"
+            if (this.totalPhotographers > 0) {
+                photographerHTML += " for<br />" + this.totalPhotographers.toLocaleString() + "<br />constituents"
+            }
+            photographerHTML += "<br />loaded"
+            photographerHTML += "</span>"
+            this.tooltipElement.find(".spinner").append(photographerHTML);
             this.notifyRepaintRequired();
         }
 
@@ -1918,9 +1925,9 @@ module PIC {
 
         getNextSet (re) {
             var results = JSON.parse(re)
-            // console.log(results));
+            console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits
-            this.totalPhotographers = results.hits.total;
+            this.totalPhotographers = 0//results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var data = this.elasticResults.data;
@@ -2176,7 +2183,9 @@ module PIC {
                 subject += " <em>within the selected area</em> ";
             }
 
-            predicate = "for " + this.totalPhotographers.toLocaleString() + " ";
+            predicate = "for "
+
+            if (this.totalPhotographers > 0) predicate += this.totalPhotographers.toLocaleString() + " "
 
             // nationality
             facet = this.facets[2];

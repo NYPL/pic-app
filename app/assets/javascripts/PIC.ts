@@ -938,7 +938,7 @@ module PIC {
         }
 
         updateTotals (total) {
-            // console.log("total", total, this.elasticResults);
+            console.log("total", total, this.elasticResults);
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
             this.tooltipElement.find(".spinner").find(".text").remove();
@@ -1245,7 +1245,7 @@ module PIC {
             var el = $("#hover");
             if (this.pickedEntity === undefined) return;
             var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var data = this.parseInnerHits(JSON.parse(responseText));
+            var data = JSON.parse(responseText)
             // console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
@@ -1360,7 +1360,7 @@ module PIC {
 
         updateTooltip (responseText) {
             this.clearTooltip();
-            var data = this.parseInnerHits(JSON.parse(responseText));
+            var data = JSON.parse(responseText)
             var constituents = data.hits.hits;
             var total = data.hits.total;
             this.totalPhotographers = total;
@@ -1411,7 +1411,7 @@ module PIC {
             this.getData({filters:filters, data:data, callback:function(responseText) {
                 var scroll = $("#constituents .scroller").scrollTop();
                 var height = $("#constituents .scroller").height();
-                var data = this.parseInnerHits(JSON.parse(responseText));
+                var data = JSON.parse(responseText)
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
@@ -1566,7 +1566,7 @@ module PIC {
 
         parseConstituentAddresses (responseText, id) {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
-            var data = this.parseInnerHits(JSON.parse(responseText));
+            var data = JSON.parse(responseText)
             this.buildConstituentAddresses(id, data.hits.hits[0]._source.address);
             this.connectAddresses(id);
         }
@@ -1917,9 +1917,9 @@ module PIC {
         }
 
         getNextSet (re) {
-            var results = this.parseInnerHits(JSON.parse(re));
-            // console.log(this.parseInnerHits(results));
-            // elasticResults.hits = elasticResults.hits.concat(results.hits.hits);
+            var results = JSON.parse(re)
+            // console.log(results));
+            // elasticResults.hits = elasticResults.hits.concat(results.hits.hits
             this.totalPhotographers = results.hits.total;
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going

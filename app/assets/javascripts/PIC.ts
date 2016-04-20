@@ -770,7 +770,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -1567,14 +1567,15 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             var filters = "hits.total,hits.hits";
-            var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"], "parent");
-            this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"address", size:this.elasticSize, exclude:"", from:0, parameter:id});
+            var data = this.buildElasticQuery(["ConstituentID:" + id], ["address.ConstituentID:" + id], "parent");
+            this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"", docType:"address", size:this.elasticSize, exclude:"", sort:"_score", from:0, parameter:id});
         }
 
         parseConstituentAddresses (responseText, id) {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
             var data = JSON.parse(responseText)
-            this.buildConstituentAddresses(id, data.hits.hits[0]._source.address);
+            console.log(data)
+            this.buildConstituentAddresses(id, data.hits.hits);
             this.connectAddresses(id);
         }
 
@@ -1583,7 +1584,7 @@ module PIC {
             if (addresses) {
                 var addstring = "";
                 for (var i=0; i < addresses.length; i++) {
-                    var add = addresses[i];
+                    var add = addresses[i]._source;
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
                     addstring += "<div class=\"address-item-type\">";

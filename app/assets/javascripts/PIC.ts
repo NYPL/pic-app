@@ -758,20 +758,19 @@ module PIC {
             r.send();
         }
 
-        getData(filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined) {
+        getData({filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined, docType = "constituent", sort = "AlphaSort.raw:asc"}) {
             var hasName = (this.buildFacetList().map( a => a.indexOf("DisplayName:") != -1 )).indexOf(true) != -1;
             // console.log(hasName);
-            var sort = "AlphaSort.raw:asc";
             if (hasName) {
                 sort = "_score," + sort;
             }
-            var url = this.baseUrl+"/_search?sort=" + sort;
+            var url = this.baseUrl + "/" + docType + "/_search?sort=" + sort;
             url = url + "&filter_path="+filters;
             url = url + "&size="+size;
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -822,19 +821,24 @@ module PIC {
             return parsed
         }
 
-        buildElasticQuery (normal:Array<string>, filter:Array<string>) {
+        buildElasticQuery (normal:Array<string>, filter:Array<string>, type:string) {
             // console.log("buildEQ", normal, filter);
+
+            var filterType = "has_child"
+            if (type === "parent") {
+                filterType = "has_parent"
+            }
 
             var baseString = "*";
             var nestedString = "";
-            var baseArray = [];
-            var nestedArray = [];
+            var constituentArray = [];
+            var addressArray = [];
             if (normal.length > 0) {
                 for (var f in normal) {
                     if (normal[f].indexOf("address.") === -1) {
-                        baseArray.push(normal[f]);
+                        constituentArray.push(normal[f]);
                     } else {
-                        nestedArray.push(normal[f]);
+                        addressArray.push(normal[f]);
                     }
                 }
             }
@@ -843,9 +847,8 @@ module PIC {
             // console.log(nestedArray);
 
             var data = {};
-            var baseQuery = {};
             var nestedFilter = {};
-            var nestedQuery = this.makeEmptyNestedQuery();
+            var nestedQuery = this.makeEmptyQuery(type);
             var hasNestedFilter = false;
 
             data["query"] = {
@@ -854,15 +857,27 @@ module PIC {
                 }
             };
 
-            if (baseArray.length > 0) {
-                baseString = "(" + baseArray.join(" AND ") + ")";
-                baseQuery = { "query_string": { "query": baseString } };
-                data["query"]["bool"]["must"].push(baseQuery);
+            if (constituentArray.length > 0) {
+                baseString = "(" + constituentArray.join(" AND ") + ")";
+                var query = { "query_string": { "query": baseString } };
+                if (type === "child") {
+                    // looking for constituents so baseQuery applies to main data
+                    data["query"]["bool"]["must"].push(query);
+                } else {
+                    nestedQuery[filterType]["query"]["bool"]["must"].push(query);
+                }
             }
 
-            if (nestedArray.length > 0) {
-                nestedString = "(" + nestedArray.join(" AND ") + ")";
-                nestedQuery["has_child"]["query"]["bool"]["must"].push({ "query_string": { "query": nestedString } });
+            if (addressArray.length > 0) {
+                nestedString = "(" + addressArray.join(" AND ") + ")";
+                var query = { "query_string": { "query": nestedString } }
+                if (type === "child") {
+                    // looking for addresses
+                    nestedQuery[filterType]["query"]["bool"]["must"].push(query);
+                } else {
+                    // looking for constituents so query applies to main data
+                    data["query"]["bool"]["must"].push(query);
+                }
             }
 
             if (filter.length !== 0 && filter[0].indexOf("*") === -1) {
@@ -889,32 +904,37 @@ module PIC {
             }
 
             if (hasNestedFilter) {
-                nestedQuery["has_child"]["filter"] = nestedFilter;
+                nestedQuery[filterType]["query"]["filter"] = nestedFilter;
             }
 
-            if (hasNestedFilter || nestedArray.length > 0) {
+            // if (hasNestedFilter || nestedArray.length > 0) {
                 data["query"]["bool"]["must"].push(nestedQuery);
-            }
+            // }
 
             return data;
         }
 
-        makeEmptyNestedQuery () {
-            return {
-                "has_child": {
-                    "type": "address",
-                    // "inner_hits": {},
-                    "query": {
-                        // "filtered": {
-                        //     "query": {
-                                "bool": {
-                                    "must": []
-                                }
-                        //     }
-                        // }
-                    }
+        makeEmptyQuery (type:string) {
+            var filter = "has_child", value = "address"
+            if (type === "parent") {
+                filter = "has_parent"
+                value = "constituent"
+            }
+            var query = {}
+            query[filter] = {
+                "type": value,
+                // "inner_hits": {},
+                "query": {
+                    // "filtered": {
+                    //     "query": {
+                            "bool": {
+                                "must": []
+                            }
+                    //     }
+                    // }
                 }
-            };
+            }
+            return query
         }
 
         updateTotals (total) {
@@ -1218,7 +1238,7 @@ module PIC {
             facetList.push(query);
             var data = this.buildFacetQuery(facetList);
             // console.log("hover", data);
-            this.getData(filter, data, this.buildHoverContent, "", 3);
+            this.getData({filters:filter, data:data, callback:this.buildHoverContent, source:"", size:3});
         }
 
         buildHoverContent (responseText) {
@@ -1388,7 +1408,7 @@ module PIC {
             var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
             var data = this.buildFacetQuery();
             // console.log(start, data);
-            this.getData(filters, data, function(responseText) {
+            this.getData({filters:filters, data:data, callback:function(responseText) {
                 var scroll = $("#constituents .scroller").scrollTop();
                 var height = $("#constituents .scroller").height();
                 var data = this.parseInnerHits(JSON.parse(responseText));
@@ -1396,7 +1416,7 @@ module PIC {
                 this.totalPhotographers = data.hits.total;
                 this.addTooltipResults(constituents, start, data.hits.total);
                 this.scrollResults(scroll + height - 100);
-            }, "", this.tooltipLimit, "address", start);
+            }, source:"", size:this.tooltipLimit, exclude:"address", from:start});
         }
 
         buildTooltipConstituent (p) {
@@ -1540,8 +1560,8 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             var filters = "hits.total,hits.hits";
-            var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"]);
-            this.getData(filters, data, this.parseConstituentAddresses, "address", this.elasticSize, "", 0, id);
+            var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"], "parent");
+            this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"address", size:this.elasticSize, exclude:"", from:0, parameter:id});
         }
 
         parseConstituentAddresses (responseText, id) {
@@ -1764,7 +1784,7 @@ module PIC {
             return facetList;
         }
 
-        buildFacetQuery (facetList=undefined) {
+        buildFacetQuery (facetList=undefined, type:string="child") {
             if (facetList === undefined) facetList = this.buildFacetList();
             var normal = [];
             var filter = [];
@@ -1792,7 +1812,7 @@ module PIC {
                 }
             }
 
-            var facetQuery = this.buildElasticQuery(normal, filter);
+            var facetQuery = this.buildElasticQuery(normal, filter, type);
             return facetQuery;
         }
 
@@ -1856,7 +1876,7 @@ module PIC {
                 $("#facets-clear").removeClass("disabled");
             }
             var addresses = [];
-            var data = this.buildFacetQuery();
+            var data = this.buildFacetQuery(undefined, "parent");
             var filters = "hits.total,hits.hits";
             this.start = new Date().getTime();
             // console.log("apply", data);
@@ -1874,7 +1894,7 @@ module PIC {
             if (facetList.length === 0) {
                 this.displayBaseData();
             } else {
-                this.getData(filters, data, this.getNextSet, "address.ConAddressID");
+                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort: "", source:"ConAddressID"});
             }
             this.updateTotals(-1);
         }
@@ -1906,7 +1926,7 @@ module PIC {
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
                 var filters = this.elasticResults.filters;
-                this.getData(filters, data, this.getNextSet, "address.ConAddressID", this.elasticSize, "", this.elasticResults.from);
+                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort: "", source:"ConAddressID", size:this.elasticSize, exclude:"", from:this.elasticResults.from});
             } else {
                 var end = new Date().getTime();
                 var time = end - this.start;
@@ -1925,7 +1945,7 @@ module PIC {
             var data = this.buildFacetQuery();
             var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
             // console.log("tooltip", data);
-            this.getData(filters, data, this.updateTooltip, "", this.tooltipLimit);
+            this.getData({filters:filters, data:data, callback:this.updateTooltip, source:"", size:this.tooltipLimit});
         }
 
         showSpinner (target, opts = {}) {
@@ -1973,10 +1993,10 @@ module PIC {
             var i, j, l = hits.length;
             for (i=0; i < l; ++i) {
                 var item = hits[i]._source;
-                if (item.address === undefined) continue;
-                for (j=0; j < item.address.length; ++j) {
-                    addresses.push(item.address[j].ConAddressID);
-                }
+                if (item.ConAddressID === undefined) continue;
+                // for (j=0; j < item.address.length; ++j) {
+                    addresses.push(item.ConAddressID);
+                // }
             }
             this.addPoints(addresses);
         }

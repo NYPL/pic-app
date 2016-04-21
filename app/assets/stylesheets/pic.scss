@@ -12,8 +12,8 @@ html, body {
 }
 
 header {
-        @include media($tablet) {
-        font-size: 16px;
+    @include media($tablet) {
+        font-size: 12px;
     }
 }
 

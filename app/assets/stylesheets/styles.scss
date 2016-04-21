@@ -21,7 +21,7 @@ html, body {
     line-height: 1.75em;
     background: $white;
     @include media($tablet) {
-        font-size: 30px;
+        font-size: 24px;
     }
 }
 
@@ -63,7 +63,8 @@ p {
         @include media($tablet) {
             width: auto;
             @include shift(0);
-            font-size: 2em;
+            font-size: 1.8em;
+            margin-left: 10px;
         }
     }
 
@@ -84,7 +85,7 @@ p {
     @include transition(all, .1s);
 
     @include media($tablet) {
-        width: 340px;
+        width: 300px;
     }
 
     &:link, &:visited {
@@ -108,6 +109,11 @@ p {
         font-size: 2em;
         margin-top: 1em;
         margin-bottom: 1em;
+
+        @include media($tablet) {
+            font-size: 1.6em;
+            margin-bottom: 0.5em;
+        }
     }
 
     p a {
@@ -140,6 +146,11 @@ p {
             text-align: center;
         }
     }
+
+    @include media($tablet) {
+        font-size: 0.8em;
+        line-height: 1.5em;
+    }
 }
 
 #samples {
@@ -154,6 +165,8 @@ p {
 
             @include media($tablet) {
                 @include span-columns(10 of 10);
+                font-size: 0.8em;
+                line-height: 1.5em;
             }
 
             img {
@@ -225,6 +238,10 @@ p {
 
     img {
         @include span-columns(10);
+
+        @include media($tablet) {
+            @include shift(2);
+        }
     }
 
     .caption {
@@ -235,6 +252,10 @@ p {
         line-height: 1.2em;
         border-top: 1px solid white;
         padding-top: 1em;
+
+        @include media($tablet) {
+            @include span-columns(6);
+        }
     }
 
     p {
@@ -258,6 +279,11 @@ p {
             display: inline-block;
             margin-left: -.5em;
         }
+
+        @include media($tablet) {
+            font-size: 1em;
+        }
+
     }
 }
 
@@ -340,7 +366,7 @@ header {
     border-top: 2px solid $nyplRed;
 
     @include media($tablet) {
-        font-size: 24px;
+        font-size: 12px;
     }
 
     a:link, a:visited, a:hover {
@@ -395,6 +421,9 @@ header {
     }
   }
 
+    @include media($tablet) {
+        font-size: 0.5em;
+    }
 }
 
 .locations .map {

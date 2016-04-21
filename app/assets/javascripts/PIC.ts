@@ -75,7 +75,7 @@ module PIC {
 
         elasticSize = 10000;
         padding = 0.01; // to extend the boundary a bit
-        maxExport = 1000;
+        maxExport = 100;
         tooltipLimit = 50;
         heightDelta = 100;
         lineWidth = 2;

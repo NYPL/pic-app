@@ -70,7 +70,7 @@ class ConstituentsController < ApplicationController
       q = JSON.parse(params[:q])
       filter_path = params[:filter_path]
       from = 0
-      size = 1000
+      size = 100
       source = params[:source]
       exclude = params[:source_exclude]
       sort = "AlphaSort.raw:asc"

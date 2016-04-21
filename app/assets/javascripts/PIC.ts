@@ -1595,7 +1595,7 @@ module PIC {
         parseConstituentAddresses (responseText, id) {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
             var data = JSON.parse(responseText)
-            console.log(data)
+            // console.log(data)
             this.buildConstituentAddresses(id, data.hits.hits);
             this.connectAddresses(id);
         }

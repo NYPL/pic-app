@@ -843,8 +843,8 @@ module PIC {
                 }
             }
 
-            console.log(constituentArray);
-            console.log(addressArray);
+            // console.log(constituentArray);
+            // console.log(addressArray);
 
             var data = {};
             var nestedFilter = {};
@@ -914,17 +914,19 @@ module PIC {
                     }
                     data["query"]["bool"]["must"].push(nestedQuery)
                 } else {
-                    data["query"]["bool"]["must"].push(nestedQuery);
+                    data["query"]["bool"]["must"].push(nestedQuery)
                     data = {
                         "query": {
                             "filtered": data
                         }
                     }
-                    data["query"]["filtered"]["filter"] = nestedFilter;
+                    data["query"]["filtered"]["filter"] = nestedFilter
                 }
+            } else {
+                data["query"]["bool"]["must"].push(nestedQuery)
             }
 
-            return data;
+            return data
         }
 
         makeEmptyQuery (type:string) {

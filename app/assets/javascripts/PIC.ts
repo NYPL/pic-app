@@ -903,13 +903,26 @@ module PIC {
                 }
             }
 
-            if (hasNestedFilter) {
-                nestedQuery[filterType]["query"]["filter"] = nestedFilter;
-            }
 
-            // if (hasNestedFilter || nestedArray.length > 0) {
-                data["query"]["bool"]["must"].push(nestedQuery);
-            // }
+            if (hasNestedFilter) {
+                if (type === "parent") {
+                    data["query"]["bool"]["must"].push(nestedQuery);
+                    data = {
+                        "query": {
+                            "filtered": data
+                        }
+                    }
+                    data["query"]["filtered"]["filter"] = nestedFilter;
+                } else {
+                    nestedQuery[filterType]["query"] = {
+                        "filtered": {
+                            "query": nestedQuery[filterType]["query"],
+                            "filter": nestedFilter
+                        }
+                    }
+                    data["query"]["bool"]["must"].push(nestedQuery)
+                }
+            }
 
             return data;
         }
@@ -1457,6 +1470,12 @@ module PIC {
             str += "<p>";
             str += "<strong>ID:</strong> " + p.ConstituentID;
             str += "</p>";
+            if (p.TextEntry && p.TextEntry !== "NULL") {
+                str += "<p>";
+                // str += "<strong>Bio:</strong><br />";
+                str += p.TextEntry;
+                str += "</p>";
+            }
             if (p.gender) str += "<p><strong>Gender:</strong><br />" + p.gender[0].Term + "</p>";
             if (p.role) {
                 str += "<p>";

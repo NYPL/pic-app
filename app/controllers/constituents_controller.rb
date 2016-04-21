@@ -78,10 +78,8 @@ class ConstituentsController < ApplicationController
     rescue
       @results = nil
     end
-      puts r
     if r && r["hits"]["total"] > 0
-      puts "fuck yeah"
-      puts "type: #{params} |#{params[:type]==nil}|"
+      # puts "type: #{params} |#{params[:type]==nil}|"
       temp = r["hits"]["hits"]
       if type == "json"
         @results = temp

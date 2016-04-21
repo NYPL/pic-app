@@ -1394,7 +1394,7 @@ module PIC {
             var urlGeo = this.geoJsonPrefix + encodeURIComponent("/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery())));
             var exportStr = "Export results as";
             if (total > this.maxExport) exportStr = "Export first " + this.maxExport.toLocaleString() + " results as";
-            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
+            // str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
             str = str + "</p>";
             this.tooltipElement.find(".results").prepend(str);
             if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);

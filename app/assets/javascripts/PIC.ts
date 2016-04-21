@@ -73,7 +73,7 @@ module PIC {
         bounds;
         totalPhotographers = 0;
 
-        elasticSize = 8000;
+        elasticSize = 10000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 1000;
         tooltipLimit = 50;
@@ -2186,7 +2186,7 @@ module PIC {
 
             predicate = "for "
 
-            if (this.totalPhotographers > 0) predicate += this.totalPhotographers.toLocaleString() + " "
+            if (this.totalPhotographers > 0) predicate += this.totalPhotographers.toLocaleString()
 
             // nationality
             facet = this.facets[2];

@@ -81,6 +81,14 @@ class ConstituentsController < ApplicationController
     if r && r["hits"]["total"] > 0
       # puts "type: #{params} |#{params[:type]==nil}|"
       temp = r["hits"]["hits"]
+      temp.each_with_index do |hit, index|
+        q_address = {"query" => {"bool" => {"must" => [{"query_string" => {"query" => "ConstituentID:#{hit["_source"]["ConstituentID"]}"}}]}}}
+        address_query = client.search index: 'pic', type: 'address', body: q_address, size: 5000
+        if address_query["hits"]["total"] > 0
+            # puts address_query
+            temp[index]["address"] = address_query["hits"]["hits"]
+        end
+      end
       if type == "json"
         @results = temp
       elsif type == "geojson"
@@ -92,8 +100,9 @@ class ConstituentsController < ApplicationController
           r[:type] = "Feature"
           r[:properties] = hit
           r[:geometry] = { :type => "MultiPoint", :coordinates => [] }
-          next if hit["_source"]["address"] == nil
-          hit["_source"]["address"].each do |address|
+          next if hit["address"] == nil
+          hit["address"].each do |address_raw|
+            address = address_raw["_source"]
             r[:geometry][:coordinates].push([address["Location"]["lon"], address["Location"]["lat"]]) if address["Location"] != nil
           end
           @results[:features].push(r)

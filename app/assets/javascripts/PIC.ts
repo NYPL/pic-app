@@ -770,7 +770,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -843,8 +843,8 @@ module PIC {
                 }
             }
 
-            // console.log(baseArray);
-            // console.log(nestedArray);
+            console.log(constituentArray);
+            console.log(addressArray);
 
             var data = {};
             var nestedFilter = {};
@@ -905,15 +905,7 @@ module PIC {
 
 
             if (hasNestedFilter) {
-                if (type === "parent") {
-                    data["query"]["bool"]["must"].push(nestedQuery);
-                    data = {
-                        "query": {
-                            "filtered": data
-                        }
-                    }
-                    data["query"]["filtered"]["filter"] = nestedFilter;
-                } else {
+                if (type === "child") {
                     nestedQuery[filterType]["query"] = {
                         "filtered": {
                             "query": nestedQuery[filterType]["query"],
@@ -921,6 +913,14 @@ module PIC {
                         }
                     }
                     data["query"]["bool"]["must"].push(nestedQuery)
+                } else {
+                    data["query"]["bool"]["must"].push(nestedQuery);
+                    data = {
+                        "query": {
+                            "filtered": data
+                        }
+                    }
+                    data["query"]["filtered"]["filter"] = nestedFilter;
                 }
             }
 
@@ -1586,7 +1586,7 @@ module PIC {
             // console.log(id);
             // change url without commiting new state change
             var filters = "hits.total,hits.hits";
-            var data = this.buildElasticQuery(["ConstituentID:" + id], ["address.ConstituentID:" + id], "parent");
+            var data = this.buildElasticQuery(["ConstituentID:" + id,"address.ConstituentID:" + id], ["*"], "parent");
             this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"", docType:"address", size:this.elasticSize, exclude:"", sort:"_score", from:0, parameter:id});
         }
 

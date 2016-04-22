@@ -14,13 +14,13 @@
   <meta name="twitter:site" content="@nypl_labs">
   <meta name="twitter:title" content="PIC - Photographers’ Identities Catalog">
   <meta name="twitter:description" content="Experimental interface to a collection of biographical data describing photographers, studios, manufacturers, and others involved in the production of photographic images.">
-  <meta name="twitter:image:src" content="<%= asset_url("hero.png") %>">
+  <meta name="twitter:image:src" content="<%= request.protocol + request.host_with_port + asset_path("hero.png") %>">
   <meta name="twitter:domain" content="http://pic.nypl.org/">
 
   <!-- fb og -->
   <meta name="og:title" content="PIC - Photographers’ Identities Catalog">
   <meta name="og:type" content="website">
-  <meta name="og:image" content="<%= asset_url("hero.png") %>">
+  <meta name="og:image" content="<%= request.protocol + request.host_with_port + asset_path("hero.png") %>">
   <meta name="og:description" content="Experimental interface to a collection of biographical data describing photographers, studios, manufacturers, and others involved in the production of photographic images.">
   <meta name="og:url" content="http://pic.nypl.org/">
 

@@ -180,6 +180,10 @@ hr {
         -webkit-overflow-scrolling: touch;
         @include flex(auto);
         flex: auto;
+
+        h4 {
+            margin-bottom: 5px;
+        }
     }
 
     &.minimized {

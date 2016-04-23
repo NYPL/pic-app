@@ -150,6 +150,7 @@ module PIC {
         facets : string[][] = [
             ["addresstypes", "Type", "AddressTypeID", "AddressType", "address"],
             ["countries", "Country", "CountryID", "Country", "address"],
+            ["bbox", "In Map Area", "bbox", "", ""],
             ["nationalities", "Nationality", "Nationality", "Nationality", ""],
             ["genders", "Gender", "TermID", "Term", "gender"],
             ["processes", "Process", "TermID", "Term", "process"],
@@ -159,7 +160,6 @@ module PIC {
             ["collections", "Collections", "TermID", "Term", "collection"],
             [this.nameQueryElement, "", "DisplayName", "", ""],
             ["date", "", "Date", "", ""],
-            ["bbox", "In Map Area", "bbox", "", ""],
         ];
 
         facetValues = {};
@@ -1798,7 +1798,11 @@ module PIC {
 
         getFacets () {
             for (var i=0; i < this.facets.length; i++) {
-                if (this.facets[i][1] != "") this.getFacet(i);
+                if (this.facets[i][1] != "") {
+                    if (this.facets[i][3] === "AddressType") $("#facet-list").append("<h4>Locations</h4>")
+                    if (this.facets[i][3] === "Nationality") $("#facet-list").append("<h4>Constituents</h4>")
+                    this.getFacet(i)
+                }
             }
         }
 
@@ -2281,7 +2285,7 @@ module PIC {
             }
 
             // bbox
-            facet = this.facets[11];
+            facet = this.facets[2];
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2293,7 +2297,7 @@ module PIC {
             if (this.totalPhotographers > 0) predicate += this.totalPhotographers.toLocaleString()
 
             // nationality
-            facet = this.facets[2];
+            facet = this.facets[3];
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2301,7 +2305,7 @@ module PIC {
             }
 
             // gender
-            facet = this.facets[3];
+            facet = this.facets[4];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2311,7 +2315,7 @@ module PIC {
             predicate += this.totalPhotographers != 1 ? " constituents " : " constituent ";
 
             // name
-            facet = this.facets[9];
+            facet = this.facets[10];
             facetKey = facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2325,7 +2329,7 @@ module PIC {
             }
 
             // process
-            facet = this.facets[4];
+            facet = this.facets[5];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2333,7 +2337,7 @@ module PIC {
             }
 
             // role
-            facet = this.facets[5];
+            facet = this.facets[6];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2341,7 +2345,7 @@ module PIC {
             }
 
             // format
-            facet = this.facets[6];
+            facet = this.facets[7];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2349,7 +2353,7 @@ module PIC {
             }
 
             // collections
-            facet = this.facets[8];
+            facet = this.facets[9];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2357,7 +2361,7 @@ module PIC {
             }
 
             // dates
-            facet = this.facets[10];
+            facet = this.facets[11];
             facetKey = "Date";
             key = this.filters[facetKey];
             if (key !== "*") {
@@ -2367,7 +2371,7 @@ module PIC {
             }
 
             // biography
-            facet = this.facets[7];
+            facet = this.facets[8];
             facetKey = facet[4] + "." + facet[2];
             key = this.filters[facetKey];
             if (key !== "*") {

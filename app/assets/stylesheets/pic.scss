@@ -183,6 +183,8 @@ hr {
 
         h4 {
             margin-bottom: 5px;
+            margin-top: 20px;
+            text-transform: uppercase;
         }
     }
 
@@ -330,6 +332,7 @@ hr {
     label {
         display: block;
         clear: both;
+        text-transform: uppercase;
     }
 
     .icon.query {
@@ -431,6 +434,10 @@ hr {
 
         &.disabled {
             color: lighten($black, 20%);
+        }
+
+        &.timeline {
+            margin-bottom: 0;
         }
     }
 

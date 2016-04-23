@@ -2023,7 +2023,7 @@ module PIC {
                         var bucket:Bucket = buckets[thing]
                         var count = bucket.doc_count
                         var item = bucket.key
-                        var elementValue = widget.data[item] + " (" + count + ")"
+                        var elementValue = widget.data[item] + " (" + count.toLocaleString() + ")"
                         widget.updateItemText(item, elementValue)
                         widget.showItem(item)
                     }

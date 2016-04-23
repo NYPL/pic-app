@@ -745,6 +745,57 @@ module PIC {
             this.enableFacets();
             this.updateBounds();
             this.showResults();
+            this.applyBaseAggregations()
+        }
+        
+        applyAggregations (aggs) {
+            console.log(aggs)
+            for (var agg in aggs) {
+                var keypair = agg.split(".")
+                var key = "", val = ""
+                val = keypair[0]
+                if (keypair.length > 1) {
+                    key = val
+                    val = keypair[1]
+                }
+                var facet = this.facetWithKeyPair(key, val)
+                var widgetName = facet[0]
+                var widget = this.facetWidgets[widgetName]
+                widget.hideAll()
+                if (aggs[agg].buckets && aggs[agg].buckets.length !== 0) {
+                    // some items in this facet should be visible
+                    var data = widget.data
+                    var buckets:Array<Bucket> = aggs[agg].buckets
+                    for (var thing in buckets) {
+                        var bucket:Bucket = buckets[thing]
+                        var count = bucket.doc_count
+                        var item = bucket.key
+                        widget.updateItemText(item, widget.data[item], count)
+                        widget.showItem(item)
+                    }
+                }
+                console.log(agg, widgetName, aggs[agg].buckets)
+            }
+        }
+        
+        applyBaseAggregations () {
+            // get aggregation data for empty search
+            // for addresses only since base data includes a query for 50 results
+            var filters = "hits.total,aggregations"
+            // constituent aggs
+            var data = this.buildElasticQuery(["ConstituentID:*"], ["*"], "parent")
+            this.getData({filters:filters, data:data, docType:"address", sort:"", source:"", size:0, callback:function(results){
+                if (results.aggregations) {
+                    this.applyAggregations(results.aggregations)
+                }
+                var dataB = this.buildElasticQuery(["ConstituentID:*"], ["*"], "child")
+                dataB.query.bool.must.pop() // hack to remove the has_child
+                this.getData({filters:filters, data:dataB, source:"", size:0, callback:function(resultsB){
+                    if (resultsB.aggregations) {
+                        this.applyAggregations(resultsB.aggregations)
+                    }
+                }})
+            }})
         }
 
         loadTextFile (url, callback, parameter = undefined) {
@@ -842,7 +893,8 @@ module PIC {
                     }
                     aggs[name] = {
                         "terms": {
-                            "field": name
+                            "field": name,
+                            "size": 0
                         }
                     }
                 }
@@ -1999,37 +2051,6 @@ module PIC {
                 this.updateBounds();
             }
             this.updateTotals(-1);
-        }
-        
-        applyAggregations (aggs) {
-            console.log(aggs)
-            for (var agg in aggs) {
-                var keypair = agg.split(".")
-                var key = "", val = ""
-                val = keypair[0]
-                if (keypair.length > 1) {
-                    key = val
-                    val = keypair[1]
-                }
-                var facet = this.facetWithKeyPair(key, val)
-                var widgetName = facet[0]
-                var widget = this.facetWidgets[widgetName]
-                widget.hideAll()
-                if (aggs[agg].buckets && aggs[agg].buckets.length !== 0) {
-                    // some items in this facet should be visible
-                    var data = widget.data
-                    var buckets:Array<Bucket> = aggs[agg].buckets
-                    for (var thing in buckets) {
-                        var bucket:Bucket = buckets[thing]
-                        var count = bucket.doc_count
-                        var item = bucket.key
-                        var elementValue = widget.data[item] + " <span>(" + count.toLocaleString() + ")</span>"
-                        widget.updateItemText(item, elementValue)
-                        widget.showItem(item)
-                    }
-                }
-                console.log(agg, widgetName, aggs[agg].buckets)
-            }
         }
 
         showResults () {

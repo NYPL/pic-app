@@ -180,9 +180,12 @@ module PIC {
             $("#" + this.ID + '-' + item).removeClass("hidden");                
         }
         
-        updateItemText(item, text) {
+        updateItemText(item, text, count) {
             item = item.replace(/[\.,\s\*]/g, '_');
-            $("#" + this.ID + '-' + item).text(text);                
+            var plain = text + " (" + count.toLocaleString() + ")"
+            var html = text + "<span>(" + count.toLocaleString() + ")</span>"
+            $("#" + this.ID + '-' + item).html(html)
+            $("#" + this.ID + '-' + item).attr("title", plain)
         }
 
         handleItemClick(e: JQueryEventObject) {

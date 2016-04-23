@@ -394,6 +394,10 @@ hr {
         padding: $facetMargin;
         padding-left: $generalMargin*2;
 
+        span {
+            font-size: 0.7em;
+        }
+
         &:hover {
             background: $black;
             color: $white;

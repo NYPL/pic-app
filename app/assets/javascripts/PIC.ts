@@ -14,6 +14,11 @@ module PIC {
     interface FacetMap {
         [ID: string]: Facet;
     }
+    
+    interface Bucket {
+        doc_count: number
+        key: string
+    }
 
     export class StoredView {
             position = undefined;
@@ -76,7 +81,7 @@ module PIC {
         elasticSize = 10000;
         padding = 0.01; // to extend the boundary a bit
         maxExport = 100;
-        tooltipLimit = 50;
+        resultLimit = 50;
         heightDelta = 100;
         lineWidth = 2;
         pixelSize = 2;
@@ -134,7 +139,7 @@ module PIC {
         authHeader = '';
         geoJsonPrefix = '';
 
-        tooltipElement;
+        resultsElement;
         facetsElement;
         spinner;
 
@@ -190,7 +195,9 @@ module PIC {
             
             // console.log("state:",this.historyState.data,Object.getOwnPropertyNames(this.historyState.data).length)
 
-                // change of view?
+            console.log(this.elasticResults)
+
+            // change of view?
 
             if (this.historyState.data.ignore) {
                 return;
@@ -298,7 +305,7 @@ module PIC {
             $("#bounds .button.cancel").click(() => this.cancelBounds());
             $(".map-help-link").click(() => this.toggleHelp());
 
-            this.tooltipElement = $("#constituents");
+            this.resultsElement = $("#constituents");
             this.facetsElement = $("#facets");
             this.getFacets();
             this.resetBounds();
@@ -342,7 +349,7 @@ module PIC {
                 _wheelEvent = 'DOMMouseScroll';
             }
             this.canvas.addEventListener(_wheelEvent, _bindRepaint, false);
-            this.showSpinner(this.tooltipElement);
+            this.showSpinner(this.resultsElement);
         }
 
         toggleHelp () {
@@ -737,7 +744,7 @@ module PIC {
             this.updateTotals(this.allIDs.length);
             this.enableFacets();
             this.updateBounds();
-            this.showTooltip();
+            this.showResults();
         }
 
         loadTextFile (url, callback, parameter = undefined) {
@@ -770,7 +777,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -782,11 +789,11 @@ module PIC {
             // r.responseType = "json";
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
-                // console.log(JSON.parse(r.responseText).results)
+                var res = JSON.parse(r.responseText)
                 if (parameter === undefined) {
-                    callback.apply(pic, [r.responseText]);
+                    callback.apply(pic, [res]);
                 } else {
-                    callback.apply(pic, [r.responseText, parameter]);
+                    callback.apply(pic, [res, parameter]);
                 }
             };
             // var req = {
@@ -819,6 +826,28 @@ module PIC {
                 parsed.hits.hits.push(tmp)
             } 
             return parsed
+        }
+        
+        buildAggregations (type:string) {
+            var aggs = {}
+            for (var i=0; i < this.facets.length; i++) {
+                var facet = this.facets[i] 
+                if (facet[3] != "") {
+                    var name = facet[2]
+                    if (facet[4] !== "") name = facet[4] + "." + name
+                    if (type === "parent" && name.indexOf("address") === -1) {
+                        continue
+                    } else if (type === "child" && name.indexOf("address") !== -1) {
+                        continue
+                    }
+                    aggs[name] = {
+                        "terms": {
+                            "field": name
+                        }
+                    }
+                }
+            }
+            return aggs//{ "aggregations" : aggs }
         }
 
         buildElasticQuery (normal:Array<string>, filter:Array<string>, type:string) {
@@ -925,6 +954,8 @@ module PIC {
             } else {
                 data["query"]["bool"]["must"].push(nestedQuery)
             }
+            
+            data["aggregations"] = this.buildAggregations(type)
 
             return data
         }
@@ -956,7 +987,7 @@ module PIC {
             // console.log("total", total, this.elasticResults);
             if (total === -1) total = this.elasticResults.total;
             $("#total-points").html("<span class=\"number\">" + total.toLocaleString() + "</span><br />" + this.humanizeFilters());
-            this.tooltipElement.find(".spinner").find(".text").remove();
+            this.resultsElement.find(".spinner").find(".text").remove();
             var photographerHTML = "<span class='text'>"
             photographerHTML += "<em>" + total.toLocaleString() + "</em><br />locations"
             if (this.totalPhotographers > 0) {
@@ -964,7 +995,7 @@ module PIC {
             }
             photographerHTML += "<br />loaded"
             photographerHTML += "</span>"
-            this.tooltipElement.find(".spinner").append(photographerHTML);
+            this.resultsElement.find(".spinner").append(photographerHTML);
             this.notifyRepaintRequired();
         }
 
@@ -1263,11 +1294,10 @@ module PIC {
             this.getData({filters:filter, data:data, callback:this.buildHoverContent, source:"", size:3});
         }
 
-        buildHoverContent (responseText) {
+        buildHoverContent (data) {
             var el = $("#hover");
             if (this.pickedEntity === undefined) return;
             var position = this.pickedEntity.entity.primitive.originalLatlon;
-            var data = JSON.parse(responseText)
             // console.log("hover", data);
             var hits = data.hits.total;
             var str = "<div>";
@@ -1306,8 +1336,7 @@ module PIC {
             // this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
 
-        parseHoverLocation (responseText) {
-            var data = JSON.parse(responseText);
+        parseHoverLocation (data) {
             // console.log(data);
             if (!data.geonames) return;
             var geo = data.geonames[0];
@@ -1380,15 +1409,17 @@ module PIC {
             }
         }
 
-        updateTooltip (responseText) {
-            this.clearTooltip();
-            var data = JSON.parse(responseText)
+        updateResults (data) {
+            this.clearResults();
+            if (data.aggregations) {
+                this.applyAggregations(data.aggregations)
+            }
             var constituents = data.hits.hits;
             var total = data.hits.total;
             this.totalPhotographers = total;
             var str = "<p>Found " + this.totalPhotographers.toLocaleString() + (this.totalPhotographers != 1 ? " constituents. " : " constituent. ");
-            if (total > this.tooltipLimit) {
-                str = str + " Showing first " + this.tooltipLimit + ".";
+            if (total > this.resultLimit) {
+                str = str + " Showing first " + this.resultLimit + ".";
             }
             var url = "/export/?q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
             var urlGeo = this.geoJsonPrefix + encodeURIComponent("/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery())));
@@ -1396,8 +1427,8 @@ module PIC {
             if (total > this.maxExport) exportStr = "Export first " + this.maxExport.toLocaleString() + " results as";
             str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
             str = str + "</p>";
-            this.tooltipElement.find(".results").prepend(str);
-            if (total > 0) this.addTooltipResults(constituents, 0, data.hits.total);
+            this.resultsElement.find(".results").prepend(str);
+            if (total > 0) this.addResults(constituents, 0, data.hits.total);
             this.updateTotals(-1);
             // // now to see if a line should be shown
             // var lineID = parseInt(location.hash.replace("#",""));
@@ -1408,40 +1439,39 @@ module PIC {
             this.scrollResults();
         }
 
-        addTooltipResults (results, start, total) {
+        addResults (results, start, total) {
             var l = results.length;
             if (start > 0) {
-                this.tooltipElement.find(".results").append("<p><strong>Results " + (start) + " to " + (start + l) + "</strong></p>");
+                this.resultsElement.find(".results").append("<p><strong>Results " + (start) + " to " + (start + l) + "</strong></p>");
             }
             for (var i = 0; i < l; i++) {
-                this.buildTooltipConstituent(results[i]._source);
+                this.buildResultConstituent(results[i]._source);
             }
-            this.tooltipElement.find(".results").append("<hr />");
+            this.resultsElement.find(".results").append("<hr />");
             if (start + l < total) {
-                var more = total - (l + start) > this.tooltipLimit ? this.tooltipLimit : total - (l + start);
+                var more = total - (l + start) > this.resultLimit ? this.resultLimit : total - (l + start);
                 var string = '<div class="link more"><span>Load '+more+' more</span></div>';
-                this.tooltipElement.find(".more").replaceWith(string);
-                this.tooltipElement.find(".more").click( () => this.loadMoreResults(start + l) );
+                this.resultsElement.find(".more").replaceWith(string);
+                this.resultsElement.find(".more").click( () => this.loadMoreResults(start + l) );
             }
         }
 
         loadMoreResults (start) {
-            this.tooltipElement.find(".more").empty();
+            this.resultsElement.find(".more").empty();
             var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
             var data = this.buildFacetQuery();
             // console.log(start, data);
-            this.getData({filters:filters, data:data, callback:function(responseText) {
+            this.getData({filters:filters, data:data, callback:function(data) {
                 var scroll = $("#constituents .scroller").scrollTop();
                 var height = $("#constituents .scroller").height();
-                var data = JSON.parse(responseText)
                 var constituents = data.hits.hits;
                 this.totalPhotographers = data.hits.total;
-                this.addTooltipResults(constituents, start, data.hits.total);
+                this.addResults(constituents, start, data.hits.total);
                 this.scrollResults(scroll + height - 100);
-            }, source:"", size:this.tooltipLimit, exclude:"address", from:start});
+            }, source:"", size:this.resultLimit, exclude:"address", from:start});
         }
 
-        buildTooltipConstituent (p) {
+        buildResultConstituent (p) {
             var str = '<div id="constituent-item-' + p.ConstituentID + '" class="constituent-item">';
             str += '<h3 class="constituent-toggle-' + p.ConstituentID + '"><span class="title">' + p.DisplayName;
             str += '</span>';
@@ -1550,7 +1580,7 @@ module PIC {
                 str += '<div class="addresses"><div id="constituent-addresslist-'+p.ConstituentID+'"></div></div>';
             }
             str += "</div>";
-            this.tooltipElement.find(".results").append(str);
+            this.resultsElement.find(".results").append(str);
             $(".constituent-toggle-" + p.ConstituentID).click( () => {
                 $(".constituent-content-" + p.ConstituentID).fadeToggle(200);
                 $("#constituent-item-" + p.ConstituentID).toggleClass("open");
@@ -1592,9 +1622,8 @@ module PIC {
             this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"", docType:"address", size:this.elasticSize, exclude:"", sort:"_score", from:0, parameter:id});
         }
 
-        parseConstituentAddresses (responseText, id) {
+        parseConstituentAddresses (data, id) {
             $("#constituent-addresslist-" + id + " .address-spinner").remove();
-            var data = JSON.parse(responseText)
             // console.log(data)
             this.buildConstituentAddresses(id, data.hits.hits);
             this.connectAddresses(id);
@@ -1785,7 +1814,7 @@ module PIC {
             for (var widget in this.facetWidgets) {
                 this.facetWidgets[widget].disable();
             }
-            this.clearTooltip();
+            this.clearResults();
         }
 
         enableFacets () {
@@ -1849,11 +1878,11 @@ module PIC {
         //     return "hits.total,hits.hits";
         // }
 
-        clearTooltip() {
-            this.tooltipElement.find(".results").empty();
-            this.tooltipElement.find(".more").empty();
+        clearResults() {
+            this.resultsElement.find(".results").empty();
+            this.resultsElement.find(".more").empty();
             this.removeLines();
-            this.hideSpinner(this.tooltipElement);
+            this.hideSpinner(this.resultsElement);
         }
 
         updateFilter (facetName, value) {
@@ -1898,7 +1927,7 @@ module PIC {
             this.closeFacets();
             this.disableFacets();
             this.removePoints();
-            this.showSpinner(this.tooltipElement);
+            this.showSpinner(this.resultsElement);
             if (this.buildFacetList().length == 0) {
                 $("#facets-clear").addClass("disabled");
             } else {
@@ -1906,7 +1935,7 @@ module PIC {
             }
             var addresses = [];
             var data = this.buildFacetQuery(undefined, "parent");
-            var filters = "hits.total,hits.hits";
+            var filters = "hits.total,hits.hits,aggregations";
             this.start = new Date().getTime();
             // console.log("apply", data);
             // clear
@@ -1945,11 +1974,13 @@ module PIC {
             this.applyFilters();
         }
 
-        getNextSet (re) {
-            var results = JSON.parse(re)
-            console.log(results);
+        getNextSet (results) {
+            // console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits
             this.totalPhotographers = 0//results.hits.total;
+            if (results.aggregations) {
+                this.applyAggregations(results.aggregations)
+            }
             if (results.hits.total > this.elasticResults.from + this.elasticSize) {
                 // keep going
                 var data = this.elasticResults.data;
@@ -1961,7 +1992,7 @@ module PIC {
                 var time = end - this.start;
                 console.log("took:", time, "ms");
                 this.enableFacets();
-                this.showTooltip();
+                this.showResults();
             }
             if (results.hits.hits) this.addressesToPoints(results.hits.hits);
             if (results.hits.total <= this.elasticResults.from + this.elasticSize) {
@@ -1969,12 +2000,43 @@ module PIC {
             }
             this.updateTotals(-1);
         }
+        
+        applyAggregations (aggs) {
+            console.log(aggs)
+            for (var agg in aggs) {
+                var keypair = agg.split(".")
+                var key = "", val = ""
+                val = keypair[0]
+                if (keypair.length > 1) {
+                    key = val
+                    val = keypair[1]
+                }
+                var facet = this.facetWithKeyPair(key, val)
+                var widgetName = facet[0]
+                var widget = this.facetWidgets[widgetName]
+                widget.hideAll()
+                if (aggs[agg].buckets && aggs[agg].buckets.length !== 0) {
+                    // some items in this facet should be visible
+                    var data = widget.data
+                    var buckets:Array<Bucket> = aggs[agg].buckets
+                    for (var thing in buckets) {
+                        var bucket:Bucket = buckets[thing]
+                        var count = bucket.doc_count
+                        var item = bucket.key
+                        var elementValue = widget.data[item] + " (" + count + ")"
+                        widget.updateItemText(item, elementValue)
+                        widget.showItem(item)
+                    }
+                }
+                console.log(agg, widgetName, aggs[agg].buckets)
+            }
+        }
 
-        showTooltip () {
+        showResults () {
             var data = this.buildFacetQuery();
-            var filters = "hits.total,hits.hits";//this.buildBaseQueryFilters();
-            // console.log("tooltip", data);
-            this.getData({filters:filters, data:data, callback:this.updateTooltip, source:"", size:this.tooltipLimit});
+            var filters = "hits.total,hits.hits,aggregations";//this.buildBaseQueryFilters();
+            // console.log("results", data);
+            this.getData({filters:filters, data:data, callback:this.updateResults, source:"", size:this.resultLimit});
         }
 
         showSpinner (target, opts = {}) {

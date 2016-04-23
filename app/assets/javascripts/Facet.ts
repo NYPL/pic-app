@@ -76,10 +76,11 @@ module PIC {
         addFacetItem(name, value) {
             var strName;
             var strValue;
-            this.data[value] = name;
+            this.data[value.toLowerCase()] = name;
             if (name !== "bbox") {
                 strName = name;
                 strValue = value.replace(/[\.,\s\*]/g, '_');
+                strValue = strValue.toLowerCase()
             } else {
                 strName = name;
                 strValue = value;
@@ -123,7 +124,7 @@ module PIC {
 
             this.selectItem(value);
 
-            var txtValue = this.data[value];
+            var txtValue = this.data[value.toLowerCase()];
 
             if (headerText === undefined) {
                 this.setHeaderText(txtValue);
@@ -133,7 +134,7 @@ module PIC {
         }
 
         selectItem(value) {
-            value = value.replace(/[\.,\s\*]/g, '_');
+            value = value.replace(/[\.,\s\*]/g, '_').toLowerCase();
             $(this.IDPrefix + ".facet-item").removeClass("active");
             $(this.IDPrefix + "#" + this.ID + '-' + value.replace(/\./g, '\\.')).addClass("active");
             this.closeGroup();
@@ -165,6 +166,24 @@ module PIC {
             text = this.description + ": " + text;
             $(this.IDPrefix + ".facet-header").html(text);
         }
+        
+        hideAll() {
+            for (var item in this.data) {
+                if (item === "*") continue
+                item = item.replace(/[\.,\s\*]/g, '_');
+                $("#" + this.ID + '-' + item).addClass("hidden");                
+            }
+        }
+
+        showItem(item) {
+            item = item.replace(/[\.,\s\*]/g, '_');
+            $("#" + this.ID + '-' + item).removeClass("hidden");                
+        }
+        
+        updateItemText(item, text) {
+            item = item.replace(/[\.,\s\*]/g, '_');
+            $("#" + this.ID + '-' + item).text(text);                
+        }
 
         handleItemClick(e: JQueryEventObject) {
             var oldValue = this.value;
@@ -173,7 +192,7 @@ module PIC {
             var id = el.attr("id");
             if (value === oldValue) return;
             var headerText;
-            if (this.ID == "bbox" && value !== this.defaultValue) headerText = "Select area on map";
+            if (this.ID === "bbox" && value !== this.defaultValue) headerText = "Select area on map";
             this.setValue(value, headerText);
             $(this.IDPrefix).trigger("facet:change", this);
         }

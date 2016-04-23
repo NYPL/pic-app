@@ -749,7 +749,7 @@ module PIC {
         }
         
         applyAggregations (aggs) {
-            console.log(aggs)
+            // console.log(aggs)
             for (var agg in aggs) {
                 var keypair = agg.split(".")
                 var key = "", val = ""
@@ -774,7 +774,7 @@ module PIC {
                         widget.showItem(item)
                     }
                 }
-                console.log(agg, widgetName, aggs[agg].buckets)
+                // console.log(agg, widgetName, aggs[agg].buckets)
             }
         }
         
@@ -828,7 +828,7 @@ module PIC {
             url = url + "&from="+from;
             url = url + "&_source="+source;
             url = url + "&_source_exclude="+exclude;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();

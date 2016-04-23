@@ -402,6 +402,10 @@ hr {
         &:hover {
             background: $black;
             color: $white;
+
+            span {
+                color: $white;
+            }
         }
 
         &.active {

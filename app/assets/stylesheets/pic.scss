@@ -435,10 +435,6 @@ hr {
         &.disabled {
             color: lighten($black, 20%);
         }
-
-        &.timeline {
-            margin-bottom: 0;
-        }
     }
 
     .timeline {
@@ -448,7 +444,6 @@ hr {
     .date-field {
         float: left;
         margin-right: $generalMargin;
-        margin-bottom: $generalMargin;
 
         label {
             display: inline-block;

@@ -1,6 +1,8 @@
 
 ### Help
 
+Have a question? It may be answered in our [FAQ](http://pic.nypl.org/#faq). Is PIC not loading properly? You may need to update your browser, or try a different one.
+
 We hope you find PIC intuitive to use, but we understand that you may find some things quirky or confusing. Let us know if you’re having problems, and we’ll consider how we can make PIC more useful for you. In the meantime, here’s a tour of the interface and how to use it.
 
 The screen is divided into three sections: Search and filter the data in the lefthand column, examine (or export) the results in the middle column, and see the geographic distribution of the results on the map to the right. Any of them can be minimized by clicking the X in the upper right of the column.

@@ -195,7 +195,7 @@ module PIC {
             
             // console.log("state:",this.historyState.data,Object.getOwnPropertyNames(this.historyState.data).length)
 
-            console.log(this.elasticResults)
+            // console.log(this.elasticResults)
 
             // change of view?
 

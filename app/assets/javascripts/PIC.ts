@@ -14,7 +14,7 @@ module PIC {
     interface FacetMap {
         [ID: string]: Facet;
     }
-    
+
     interface Bucket {
         doc_count: number
         key: string
@@ -70,7 +70,7 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
-        
+
         storedView: StoredView = new StoredView();
 
         adminMode = false;
@@ -192,7 +192,7 @@ module PIC {
         processStateChange () {
             this.notifyRepaintRequired();
             this.historyState = Historyjs.getState();
-            
+
             // console.log("state:",this.historyState.data,Object.getOwnPropertyNames(this.historyState.data).length)
 
             // console.log(this.elasticResults)
@@ -747,7 +747,7 @@ module PIC {
             this.showResults();
             this.applyBaseAggregations()
         }
-        
+
         applyAggregations (aggs) {
             // console.log(aggs)
             for (var agg in aggs) {
@@ -777,7 +777,7 @@ module PIC {
                 // console.log(agg, widgetName, aggs[agg].buckets)
             }
         }
-        
+
         applyBaseAggregations () {
             // get aggregation data for empty search
             // for addresses only since base data includes a query for 50 results
@@ -822,21 +822,21 @@ module PIC {
             if (hasName) {
                 sort = "_score," + sort;
             }
-            var url = this.baseUrl + "/" + docType + "/_search?sort=" + sort;
-            url = url + "&filter_path="+filters;
-            url = url + "&size="+size;
-            url = url + "&from="+from;
-            url = url + "&_source="+source;
-            url = url + "&_source_exclude="+exclude;
+            var url = this.baseUrl //+ "?docType=" + docType + "&sort=" + sort;
+            // url = url + "&filter_path="+filters;
+            // url = url + "&size="+size;
+            // url = url + "&from="+from;
+            // url = url + "&_source="+source;
+            // url = url + "&_source_exclude="+exclude;
             // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
 
             r.open("POST", url, true);
-            r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            // r.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
             r.setRequestHeader('Authorization', 'Basic ' + this.authHeader);
-            // r.setRequestHeader('Content-Type', 'application/json');
+            r.setRequestHeader('Content-Type', 'application/json');
             // r.responseType = "json";
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
@@ -847,18 +847,19 @@ module PIC {
                     callback.apply(pic, [res, parameter]);
                 }
             };
-            // var req = {
-            //     "q": data,
-            //     "type": "constituent",
-            //     "filter_path": filters,
-            //     "size": size,
-            //     "from": from,
-            //     "source": source,
-            //     "source_exclude": exclude
-            // }
-            r.send(JSON.stringify(data));
+            var req = {
+                "q": data,
+                "filter_path": filters,
+                "size": size,
+                "from": from,
+                "source": source,
+                "docType": docType,
+                "sort": sort,
+                "source_exclude": exclude
+            }
+            r.send(JSON.stringify(req));
         }
-        
+
         parseInnerHits (results) {
             var parsed = {
                 hits: {
@@ -875,14 +876,14 @@ module PIC {
                     tmp._source.address = results.hits.hits[hit].inner_hits.address.hits.hits.map( a => a._source )
                 }
                 parsed.hits.hits.push(tmp)
-            } 
+            }
             return parsed
         }
-        
+
         buildAggregations (type:string) {
             var aggs = {}
             for (var i=0; i < this.facets.length; i++) {
-                var facet = this.facets[i] 
+                var facet = this.facets[i]
                 if (facet[3] != "") {
                     var name = facet[2]
                     if (facet[4] !== "") name = facet[4] + "." + name
@@ -1006,7 +1007,7 @@ module PIC {
             } else {
                 data["query"]["bool"]["must"].push(nestedQuery)
             }
-            
+
             data["aggregations"] = this.buildAggregations(type)
 
             return data
@@ -1384,7 +1385,7 @@ module PIC {
             // // var reverseGeo = this.geonamesUrl + "&lat=" + latlon[0] + "&lng=" + latlon[1];
             // var reverseGeo = this.geonamesUrl + "&north=" + north + "&south=" + south + "&east=" + east + "&west=" + west;
             // // console.log(reverseGeo);
-            // // TODO: only parse when mouse stopped moving 
+            // // TODO: only parse when mouse stopped moving
             // this.loadTextFile(reverseGeo, this.parseHoverLocation);
         }
 
@@ -1962,7 +1963,7 @@ module PIC {
             var url = this.buildQueryString();
             Historyjs.pushState(this.filters, "PIC - Photographers’ Identities Catalog", url);
         }
-        
+
         buildQueryString ():string {
             var url = "?";
             var keyVals = [];
@@ -2082,7 +2083,7 @@ module PIC {
                 // top: '100px', // Top position relative to parent in px
                 // left: '50%' // Left position relative to parent in px
             }
-            
+
             $.extend(defaults, opts);
 
             var spin = new Spinner(defaults).spin();
@@ -2446,7 +2447,7 @@ module PIC {
         onCameraMoved (event:Cesium.Event) {
             // console.log("moved",this.camera.position);
         }
-        
+
         changeViewTo (mode) {
             if (mode !== Number(this.scene.mode)) {
                 switch (mode) {

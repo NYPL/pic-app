@@ -86,8 +86,8 @@ module PIC {
         lineWidth = 2;
         pixelSize = 2;
         pixelScale = 4;
-        minScale = 1.5;
-        maxScale = 0.1;
+        farScale = 1.25;
+        nearScale = 0.1;
         generalMargin = 10;
         defaultValue = "*";
 
@@ -653,7 +653,7 @@ module PIC {
                     position : pt,
                     color: new Cesium.Color(1, 0.01, 1, 1),
                     pixelSize : this.pixelSize,
-                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.minScale, 8.0e6, this.maxScale)
+                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.farScale, 8.0e6, this.nearScale)
                 });
             this.notifyRepaintRequired();
         }
@@ -828,7 +828,7 @@ module PIC {
             // url = url + "&from="+from;
             // url = url + "&_source="+source;
             // url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -1907,7 +1907,7 @@ module PIC {
                 if (facetList[k].indexOf("bbox") === -1) {
                     if (facetList[k].indexOf("DisplayName") !== -1) {
                         // deconstruct facet to convert to ID
-                        var cleaned = facetList[k].replace(/([\(\)\:]*)/g, '');
+                        var cleaned = facetList[k].replace(/([\(\)\:\.]*)/g, '');
                         cleaned = cleaned.replace('DisplayName', '');
                         var isNumeric = !isNaN(Number(cleaned));
                         if (!isNumeric) {
@@ -2175,7 +2175,7 @@ module PIC {
                     position : Cesium.Cartesian3.fromDegrees(p[1], p[0], height),
                     color: this.addressTypePalette[p[4]],//new Cesium.Color(1, 0.01, 0.01, 1),
                     pixelSize : this.pixelSize,
-                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.minScale, 1.0e10, this.maxScale)
+                    scaleByDistance : new Cesium.NearFarScalar(1.0e1, this.farScale, 1.0e10, this.nearScale)
                 });
                 pt.originalLatlon = p[0] + "," + p[1] + (p[6] ? "," + p[6] : "");
             }

@@ -16,9 +16,10 @@ class ConstituentsController < ApplicationController
 
   def search
     client = Elasticsearch::Client.new host: connection_string
-    # puts "\n\n\n\n\n"
-    # puts params
-    # puts "\n\n\n\n\n"
+    puts "\n\n\n\n\n"
+    puts params
+    puts connection_string
+    puts "\n\n\n\n\n"
     begin
       p = params
       q = p[:q]
@@ -29,7 +30,7 @@ class ConstituentsController < ApplicationController
       type = p[:docType]
       exclude = p[:source_exclude]
       sort = p[:sort]
-      r = client.search index: 'pic', type: type, body: q, size: size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
+      r = client.search index: 'pic', scroll: '1m', type: type, body: q, size: size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
     rescue
       @results = nil
     end

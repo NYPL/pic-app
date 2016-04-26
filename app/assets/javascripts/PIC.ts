@@ -828,7 +828,7 @@ module PIC {
             // url = url + "&from="+from;
             // url = url + "&_source="+source;
             // url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -2048,7 +2048,7 @@ module PIC {
         }
 
         getNextSet (results) {
-            // console.log(results);
+            console.log(results);
             // elasticResults.hits = elasticResults.hits.concat(results.hits.hits
             this.totalPhotographers = 0//results.hits.total;
             if (results.aggregations) {

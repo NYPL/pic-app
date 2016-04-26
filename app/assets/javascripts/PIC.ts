@@ -828,7 +828,7 @@ module PIC {
             // url = url + "&from="+from;
             // url = url + "&_source="+source;
             // url = url + "&_source_exclude="+exclude;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -1022,15 +1022,10 @@ module PIC {
             var query = {}
             query[filter] = {
                 "type": value,
-                // "inner_hits": {},
                 "query": {
-                    // "filtered": {
-                    //     "query": {
-                            "bool": {
-                                "must": []
-                            }
-                    //     }
-                    // }
+                    "bool": {
+                        "must": []
+                    }
                 }
             }
             return query
@@ -1750,6 +1745,7 @@ module PIC {
                 // probably user wants to hide lines
                 connector.removeClass("connected");
                 connector.text("SHOW LINES");
+                this.updateLineText()
                 return;
             } else {
                 $(".link.connector").removeClass("connected");
@@ -1761,6 +1757,7 @@ module PIC {
             var lastPoint = addresses[0];
             var positions = [];
             var colors = [];
+            var usefulAddresses = 0
             for (var i=0; i < addresses.length; i++) {
                 var p = addresses[i];
                 // console.log(p, addresses[i]);
@@ -1770,9 +1767,10 @@ module PIC {
                 var height = p[6] !== undefined ? p[6] : this.heightHash[p[3]];
                 positions.push(p[1], p[0], height);
                 colors.push(this.addressTypePalette[p[4]]);
+                usefulAddresses ++
             }
 
-            if (addresses.length > 1) {
+            if (usefulAddresses > 1) {
                 this.lines = new Cesium.Primitive({
                   geometryInstances : new Cesium.GeometryInstance({
                     geometry : new Cesium.PolylineGeometry({
@@ -1788,9 +1786,27 @@ module PIC {
                   })
                 });
                 this.scene.primitives.add(this.lines);
+                this.updateLineText(id)
             }
+            
 
             this.updateBounds();
+        }
+        
+        updateLineText (id = undefined) {
+            $("#total-points .linetext").remove()
+            if (id === undefined) return
+            var filters = "hits.total,hits.hits";
+            var data = this.buildElasticQuery(["ConstituentID:" + id], ["*"], "child")
+            this.getData({filters:filters, data:data, callback:function (data) {
+                // console.log(data)
+                if (!data.hits.hits || data.hits.hits.length < 1) return
+                var html = '<div class="linetext">'
+                html += 'Showing lines for '
+                html += data.hits.hits[0]._source.DisplayName
+                html += '</div>'
+                $("#total-points").append(html)
+            }, source:"DisplayName", docType:"constituent", size:1, exclude:"", sort:"_score", from:0})
         }
 
         dimPoints () {

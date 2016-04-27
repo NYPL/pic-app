@@ -840,6 +840,7 @@ module PIC {
             // r.responseType = "json";
             r.onreadystatechange = function() {
                 if (r.readyState != 4 || r.status != 200) return;
+                // console.log("result", r.responseText);
                 var res = JSON.parse(r.responseText)
                 if (parameter === undefined) {
                     callback.apply(pic, [res]);
@@ -1667,7 +1668,7 @@ module PIC {
             // change url without commiting new state change
             var filters = "hits.total,hits.hits";
             var data = this.buildElasticQuery(["ConstituentID:" + id,"address.ConstituentID:" + id], ["*"], "parent");
-            this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"", docType:"address", size:this.elasticSize, exclude:"", sort:"_score", from:0, parameter:id});
+            this.getData({filters:filters, data:data, callback:this.parseConstituentAddresses, source:"", docType:"address", size:this.elasticSize, exclude:"", sort:"", from:0, parameter:id});
         }
 
         parseConstituentAddresses (data, id) {
@@ -1806,7 +1807,7 @@ module PIC {
                 html += data.hits.hits[0]._source.DisplayName
                 html += '</div>'
                 $("#total-points").append(html)
-            }, source:"DisplayName", docType:"constituent", size:1, exclude:"", sort:"_score", from:0})
+            }, source:"DisplayName", docType:"constituent", size:1, exclude:"", sort:"", from:0})
         }
 
         dimPoints () {

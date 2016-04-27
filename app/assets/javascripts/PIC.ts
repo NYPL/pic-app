@@ -828,7 +828,7 @@ module PIC {
             // url = url + "&from="+from;
             // url = url + "&_source="+source;
             // url = url + "&_source_exclude="+exclude;
-            // console.log("elastic", url, JSON.stringify(data));
+            console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -1470,11 +1470,13 @@ module PIC {
             if (total > this.resultLimit) {
                 str = str + " Showing first " + this.resultLimit + ".";
             }
+
             var url = "/export/?q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery()));
             var urlGeo = this.geoJsonPrefix + encodeURIComponent("/export/?type=geojson&q=" + encodeURIComponent(JSON.stringify(this.buildFacetQuery())));
+
             var exportStr = "Export results as";
             if (total > this.maxExport) exportStr = "Export first " + this.maxExport.toLocaleString() + " results as";
-            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
+            str = str + '<span class="export-links">' + exportStr + ': <a href="' + url + '" target="_blank" title="opens in new window" class="export link">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io" class="export link">GeoJSON</a></span>';
             str = str + "</p>";
             this.resultsElement.find(".results").prepend(str);
             if (total > 0) this.addResults(constituents, 0, data.hits.total);
@@ -1494,7 +1496,7 @@ module PIC {
                 this.resultsElement.find(".results").append("<p><strong>Results " + (start) + " to " + (start + l) + "</strong></p>");
             }
             for (var i = 0; i < l; i++) {
-                this.buildResultConstituent(results[i]._source);
+                this.buildConstituent(results[i]._source);
             }
             this.resultsElement.find(".results").append("<hr />");
             if (start + l < total) {
@@ -1520,7 +1522,7 @@ module PIC {
             }, source:"", size:this.resultLimit, exclude:"address", from:start});
         }
 
-        buildResultConstituent (p) {
+        buildConstituent (p) {
             var str = '<div id="constituent-item-' + p.ConstituentID + '" class="constituent-item">';
             str += '<h3 class="constituent-toggle-' + p.ConstituentID + '"><span class="title">' + p.DisplayName;
             str += '</span>';
@@ -1531,6 +1533,13 @@ module PIC {
             str += '</h3>';
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
 
+            var url = '/export/?ConstituentID=' + p.ConstituentID
+            var urlGeo = this.geoJsonPrefix + encodeURIComponent('/export/?type=geojson&ConstituentID=' + p.ConstituentID);
+
+            str += '<p class="constituent-id">';
+            str += "<strong>ID:</strong> " + p.ConstituentID;
+            str += '<br /><span class="constituent-export">Export data as: <a href="' + url + '" target="_blank" title="opens in new window">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io">GeoJSON</a></span>';
+            str += "</p>";
             str += '<div class="tabs">';
             str += '<div class="metadata-toggle link active"><strong>';
             str += 'Information';
@@ -1548,9 +1557,6 @@ module PIC {
 
             str += '<div class="constituent-metadata open constituent-metadata-' + p.ConstituentID + '">';
             // str += '<a href="http://digitalcollections.nypl.org/search/index?utf8=%E2%9C%93&keywords=' + (p.DisplayName.replace(/\s/g, "+")) + '">View photos in Digital Collections</a><br />';
-            str += "<p>";
-            str += "<strong>ID:</strong> " + p.ConstituentID;
-            str += "</p>";
             if (p.TextEntry && p.TextEntry !== "NULL") {
                 str += "<p>";
                 // str += "<strong>Bio:</strong><br />";
@@ -1681,9 +1687,10 @@ module PIC {
         buildConstituentAddresses (id, addresses) {
             // console.log(id);
             if (addresses) {
+                addresses = this.sortAddresses(addresses)
                 var addstring = "";
                 for (var i=0; i < addresses.length; i++) {
-                    var add = addresses[i]._source;
+                    var add = addresses[i];
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
                     addstring += "<div class=\"address-item-type\">";
@@ -1722,6 +1729,43 @@ module PIC {
                         this.flyToAddressID(id);
                 });
             }
+        }
+
+        sortAddresses (addresses:Array<any>) {
+            // console.log(addresses)
+            var sortedAddresses = []
+            var born = {}
+            var died = {}
+            if (addresses.length == 1) {
+                return [addresses[0]._source]
+            }
+            // sort by date
+            addresses = addresses.sort(function (a, b) {
+                if (a['BeginDate'] > b['BeginDate']) return 1
+                if (a['BeginDate'] < b['BeginDate']) return -1
+                return 0
+            })
+
+            for (var key in addresses) {
+                var add = addresses[key]._source
+                // put the active/biz ones
+                if (add['AddressTypeID'] == '7' || add['AddressTypeID'] == '2') {
+                    sortedAddresses.push(add)
+                }
+                // find born if any
+                if (add['AddressTypeID'] == '5') {
+                    born = add
+                }
+                // find died if any
+                if (add['AddressTypeID'] == '6') {
+                    died = add
+                }
+            }
+            // prepend born
+            if (born) sortedAddresses.unshift(born)
+            // append died
+            if (died) sortedAddresses.push(died)
+            return sortedAddresses
         }
 
         flyToAddressID (id) {

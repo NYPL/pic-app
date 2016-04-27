@@ -41,33 +41,50 @@ class ConstituentsController < ApplicationController
 
   def export
     client = Elasticsearch::Client.new host: connection_string
+    max_address_size = 10000 # how many child addresses for a constituent
+    max_export_size = 100 # how many results in an export
     type = "json"
     if params[:type] != nil
       type = params[:type]
     end
-    begin
-      q = JSON.parse(params[:q])
-      filter_path = params[:filter_path]
-      from = 0
-      size = 100
-      source = params[:source]
-      exclude = params[:source_exclude]
-      sort = "AlphaSort.raw:asc"
-      r = client.search index: 'pic', type: "constituent", body: q, size: size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
-    rescue
-      @results = nil
+    if params[:ConstituentID] != nil
+        # looking for a photographer
+        begin
+            id = params[:ConstituentID]
+            qc = {query:{"bool":{must:[{query_string:{query:"((ConstituentID:#{id}))"}}]}}}
+            r = client.search index: 'pic', type: "constituent", body: qc, size: 1
+            qa = {query:{"bool":{must:[{has_parent:{type:"constituent",query:{bool:{must:[{query_string:{query:"(ConstituentID:#{id})"}}]}}}}]}}}
+            ra = client.search index: 'pic', type: "address", body: qa, size: max_address_size
+            temp = r["hits"]["hits"]
+            temp[0]["address"] = ra["hits"]["hits"].map {|a| a["_source"]}
+        rescue
+          @results = nil
+        end
+    else
+        # looking for a regular export
+        begin
+            q = JSON.parse(params[:q])
+            filter_path = params[:filter_path]
+            from = 0
+            source = params[:source]
+            exclude = params[:source_exclude]
+            sort = "AlphaSort.raw:asc"
+            r = client.search index: 'pic', type: "constituent", body: q, size: max_export_size, from: from, sort: sort, _source: source, _source_exclude: exclude, filter_path: filter_path
+        rescue
+          @results = nil
+        end
+        # puts "type: #{params} |#{params[:type]==nil}|"
+        temp = r["hits"]["hits"]
+        temp.each_with_index do |hit, index|
+            q_address = {"query" => {"bool" => {"must" => [{"query_string" => {"query" => "ConstituentID:#{hit["_source"]["ConstituentID"]}"}}]}}}
+            address_query = client.search index: 'pic', type: 'address', body: q_address, size: 5000
+            if address_query["hits"]["total"] > 0
+                # puts address_query
+                temp[index]["address"] = address_query["hits"]["hits"]
+            end
+        end
     end
     if r && r["hits"]["total"] > 0
-      # puts "type: #{params} |#{params[:type]==nil}|"
-      temp = r["hits"]["hits"]
-      temp.each_with_index do |hit, index|
-        q_address = {"query" => {"bool" => {"must" => [{"query_string" => {"query" => "ConstituentID:#{hit["_source"]["ConstituentID"]}"}}]}}}
-        address_query = client.search index: 'pic', type: 'address', body: q_address, size: 5000
-        if address_query["hits"]["total"] > 0
-            # puts address_query
-            temp[index]["address"] = address_query["hits"]["hits"]
-        end
-      end
       if type == "json"
         @results = temp
       elsif type == "geojson"
@@ -81,7 +98,7 @@ class ConstituentsController < ApplicationController
           r[:geometry] = { :type => "MultiPoint", :coordinates => [] }
           next if hit["address"] == nil
           hit["address"].each do |address_raw|
-            address = address_raw["_source"]
+            address = address_raw["_source"] || address_raw
             r[:geometry][:coordinates].push([address["Location"]["lon"], address["Location"]["lat"]]) if address["Location"] != nil
           end
           @results[:features].push(r)

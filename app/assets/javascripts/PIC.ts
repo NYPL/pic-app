@@ -70,6 +70,7 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
+        hasWebGL:boolean = true
 
         storedView: StoredView = new StoredView();
 
@@ -331,6 +332,8 @@ module PIC {
             var _bindRepaint = this.notifyRepaintRequired.bind(this);
             window.onresize = _bindRepaint;
             window.onclick = _bindRepaint;
+            this.showSpinner(this.resultsElement);
+            if (!this.hasWebGL) return
             this.scene.postRender.addEventListener( (e) => {this.postRender()} );
             this.canvas.addEventListener('mousemove', _bindRepaint, false);
             this.canvas.addEventListener('mousedown', _bindRepaint, false);
@@ -351,7 +354,6 @@ module PIC {
                 _wheelEvent = 'DOMMouseScroll';
             }
             this.canvas.addEventListener(_wheelEvent, _bindRepaint, false);
-            this.showSpinner(this.resultsElement);
         }
 
         toggleHelp () {
@@ -363,6 +365,7 @@ module PIC {
         }
 
         initWorld () {
+            if (!this.hasWebGL) return
             Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: new Cesium.MapboxImageryProvider({
@@ -1052,6 +1055,7 @@ module PIC {
 
         updateBounds () {
             // console.log(bounds);
+            if (!this.hasWebGL) return
             var west = this.bounds[2];
             var south = this.bounds[3];
             var east = this.bounds[0];
@@ -1168,6 +1172,8 @@ module PIC {
 
         initMouseHandler() {
             var pic = this;
+
+            if (!this.hasWebGL) return
 
             this.canvas.setAttribute('tabindex', '0'); // needed to put focus on the canvas
 
@@ -1750,7 +1756,7 @@ module PIC {
                 $("#constituent-addresslist-" + id + " .connector").click( () => this.connectAddresses(id) );
                 $("#constituent-addresslist-" + id + " .link.constituent-address").click( (e) => {
                         var id = $(e.target).data("id");
-                        this.flyToAddressID(id);
+                        if (this.hasWebGL) this.flyToAddressID(id);
                 });
             }
         }
@@ -1805,6 +1811,7 @@ module PIC {
 
         connectAddresses (id) {
             // console.log(id);
+            if (!this.hasWebGL) return
             location.hash = id;
             this.resetBounds();
             this.removeLines();
@@ -1887,6 +1894,7 @@ module PIC {
                 if (this.facets[i][1] != "") {
                     if (this.facets[i][3] === "AddressType") $("#facet-list").append("<h4>Locations</h4>")
                     if (this.facets[i][3] === "Nationality") $("#facet-list").append("<h4>Constituents</h4>")
+                    if (this.facets[i][0] === "bbox" && !this.hasWebGL) continue
                     this.getFacet(i)
                 }
             }
@@ -2056,7 +2064,7 @@ module PIC {
                 keyVals.push(filter + "=" + this.filters[filter]);
             }
             url += keyVals.join("&");
-            url += "&mode=" + this.scene.mode;
+            if (this.hasWebGL) url += "&mode=" + this.scene.mode;
             return url;
         }
 
@@ -2068,7 +2076,7 @@ module PIC {
             this.pickedEntity = undefined;
             this.closeFacets();
             this.disableFacets();
-            this.removePoints();
+            if (this.hasWebGL) this.removePoints();
             this.showSpinner(this.resultsElement);
             if (this.buildFacetList().length == 0) {
                 $("#facets-clear").addClass("disabled");
@@ -2205,6 +2213,7 @@ module PIC {
 
         addPoints (newPoints) {
             // console.log("addpoints",newPoints)
+            if (!this.hasWebGL) return
             if (newPoints.length === 0) return;
             var addressType = $("#"+this.facetWithName("addresstypes")[0]).data("value").toString();
             var country = $("#" + this.facetWithName("countries")[0]).data("value").toString();
@@ -2283,7 +2292,7 @@ module PIC {
         }
 
         removeLines () {
-            this.scene.primitives.remove(this.lines);
+            if (this.hasWebGL) this.scene.primitives.remove(this.lines);
         }
 
         resetDateQuery () {
@@ -2534,6 +2543,7 @@ module PIC {
         }
 
         changeViewTo (mode) {
+            if (!this.hasWebGL) return
             if (mode !== Number(this.scene.mode)) {
                 switch (mode) {
                     case 1:
@@ -2552,6 +2562,17 @@ module PIC {
         initListeners () {
             this.resetNameQuery();
             this.resetDateQuery();
+            var from = $("#" + this.fromDateElement);
+            var to = $("#" + this.toDateElement);
+            from.keyup((e) => this.onFromDateKeyUp(e));
+            from.blur(() => this.updateTimeFilters());
+            to.keyup((e) => this.onToDateKeyUp(e));
+            to.blur(() => this.updateTimeFilters());
+            var name = $("#" + this.nameQueryElement)
+            name.keyup((e) => this.onNameQueryKeyUp(e));
+            name.blur(() => this.updateNameFilter());
+            $("#facets-clear").click(() => this.clearFilters());
+            if (!this.hasWebGL) return
             this.scene.morphComplete.addEventListener( () => {
                 if (this.scene.mode !== 2) {
                     this.hideMoon();
@@ -2568,22 +2589,13 @@ module PIC {
                 this.viewer.sceneModePicker.viewModel.dropDownVisible = true;
                 // console.log(JSON.stringify(this.storedView));
             })
-            var from = $("#" + this.fromDateElement);
-            var to = $("#" + this.toDateElement);
-            from.keyup((e) => this.onFromDateKeyUp(e));
-            from.blur(() => this.updateTimeFilters());
-            to.keyup((e) => this.onToDateKeyUp(e));
-            to.blur(() => this.updateTimeFilters());
-            var name = $("#" + this.nameQueryElement)
-            name.keyup((e) => this.onNameQueryKeyUp(e));
-            name.blur(() => this.updateNameFilter());
-            $("#facets-clear").click(() => this.clearFilters());
             this.viewer.geocoder.viewModel.search.afterExecute.addEventListener(() => {this.notifyRepaintRequired()});
             // this.camera.moveEnd.addEventListener(() => this.onCameraMoved());
         }
 
         notifyRepaintRequired () {
             // console.log("repaint");
+            if (!this.hasWebGL) return
             if (this.verboseRendering && !this.viewer.useDefaultRenderLoop) {
                 // console.log('starting rendering @ ' + Cesium.getTimestamp());
             }
@@ -2598,6 +2610,7 @@ module PIC {
             //  - there are no tiles waiting to load, and
             //  - the clock is not animating
             //  - there are no tweens in progress
+            if (!this.hasWebGL) return
             var now = Cesium.getTimestamp();
 
             var scene = this.scene;

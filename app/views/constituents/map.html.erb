@@ -12,15 +12,6 @@
 &nbsp;&nbsp;/&nbsp;&nbsp;Map<%= link_to "Help", "#", :class => "map-help-link" %>
 <% end %>
 
-    <div id="webgl-overlay">
-        <p>PIC requires a browser that supports the <a href="https://www.khronos.org/webgl/">WebGL 3D graphics API</a>.<br />Unfortunately your browser seems not to support it (or it is disabled).<br />Please update your browser:<br /><br />
-            <a class="browser" href="//firefox.com">Get Firefox</a>
-            <a class="browser" href="//www.apple.com/safari/">Get Safari</a>
-            <a class="browser" href="//www.microsoft.com/en-us/windows/microsoft-edge">Get Microsoft Edge</a>
-            <a class="browser" href="//www.google.com/chrome/">Get Google Chrome</a>
-            <a class="browser" href="//www.opera.com/">Get Opera</a>
-        </p>
-    </div>
 
     <div id="map-help">
     <div class="scroller">
@@ -30,6 +21,15 @@
 
     <div id="credits"></div>
     <div id="cesiumContainer">
+        <div id="webgl-overlay">
+            <p>PIC requires a browser that supports the <a href="https://www.khronos.org/webgl/">WebGL 3D graphics API</a>.<br />Unfortunately your browser seems not to support it (or it is disabled).<br />Please update your browser:<br /><br />
+                <a class="browser" href="//firefox.com">Get Firefox</a>
+                <a class="browser" href="//www.apple.com/safari/">Get Safari</a>
+                <a class="browser" href="//www.microsoft.com/en-us/windows/microsoft-edge">Get Microsoft Edge</a>
+                <a class="browser" href="//www.google.com/chrome/">Get Google Chrome</a>
+                <a class="browser" href="//www.opera.com/">Get Opera</a>
+            </p>
+        </div>
         <div id="total-points"></div>
         <ul class="legend">
             <li class="born"><span class="color"></span><span class="label">Born</span></li>
@@ -88,6 +88,7 @@
     var _pic;
     function init () {
         _pic = new PIC.PIC();
+        // _pic.hasWebGL = webgl_detect();
         _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
         _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
         _pic.rootPath = "<%= ENV['CLOUDFRONT_URL'] %>";
@@ -131,9 +132,9 @@
     var has_webgl = webgl_detect();
     if (has_webgl) {
         $("#webgl-overlay").remove();
-        init();
     } else {
         $("#webgl-overlay p").show();
     }
+    init();
   });
   </script>

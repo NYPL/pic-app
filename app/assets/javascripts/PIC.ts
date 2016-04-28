@@ -86,8 +86,10 @@ module PIC {
         lineWidth = 2;
         pixelSize = 2;
         pixelScale = 4;
-        farScale = 1.25;
+        farScale = 1.1;
         nearScale = 0.1;
+        zoomIncrement = 3
+        minHeight = 200
         generalMargin = 10;
         defaultValue = "*";
 
@@ -828,7 +830,7 @@ module PIC {
             // url = url + "&from="+from;
             // url = url + "&_source="+source;
             // url = url + "&_source_exclude="+exclude;
-            console.log("elastic", url, JSON.stringify(data));
+            // console.log("elastic", url, JSON.stringify(data));
             var pic = this;
 
             var r = new XMLHttpRequest();
@@ -1180,6 +1182,28 @@ module PIC {
             //     var pickedObject = this.pickEntity({x:e.layerX, y:e.layerY});
             //     this.refreshPicked(pickedObject);
             // };
+            this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
+            
+            this.canvas.ondblclick = (e) => {
+                console.log(e)
+                var p = new Cesium.Cartesian2(e.layerX, e.layerY)
+                if (!p) return
+                var cartesian = this.camera.pickEllipsoid(p, this.scene.globe.ellipsoid)
+                var height
+                if (this.scene.mode !== 3) {
+                    height = this.camera.getMagnitude() / this.zoomIncrement
+                } else {
+                    height = Cesium.Cartographic.fromCartesian(this.camera.positionWC).height / this.zoomIncrement
+                }
+                if (height <= this.minHeight) height = this.minHeight
+                var destination =  this.scene.globe.ellipsoid.cartesianToCartographic(cartesian)
+                console.log(p, cartesian, destination, height)
+                this.camera.flyTo({
+                    destination : Cesium.Cartesian3.fromRadians(destination.longitude, destination.latitude, height),
+                    duration : 1.0
+                })
+                this.notifyRepaintRequired()
+            }
 
             this.canvas.onmousemove = this.canvas.ontouchmove = (e) => {
                 var c = new Cesium.Cartesian2(e.layerX, e.layerY);

@@ -2064,7 +2064,9 @@ module PIC {
                 keyVals.push(filter + "=" + this.filters[filter]);
             }
             url += keyVals.join("&");
-            if (this.hasWebGL) url += "&mode=" + this.scene.mode;
+            var mode = 2
+            if (this.hasWebGL) mode = this.scene.mode
+            url += "&mode=" + mode
             return url;
         }
 

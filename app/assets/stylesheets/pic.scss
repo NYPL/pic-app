@@ -26,7 +26,7 @@ header {
     z-index: 111111;
     background-color: gray;
     text-align: center;
-    font-size: 2em;
+    font-size: 1.2em;
     // font-family: $headerFont;
 
     p {
@@ -36,7 +36,7 @@ header {
 
         a.browser {
             @include pic-button(0.7em, $white, $linkColor);
-            width: 300px;
+            width: 220px;
             display: inline-block;
             margin: 0 10px 20px 0;
         }

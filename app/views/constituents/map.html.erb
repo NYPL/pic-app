@@ -22,7 +22,7 @@
     <div id="credits"></div>
     <div id="cesiumContainer">
         <div id="webgl-overlay">
-            <p>PIC requires a browser that supports the <a href="https://www.khronos.org/webgl/">WebGL 3D graphics API</a>.<br />Unfortunately your browser seems not to support it (or it is disabled).<br />Please update your browser:<br /><br />
+            <p>The map requires a browser that supports the <a href="https://www.khronos.org/webgl/">WebGL 3D graphics API</a>.<br />Unfortunately your browser seems not to support it (or it is disabled).<br />Please update your browser:<br /><br />
                 <a class="browser" href="//firefox.com">Get Firefox</a>
                 <a class="browser" href="//www.apple.com/safari/">Get Safari</a>
                 <a class="browser" href="//www.microsoft.com/en-us/windows/microsoft-edge">Get Microsoft Edge</a>
@@ -88,7 +88,7 @@
     var _pic;
     function init () {
         _pic = new PIC.PIC();
-        // _pic.hasWebGL = webgl_detect();
+        _pic.hasWebGL = webgl_detect();
         _pic.bingMapsKey = "AhboAMIjuYTcfEbws5B3G1U95fG1jFCdR6PkoxyEd9TZ-4KOL_D8Zx2ChWopl_9B";
         _pic.tileUrl = "https://a.tiles.mapbox.com/v4/";
         _pic.rootPath = "<%= ENV['CLOUDFRONT_URL'] %>";

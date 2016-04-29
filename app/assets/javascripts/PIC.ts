@@ -70,7 +70,7 @@ module PIC {
         heightHash = {};
         allIDs = [];
         lines;
-        hasWebGL:boolean = true
+        hasWebGL:boolean = false
 
         storedView: StoredView = new StoredView();
 

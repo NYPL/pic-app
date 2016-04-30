@@ -107,6 +107,7 @@
     }
 
     function webgl_detect() {
+        return false
         if (!!window.WebGLRenderingContext) {
             var canvas = document.createElement("canvas"),
                  names = ["webgl", "experimental-webgl", "moz-webgl"],

@@ -2123,7 +2123,7 @@ module PIC {
                 this.initFacetWidget(widget);
                 widget.init(); // hack... but works ¯\_(ツ)_/¯
             }
-            this.stopDrawing();
+            if (this.hasWebGL) this.stopDrawing();
             this.applyFilters();
         }
 

@@ -1721,6 +1721,7 @@ module PIC {
                 var addstring = "";
                 for (var i=0; i < addresses.length; i++) {
                     var add = addresses[i];
+                    // console.log(add)
                     addstring += "<div class=\"address-item\">";
                     // addstring += "ID:" + add.ConAddressID + "<br />";
                     addstring += "<div class=\"address-item-type\">";
@@ -1764,8 +1765,8 @@ module PIC {
         sortAddresses (addresses:Array<any>) {
             // console.log(addresses)
             var sortedAddresses = []
-            var born = {}
-            var died = {}
+            var born
+            var died
             if (addresses.length == 1) {
                 return [addresses[0]._source]
             }

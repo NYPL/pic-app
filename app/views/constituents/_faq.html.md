@@ -16,9 +16,9 @@ PIC uses “fuzzy search” to give you results, so if you search for “Mary”
 
 
 
-### It looks like there are fewer than 115,000 names in PIC. Why is that?
+### It looks like there are fewer than 116,000 names in PIC. Why is that?
 
-We "refresh" the data frequently, so you'll always see our most recent, corrected information. That process takes about 7 to 9 minutes (it's a bunch of data!). If you happen to search PIC while this is happening, you may see a lower number of constituents. Refresh your browser, and that number will grow. As of March, 2016 you should be seeing about 115,700 names.
+We "refresh" the data frequently, so you'll always see our most recent, corrected information. That process takes about 7 to 9 minutes (it's a bunch of data!). If you happen to search PIC while this is happening, you may see a lower number of constituents. Refresh your browser, and that number will grow. As of May, 2016 you should be seeing about 116,100 names.
 
 
 
@@ -58,7 +58,9 @@ We’ve listed all of our sources in each record so you can double check our wor
 - [Encyclopedia of Nineteenth-Century Photography](http://www.worldcat.org/title/encyclopedia-of-nineteenth-century-photography/oclc/123968757)by John Hannavy
 - The Metropolitan Museum of Art’s [Heilbrunn Timeline of Art History](https://www.metmuseum.org/toah/)
 - [Library of Congress Authorities](http://authorities.loc.gov/)
+- [Lithuanian Integral Museum Information System](http://www.limis.lt/)
 - [Minnesota Historical Society’s Directory of Minnesota Photographers](http://www.mnhs.org/people/photographers/)
+- [Photogrammar](http://photogrammar.yale.edu/)
 - [Photographers’ Association of America’s Classified Membership Directories](http://www.worldcat.org/title/classified-membership-directory/oclc/22265589&referer=brief_results)
 - [Photographers of the Pacific Northwest Database](http://db.lib.washington.edu/pnwphotographers/)
 - [PhotographyDatabase.org](http://photographydatabase.org/)

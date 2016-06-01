@@ -87,7 +87,7 @@ module PIC {
         lineWidth = 2;
         pixelSize = 2;
         pixelScale = 4;
-        farScale = 1.175;
+        farScale = 1.1;
         nearScale = 0.1;
         zoomIncrement = 3
         minHeight = 200

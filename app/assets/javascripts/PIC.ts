@@ -368,10 +368,10 @@ module PIC {
             if (!this.hasWebGL) return
             Cesium.BingMapsApi.defaultKey = this.bingMapsKey;
             this.viewer = new Cesium.Viewer('cesiumContainer', {
-                imageryProvider: new Cesium.BingMapsImageryProvider({
+                imageryProvider: new Cesium.MapboxImageryProvider({
                     url: this.tileUrl,
-                    // mapId: this.mapboxMap,
-                    // accessToken: this.mapboxKey
+                    mapId: this.mapboxMap,
+                    accessToken: this.mapboxKey
                 })
 
                 // ,clock: new Cesium.Clock({shouldAnimate:false})

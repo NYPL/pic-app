@@ -110,13 +110,18 @@ class ConstituentsController < ApplicationController
 
   def show
     client = Elasticsearch::Client.new host: connection_string
+    max_address_size = 10000 # how many child addresses for a constituent
     begin
-      results = client.search index: 'pic', q: "constituent.ConstituentID:#{params[:id]}"
+      # results = client.search index: 'pic', q: "constituent.ConstituentID:#{params[:id]}"
+      id = params[:id]
+      qc = {query:{"bool":{must:[{query_string:{query:"((ConstituentID:#{id}))"}}]}}}
+      r = client.search index: 'pic', type: "constituent", body: qc, size: 1
+      qa = {query:{"bool":{must:[{has_parent:{type:"constituent",query:{bool:{must:[{query_string:{query:"(ConstituentID:#{id})"}}]}}}}]}}}
+      ra = client.search index: 'pic', type: "address", body: qa, size: max_address_size
+      @constituent = r["hits"]["hits"][0]["_source"]
+      @constituent["address"] = ra["hits"]["hits"].map {|a| a["_source"]}
     rescue
       @constituent = nil
-    end
-    if results && results["hits"]["total"] > 0
-      @constituent = results["hits"]["hits"][0]["_source"]
     end
     respond_with @constituent do |f|
       f.html # {render json: @constituent}

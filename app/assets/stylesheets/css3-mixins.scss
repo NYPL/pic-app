@@ -65,6 +65,12 @@ $iconFontFamily:        "nyplicons";
     text-transform: uppercase;
     border-radius: 60px;
     font-size: $fontSize;
+    transition: all 0.2s;
+
+    &:hover {
+      background: $color;
+      color: $backgroundColor;
+    }
 }
 
 /* -------------------------------------------------------------

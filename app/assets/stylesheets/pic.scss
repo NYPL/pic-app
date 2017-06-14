@@ -587,6 +587,14 @@ hr {
             margin-bottom: 7px;
         }
 
+        .constituent-page-button {
+            @include pic-button(0.8em, darken($linkColor, 10%), $white);
+            display: inline-block;
+            padding-left: 0.8em;
+            padding-right: 0.8em;
+            margin-left: 1em;
+        }
+
         .constituent-export {
             color: $white;
             display: inline-block;

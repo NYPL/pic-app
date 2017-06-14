@@ -119,7 +119,7 @@ class ConstituentsController < ApplicationController
       @constituent = results["hits"]["hits"][0]["_source"]
     end
     respond_with @constituent do |f|
-      f.html {render json: @constituent}
+      f.html # {render json: @constituent}
       f.json
     end
   end

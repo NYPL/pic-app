@@ -1,7 +1,7 @@
-<% content_for :dynamic_js do %>
-  <%= stylesheet_link_tag    "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css", :media => "all" %>
-  <%= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>
-<% end %>
+<%# content_for :dynamic_js do %>
+  <%#= stylesheet_link_tag    "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css", :media => "all" %>
+  <%#= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>
+<%# end %>
 
     <main>
         <span class="constituentid">ID:<%= @constituent["ConstituentID"] %></span>
@@ -111,7 +111,7 @@
                 end
                 mapimage_big = "https://api.mapbox.com/v4/nypllabs.8e20560b/pin-l+#{color}(#{lonlat})/#{lonlat},#{big_zoom}/#{size}x#{size}.png?access_token=#{ENV["MAPBOX_KEY"]}"
         %>
-
+<!-- commenting mapbox stuff out
                 <style type="text/css">
                     /*.map-<%= id %> {
                         background-image: url('<%= mapimage %>');
@@ -121,8 +121,9 @@
                     }*/
                 </style>
                 <div class="map map-<%= id %>">
-                    <%= image_tag mapimage, {"data-small": mapimage, "data-big": mapimage_big, "data-isbig": false, title: address["AddressType"], alt: address["AddressType"] } %>
+                    <%#= image_tag mapimage, {"data-small": mapimage, "data-big": mapimage_big, "data-isbig": false, title: address["AddressType"], alt: address["AddressType"] } %>
                 </div>
+end no mapbox stuff -->
         <%
             end
         %>

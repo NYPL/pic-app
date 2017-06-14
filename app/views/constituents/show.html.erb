@@ -1,3 +1,6 @@
+<% content_for :dynamic_title do %>
+<%= "#{@constituent["DisplayName"]} | " %>
+<% end %>
 <%# content_for :dynamic_js do %>
   <%#= stylesheet_link_tag    "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css", :media => "all" %>
   <%#= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>

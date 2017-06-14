@@ -426,12 +426,6 @@ header {
     }
 }
 
-.locations .map {
-    width: 200px;
-    height: 200px;
-    background-color: $gray;
-}
-
 #feedback {
     position: fixed;
     bottom: $feedback-bottom;
@@ -632,4 +626,49 @@ header {
     .step2 {
         display: none;
     }
+}
+
+// constituent page
+
+main {
+    margin: 2rem;
+}
+
+section {
+    margin: 0 0 1rem 0;
+}
+
+.locations {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(6, 1fr);
+
+  @include media ($tablet) {
+    grid-template-columns: 1fr;
+  }
+
+  .address {
+
+  }
+
+  h4 {
+    font-family: $headerFont;
+    line-height: 1.25;
+  }
+
+  p {
+    line-height: 1.25;
+  }
+
+  .map {
+    background-color: $gray;
+
+    img {
+        width: 100%;
+
+        @include media ($tablet) {
+          max-width: 200px;
+        }
+    }
+  }
 }

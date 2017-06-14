@@ -1564,11 +1564,12 @@ module PIC {
             str += '<div class="hidden constituent-content constituent-content-' + p.ConstituentID + '">';
 
             var url = '/export/?ConstituentID=' + p.ConstituentID
+            var urlConst = '/constituents/' + p.ConstituentID
             var urlGeo = this.geoJsonPrefix + encodeURIComponent('/export/?type=geojson&ConstituentID=' + p.ConstituentID);
 
             str += '<p class="constituent-id">';
             str += "<strong>ID:</strong> " + p.ConstituentID;
-            str += '<br /><span class="constituent-export">Export data as: <a href="' + url + '" target="_blank" title="opens in new window">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io">GeoJSON</a></span>';
+            str += '<br /><span class="constituent-export">Export data as: <a href="' + urlConst + '" >PIC Page</a> | <a href="' + url + '" target="_blank" title="opens in new window">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io">GeoJSON</a></span>';
             str += "</p>";
             str += '<div class="tabs">';
             str += '<div class="metadata-toggle link active"><strong>';

@@ -125,7 +125,7 @@ class ConstituentsController < ApplicationController
     end
     respond_with @constituent do |f|
       f.html # {render json: @constituent}
-      f.json
+      f.json {render json: @constituent}
     end
   end
 

@@ -4,45 +4,56 @@
 <%# end %>
 
     <main>
-        <span class="constituentid">ID:<%= @constituent["ConstituentID"] %></span>
+        <span class="constituentid">PIC ID: <%= @constituent["ConstituentID"] %></span>
+        <section>
         <h1 class="name"><%= @constituent["DisplayName"] %></h1>
         <h2 class="subtitle"><%= @constituent["DisplayDate"] %></h2>
         <span class="gender"><%= @constituent["gender"][0]["Term"] %></span>
+        <p><%= link_to "View raw data", "/constituents/#{@constituent["ConstituentID"]}.json" %></p>
+        </section>
         <%# role %>
         <% if @constituent["role"] && @constituent["role"].count > 0 %>
+        <section>
         <h3>Roles performed</h3>
         <ul class="role">
         <% @constituent["role"].each do |role| %>
-            <li><a href="/?role.TermID=<%= role["TermID"] %>"><%= role["Term"] %></a></li>
-        </ul>
+            <li><%= link_to role["Term"], "/map/?role.TermID=#{role["TermID"]}", :title => "View PIC map of constituents with role #{role["Term"]}", :data => {no_turbolink: true} %></li>
         <% end %>
+        </ul>
+        </section>
         <% end %>
         <%# process %>
         <% if @constituent["process"] && @constituent["process"].count > 0 %>
+        <section>
         <h3>Processes used</h3>
         <ul class="process">
         <% @constituent["process"].each do |process| %>
-            <li><a href="/?process.TermID=<%= process["TermID"] %>"><%= process["Term"] %></a></li>
-        </ul>
+            <li><%= link_to process["Term"], "/map/?process.TermID=#{process["TermID"]}", :title => "View PIC map of constituents using process #{process["Term"]}", :data => {no_turbolink: true} %></li>
         <% end %>
+        </ul>
+        </section>
         <% end %>
         <%# collection %>
         <% if @constituent["collection"] && @constituent["collection"].count > 0 %>
+        <section>
         <h3>Found in collections</h3>
         <ul class="collection">
         <% @constituent["collection"].each do |collection| %>
-            <li><a href="/?collection.TermID=<%= collection["TermID"] %>"><%= collection["Term"] %></a> (<a href="<%= collection["URL"] %>" target="_blank">visit site</a>)</li>
-        </ul>
+            <li><%= link_to collection["Term"], "/map/?collection.TermID=#{collection["TermID"]}", :title => "View PIC map of constituents found in #{collection["Term"]}", :data => {no_turbolink: true} %> (<a href="<%= collection["URL"] %>">visit site</a>)</li>
         <% end %>
+        </ul>
+        </section>
         <% end %>
         <%# biography %>
         <% if @constituent["biography"] && @constituent["biography"].count > 0 %>
+        <section>
         <h3>Data from:</h3>
         <ul class="biography">
         <% @constituent["biography"].each do |biography| %>
-            <li><a href="/?biography.TermID=<%= biography["TermID"] %>"><%= biography["Term"] %></a> (<a href="<%= biography["URL"] %>" target="_blank">visit site</a>)</li>
-        </ul>
+            <li><%= link_to biography["Term"], "/map/?biography.TermID=#{biography["TermID"]}", :title => "View PIC map of constituents with source #{biography["Term"]}", :data => {no_turbolink: true} %> (<a href="<%= biography["URL"] %>">visit site</a>)</li>
         <% end %>
+        </ul>
+        </section>
         <% end %>
         <%# address %>
         <%
@@ -60,9 +71,10 @@
                 colors["6"] = "357CB7"
                 colors["7"] = "E21919"
         %>
+        <section>
         <h3>Locations:</h3>
         <p>
-            <%= @constituent["DisplayName"] %> has <%= pluralize total, "location" %>.
+            <%= @constituent["DisplayName"] %> has <%= link_to (pluralize total, "location"), "/map/?DisplayName=#{@constituent["ConstituentID"]}##{@constituent["ConstituentID"]}", :title => "view map for #{@constituent["DisplayName"]}" %>.
             <% if total > max_maps %>
             Showing first <%= max_maps %>.
             <% end %>
@@ -137,6 +149,7 @@ end no mapbox stuff -->
             </div>
         <% end %>
         </div>
+        </section>
         <% end %>
 
     </main>

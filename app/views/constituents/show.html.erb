@@ -11,7 +11,9 @@
         <section>
         <h1 class="name"><%= @constituent["DisplayName"] %></h1>
         <h2 class="subtitle"><%= @constituent["DisplayDate"] %></h2>
+        <% if @constituent["gender"] && @constituent["gender"].count > 0 %>
         <span class="gender"><%= @constituent["gender"][0]["Term"] %></span>
+        <% end %>
         <p><%= link_to "View raw data", "/constituents/#{@constituent["ConstituentID"]}.json" %></p>
         </section>
         <%# role %>

@@ -1569,7 +1569,7 @@ module PIC {
 
             str += '<p class="constituent-id">';
             str += "<strong>ID:</strong> " + p.ConstituentID;
-            str += '<a class="constituent-page-button" target="_blank" title="view full constituent data in a new window" href="' + urlConst + '" >PIC Page</a>';
+            str += '<a class="constituent-page-button" target="_blank" title="view full constituent data in a new window" href="' + urlConst + '" >View PIC Page</a>';
             str += '<br /><span class="constituent-export">Export data as: <a href="' + url + '" target="_blank" title="opens in new window">JSON</a> | <a href="' + urlGeo + '" target="_blank" title="open dataset in GeoJSON.io">GeoJSON</a></span>';
             str += "</p>";
             str += '<div class="tabs">';

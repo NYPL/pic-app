@@ -636,6 +636,10 @@ main {
 
 section {
     margin: 0 0 1rem 0;
+
+    p {
+        max-width: 40rem;
+    }
 }
 
 .locations {

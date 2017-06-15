@@ -15,6 +15,9 @@
         <span class="gender"><%= @constituent["gender"][0]["Term"] %></span>
         <% end %>
         <p><%= link_to "View raw data", "/constituents/#{@constituent["ConstituentID"]}.json" %></p>
+        <% if @constituent["TextEntry"] && @constituent["TextEntry"] != "NULL" %>
+        <p><%= @constituent["TextEntry"] %></p>
+        <% end %>
         </section>
         <%# role %>
         <% if @constituent["role"] && @constituent["role"].count > 0 %>

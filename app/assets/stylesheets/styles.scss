@@ -642,7 +642,6 @@ section {
 
     @include media ($tablet) {
         grid-template-columns: 1fr;
-        margin-bottom: 1rem;
     }
 
     p {
@@ -654,7 +653,7 @@ section {
         grid-column: 1 / 2;
 
         @include media ($tablet) {
-            grid-columns: 1;
+            grid-column: 1;
         }
     }
 
@@ -667,7 +666,7 @@ section {
         grid-column: 1 / 2;
 
         @include media ($tablet) {
-            grid-columns: 1;
+            grid-column: 1;
         }
     }
 
@@ -675,7 +674,7 @@ section {
         grid-column: 2 / 7;
 
         @include media ($tablet) {
-            grid-columns: 1;
+            grid-column: 1;
         }
     }
 }

@@ -9,6 +9,13 @@
     <main>
         <span class="constituentid">PIC ID: <%= @constituent["ConstituentID"] %></span>
         <section>
+        <% if @constituent["image_url"] %>
+        <figure>
+            <%= image_tag @constituent["image_url"], :class => "constituent-image", :alt => "Image of #{@constituent["DisplayName"]} from Wikidata" %>
+            <figcaption><%= "Image of #{@constituent["DisplayName"]} from Wikidata" %></figcaption>
+        </figure>
+        <% end %>
+        <div>
         <h1 class="name"><%= @constituent["DisplayName"] %></h1>
         <h2 class="subtitle"><%= @constituent["DisplayDate"] %></h2>
         <% if @constituent["gender"] && @constituent["gender"].count > 0 %>
@@ -18,6 +25,7 @@
         <% if @constituent["TextEntry"] && @constituent["TextEntry"] != "NULL" %>
         <p><%= @constituent["TextEntry"] %></p>
         <% end %>
+        </div>
         </section>
         <%# role %>
         <% if @constituent["role"] && @constituent["role"].count > 0 %>

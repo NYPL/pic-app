@@ -640,6 +640,23 @@ section {
     p {
         max-width: 40rem;
     }
+
+    figure {
+        margin: 0;
+
+        img {
+            display: block;
+        }
+    }
+
+    figcaption {
+        font-size: 0.7rem;
+    }
+}
+
+.constituent-image {
+    max-width: 10rem;
+    filter: grayscale(1);
 }
 
 .locations {

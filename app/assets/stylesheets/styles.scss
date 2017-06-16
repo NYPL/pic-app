@@ -640,6 +640,11 @@ section {
     grid-gap: 1rem;
     margin: 0 0 2rem 0;
 
+    @include media ($tablet) {
+        grid-template-columns: 1fr;
+        margin-bottom: 1rem;
+    }
+
     p {
         max-width: 40rem;
     }
@@ -647,6 +652,10 @@ section {
     figure {
         margin: 0;
         grid-column: 1 / 2;
+
+        @include media ($tablet) {
+            grid-columns: 1;
+        }
     }
 
     figcaption {
@@ -656,10 +665,18 @@ section {
 
     h3 {
         grid-column: 1 / 2;
+
+        @include media ($tablet) {
+            grid-columns: 1;
+        }
     }
 
     .bio, ul, .locations {
         grid-column: 2 / 7;
+
+        @include media ($tablet) {
+            grid-columns: 1;
+        }
     }
 }
 

@@ -128,7 +128,7 @@ class ConstituentsController < ApplicationController
         @constituent["biography"].each do |biography|
           if biography["TermID"] == "2028247" # wikidata
             wikidata_url = biography["URL"]
-            wikidata_id = wikidata_url.sub "https://www.wikidata.org/wiki/", ""
+            wikidata_id = wikidata_url.gsub "https://www.wikidata.org/wiki/", ""
             source_url = "https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=#{wikidata_id}&property=P18&format=json"
             image_json = JSON.load(open(source_url))
             image_file = image_json["claims"]["P18"][0]["mainsnak"]["datavalue"]["value"].sub " ", "_"

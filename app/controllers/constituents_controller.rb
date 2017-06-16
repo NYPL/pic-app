@@ -140,7 +140,7 @@ class ConstituentsController < ApplicationController
         end
       end
     rescue
-      # "no image"
+      puts "no image"
     end
     respond_with @constituent do |f|
       f.html # {render json: @constituent}

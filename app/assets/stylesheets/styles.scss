@@ -635,7 +635,10 @@ main {
 }
 
 section {
-    margin: 0 0 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+    margin: 0 0 2rem 0;
 
     p {
         max-width: 40rem;
@@ -643,6 +646,7 @@ section {
 
     figure {
         margin: 0;
+        grid-column: 1 / 2;
 
         img {
             display: block;
@@ -651,6 +655,14 @@ section {
 
     figcaption {
         font-size: 0.7rem;
+    }
+
+    h3 {
+        grid-column: 1 / 2;
+    }
+
+    .bio, ul, .locations {
+        grid-column: 2 / 7;
     }
 }
 
@@ -679,6 +691,7 @@ section {
 
   p {
     line-height: 1.25;
+    grid-column: 1 / 7;
   }
 
   .map {

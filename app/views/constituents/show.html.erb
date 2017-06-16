@@ -1,10 +1,12 @@
 <% content_for :dynamic_title do %>
-<%= "#{@constituent["DisplayName"]} | " %>
+<%= "#{@constituent["DisplayName"]} | " unless @constituent == nil %>
 <% end %>
 <%# content_for :dynamic_js do %>
   <%#= stylesheet_link_tag    "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.css", :media => "all" %>
   <%#= javascript_include_tag "https://api.tiles.mapbox.com/mapbox.js/v2.2.4/mapbox.js" %>
 <%# end %>
+
+<% if @constituent != nil %>
 
     <main>
         <span class="constituentid">PIC ID: <%= @constituent["ConstituentID"] %></span>
@@ -15,7 +17,7 @@
             <figcaption><%= "Image of #{@constituent["DisplayName"]} from Wikidata" %></figcaption>
         </figure>
         <% end %>
-        <div>
+        <div class="bio">
         <h1 class="name"><%= @constituent["DisplayName"] %></h1>
         <h2 class="subtitle"><%= @constituent["DisplayDate"] %></h2>
         <% if @constituent["gender"] && @constituent["gender"].count > 0 %>
@@ -63,7 +65,7 @@
         <%# biography %>
         <% if @constituent["biography"] && @constituent["biography"].count > 0 %>
         <section>
-        <h3>Data from:</h3>
+        <h3>Data from</h3>
         <ul class="biography">
         <% @constituent["biography"].each do |biography| %>
             <li><%= link_to biography["Term"], "/map/?biography.TermID=#{biography["TermID"]}", :title => "View PIC map of constituents with source #{biography["Term"]}", :data => {no_turbolink: true} %> (<a href="<%= biography["URL"] %>">visit site</a>)</li>
@@ -88,14 +90,14 @@
                 colors["7"] = "E21919"
         %>
         <section>
-        <h3>Locations:</h3>
-        <p>
-            <%= @constituent["DisplayName"] %> has <%= link_to (pluralize total, "location"), "/map/?DisplayName=#{@constituent["ConstituentID"]}##{@constituent["ConstituentID"]}", :title => "view map for #{@constituent["DisplayName"]}" %>.
-            <% if total > max_maps %>
-            Showing first <%= max_maps %>.
-            <% end %>
-        </p>
+        <h3>Locations</h3>
         <div class="locations">
+            <p>
+                <%= @constituent["DisplayName"] %> has <%= link_to (pluralize total, "location"), "/map/?DisplayName=#{@constituent["ConstituentID"]}##{@constituent["ConstituentID"]}", :title => "view map for #{@constituent["DisplayName"]}" %>.
+                <% if total > max_maps %>
+                Showing first <%= max_maps %>.
+                <% end %>
+            </p>
         <% while count < max_maps && @constituent["address"][count] do %>
         <%
             address = @constituent["address"][count]
@@ -170,6 +172,7 @@ end no mapbox stuff -->
 
     </main>
 
+<% end %>
 
 <%= render :partial => "footer" %>
 

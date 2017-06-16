@@ -647,14 +647,11 @@ section {
     figure {
         margin: 0;
         grid-column: 1 / 2;
-
-        img {
-            display: block;
-        }
     }
 
     figcaption {
         font-size: 0.7rem;
+        line-height: 1.5;
     }
 
     h3 {
@@ -667,7 +664,9 @@ section {
 }
 
 .constituent-image {
-    max-width: 10rem;
+    display: block;
+    width: 100%;
+    max-width: 20rem;
     filter: grayscale(1);
 }
 

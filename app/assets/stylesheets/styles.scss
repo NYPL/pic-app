@@ -707,6 +707,10 @@ section {
   p {
     line-height: 1.25;
     grid-column: 1 / 7;
+
+      @include media ($tablet) {
+        grid-column: 1;
+      }
   }
 
   .map {

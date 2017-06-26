@@ -751,6 +751,14 @@ section {
 .pagination {
   display: flex;
 
+  @include media ($tablet) {
+    display: block;
+
+    li {
+      display: inline-block;
+    }
+  }
+
   &::before {
     content: 'Page: ';
     display: inline-block;

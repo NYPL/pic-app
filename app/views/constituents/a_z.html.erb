@@ -28,8 +28,9 @@
 <% end %>
 
 <ul class="alpha_list">
+  <li><span class="pic_id">PIC ID</span> Name</li>
 <% @results["hits"]["hits"].each do |r| %>
-  <li><span class="pic_id"><%= r["_source"]["ConstituentID"] %></span> <a href="/constituents/<%= r["_source"]["ConstituentID"] %>"><%= r["_source"]["AlphaSort"] %></a></li>
+  <li><span class="pic_id"><%= r["_source"]["ConstituentID"] %></span> <a href="/constituents/<%= r["_source"]["ConstituentID"] %>"><%= r["_source"]["AlphaSort"] %> (<%= r["_source"]["DisplayDate"] %>)</a></li>
 <% end %>
 </ul>
 </div>

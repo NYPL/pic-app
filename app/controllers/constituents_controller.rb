@@ -44,10 +44,10 @@ class ConstituentsController < ApplicationController
           }
         }
       }
-      puts "#{@page} ---- #{p[:page]}"
+      # puts "#{@page} ---- #{p[:page]}"
       size = 1000
       from = (@page - 1) * size
-      source = "DisplayName,AlphaSort,nameSort,ConstituentID"
+      source = "AlphaSort,ConstituentID,DisplayDate"
       type = "constituent"
       sort = "AlphaSort.raw:asc"
       r = client.search index: 'pic', type: type, body: q, size: size, from: from, sort: sort, _source: source

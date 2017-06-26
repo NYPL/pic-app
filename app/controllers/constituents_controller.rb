@@ -24,7 +24,7 @@ class ConstituentsController < ApplicationController
     @total = 0
     begin
       p = params
-      @letter = p[:letter].downcase || "a"
+      @letter = p[:letter] == nil ? "a" : p[:letter].downcase
       @page = p[:page] == nil ? 1 : p[:page].to_i
       q = {
         "query": {
@@ -54,7 +54,7 @@ class ConstituentsController < ApplicationController
       @total = r["hits"]["total"].to_i
       @total_pages = (@total.to_f / size.to_f).ceil
     rescue
-    #   @results = nil
+      @results = nil
     end
     # puts "QUERY:"
     # puts q

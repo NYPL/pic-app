@@ -71,7 +71,10 @@
                     <div class="icon query" title="search by date range" onclick="_pic.applyFilters()"></div>
                 </div>
             </div>
-            <div class="gh-link"><%= link_to "Get the full PIC data set on GitHub", "//github.com/NYPL/pic-data/", :target => "_blank" %></div>
+            <div class="gh-link">
+              <%= link_to "Browse an alphabetical list of all constituents", "/constituents/a-z/a", :title => "opens in new window", :target => "_blank" %><br /><br />
+              <%= link_to "Get the full PIC data set on GitHub", "//github.com/NYPL/pic-data/", :title => "opens in new window", :target => "_blank" %>
+            </div>
         </div>
         <div class="minimize">Minimize</div>
         <div class="maximize hidden">Maximize</div>

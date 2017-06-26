@@ -725,3 +725,45 @@ section {
     }
   }
 }
+
+.pic_id {
+  display: inline-block;
+  width: 5rem;
+}
+
+.constituent_list {
+  grid-column: 1 / 7;
+  margin: 2rem 0 0 0;
+}
+
+.alpha_list {
+  margin: 2rem 0 0 0;
+}
+
+.pagination {
+  display: flex;
+
+  &::before {
+    content: 'Page: ';
+    display: inline-block;
+    margin: 0 0.5rem 0 0;
+  }
+
+  &.letter::before {
+    content: 'Letter: ';
+    display: inline-block;
+    margin: 0 0.5rem 0 0;
+  }
+
+  li {
+    &::after {
+      content: '|';
+      display: inline-block;
+      margin: 0 0.5rem;
+    }
+
+    &:last-child::after {
+      display: none;
+    }
+  }
+}

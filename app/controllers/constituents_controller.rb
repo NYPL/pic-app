@@ -14,6 +14,57 @@ class ConstituentsController < ApplicationController
     @min_year = @min_year.to_i
   end
 
+  def a_z
+    client = Elasticsearch::Client.new host: connection_string
+    # puts "\n\n\n\n\n"
+    # puts params
+    # puts "\n\n\n\n\n"
+    @total_pages = 1
+    @page = 1
+    @total = 0
+    begin
+      p = params
+      @letter = p[:letter].downcase || "a"
+      @page = p[:page] == nil ? 1 : p[:page].to_i
+      q = {
+        "query": {
+          "span_first": {
+            "match": {
+              "span_multi": {
+                "match": {
+                  "prefix": {
+                    "nameSort": {
+                      "value": "#{@letter}"
+                    }
+                  }
+                }
+              }
+            },
+            "end": 1
+          }
+        }
+      }
+      puts "#{@page} ---- #{p[:page]}"
+      size = 1000
+      from = (@page - 1) * size
+      source = "DisplayName,AlphaSort,nameSort,ConstituentID"
+      type = "constituent"
+      sort = "AlphaSort.raw:asc"
+      r = client.search index: 'pic', type: type, body: q, size: size, from: from, sort: sort, _source: source
+      @total = r["hits"]["total"].to_i
+      @total_pages = (@total.to_f / size.to_f).ceil
+    rescue
+    #   @results = nil
+    end
+    # puts "QUERY:"
+    # puts q
+    @results = r
+    respond_with @results do |f|
+      f.html # {render json: @constituent}
+      f.json {render json: @results}
+    end
+  end
+
   def search
     client = Elasticsearch::Client.new host: connection_string
     # puts "\n\n\n\n\n"

@@ -1,0 +1,52 @@
+<% content_for :dynamic_title do %>
+<%= "Constituents #{@letter} page #{@page} | " unless @letter == nil %>
+<% end %>
+
+<% if @results != nil %>
+<main>
+<ul class="pagination letter">
+<% ('A'..'Z').each do |l| %>
+  <li>
+    <%= link_to_unless_current "#{l}", "/constituents/a-z/#{l.downcase}" %>
+  </li>
+<% end %>
+</ul>
+
+<section>
+<div class="constituent_list">
+<h1><%= number_with_delimiter(@total) %> constituents starting with <%= @letter.upcase %></h1>
+<h2>Page <%= @page %> of <%= @total_pages %></h2>
+
+<% if (@total_pages > 1) %>
+<aside>
+<ul class="pagination">
+<% (1..@total_pages).each do |p| %>
+  <li><%= link_to_unless_current "#{p}", "/constituents/a-z/#{@letter}/page/#{p}" %></li>
+<% end %>
+</ul>
+</aside>
+<% end %>
+
+<ul class="alpha_list">
+<% @results["hits"]["hits"].each do |r| %>
+  <li><span class="pic_id"><%= r["_source"]["ConstituentID"] %></span> <a href="/constituents/<%= r["_source"]["ConstituentID"] %>"><%= r["_source"]["AlphaSort"] %></a></li>
+<% end %>
+</ul>
+</div>
+</section>
+
+<% if (@total_pages > 1) %>
+<aside>
+<ul class="pagination">
+<% (1..@total_pages).each do |p| %>
+  <li><%= link_to_unless_current "#{p}", "/constituents/a-z/#{@letter}/page/#{p}" %></li>
+<% end %>
+</ul>
+</aside>
+<% end %>
+
+</main>
+<% end %>
+
+
+<%= render :partial => "footer" %>

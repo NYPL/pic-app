@@ -1,5 +1,5 @@
 <% content_for :dynamic_title do %>
-<%= "Constituents #{@letter} page #{@page} | " unless @letter == nil %>
+<%= "#{@letter.upcase} page #{@page} | Constituents | " unless @letter == nil %>
 <% end %>
 
 <% if @results != nil %>

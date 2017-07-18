@@ -18,13 +18,13 @@ $button-height: 35px;
     font-family:"kievit font";
     font-style:normal;
     font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/ff_kievit_web/KievitWeb-Light.woff") format('woff');}
+    src:url("https://d2znry4lg8s0tq.cloudfront.net/ff_kievit_web/KievitWeb-Light.woff") format('woff');}
 
 @font-face{
     font-family:"milo font";
     font-style:normal;
     font-weight:800;
-    src:url("http://ux-static.nypl.org.s3-website-us-east-1.amazonaws.com/milo-web/milo-slab-pro-medium/MiloSlabWebPro-Medium.woff") format('woff');}
+    src:url("https://d2znry4lg8s0tq.cloudfront.net/milo-web/milo-slab-pro-medium/MiloSlabWebPro-Medium.woff") format('woff');}
 
 $bodyFont: "kievit font", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headerFont: "milo font", "Helvetica Neue", Helvetica, Arial, sans-serif;

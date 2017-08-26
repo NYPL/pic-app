@@ -89,7 +89,7 @@ Glad you asked! The Miriam and Ira D. Wallach Division of Art, Prints and Photog
 
 ### Can I get the data?
 
-Yes. The data is available for download from [this GitHub repository](https://github.com/NYPL/pic-data). You can also export the first 1000 search results from the [map interface](/map). Let us know if you've done something cool with the PIC data. We'd love to see it!
+Yes. The data is available for download from [this GitHub repository](https://github.com/NYPL/pic-data). You can [browse an alphabetical list of all constituents](/constituents/a-z/a). You can also export the first 1000 search results from the [map interface](/map). Let us know if you've done something cool with the PIC data. We'd love to see it!
 
 
 

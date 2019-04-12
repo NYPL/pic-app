@@ -901,7 +901,7 @@ module PIC {
                     aggs[name] = {
                         "terms": {
                             "field": name,
-                            "size": 0
+                            "size": 1000
                         }
                     }
                 }

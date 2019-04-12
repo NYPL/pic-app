@@ -262,5 +262,8 @@ DEPENDENCIES
   useragent
   web-console (~> 2.0)
 
+RUBY VERSION
+   ruby 2.2.2p95
+
 BUNDLED WITH
-   1.15.1
+   1.16.6

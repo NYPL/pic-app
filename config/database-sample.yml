@@ -1,0 +1,7 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: pic
+  pool: 5
+  username: [db username]
+  password: [db password]

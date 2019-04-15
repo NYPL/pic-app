@@ -19,16 +19,15 @@
 /db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
+/log
 /log/*
 !/log/.keep
 /tmp
 
 # Ignore all logfiles and tempfiles.
-/log
-/tmp
 .DS_Store
-.env
 
 # Ignore application configuration
+.env
 /config/database.yml
 /config/application.yml

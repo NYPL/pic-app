@@ -1,0 +1,7 @@
+ELASTIC_HOST=[fqdn es server]:9243
+ELASTIC_PASSWORD=[es pw]
+ELASTIC_USER=[es user]
+CLOUDFRONT_URL=http://[fqdn cf url]/
+MAPBOX_KEY=[mapbox key]
+PROTOCOL=https://
+RAILS_ENV=development

@@ -8,6 +8,14 @@ See also the [PIC data repository](https://github.com/nypl/pic-data).
 
 ![](app/assets/images/sample-04.png)
 
+## Running
+
+Populate `.env` from `env-sample`. Create a `config/database.yml` from `config/database-sample.yml`
+
+```
+foreman start
+```
+
 ## License
 
 Original code in this repository is released under [Creative Commons CC0 1.0 License](http://creativecommons.org/publicdomain/zero/1.0).

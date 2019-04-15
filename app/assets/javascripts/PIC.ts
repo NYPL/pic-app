@@ -892,16 +892,21 @@ module PIC {
                 var facet = this.facets[i]
                 if (facet[3] != "") {
                     var name = facet[2]
+                    var field = facet[2]
                     if (facet[4] !== "") name = facet[4] + "." + name
                     if (type === "parent" && name.indexOf("address") === -1) {
                         continue
                     } else if (type === "child" && name.indexOf("address") !== -1) {
                         continue
                     }
+                    if (type === "child" && name.indexOf("address") === -1) {
+                        // prefix no longer needed in ES 5.6 for field
+                        field = facet[2]
+                    }
                     aggs[name] = {
                         "terms": {
-                            "field": name,
-                            "size": 0
+                            "field": field,
+                            "size": 500
                         }
                     }
                 }
@@ -926,7 +931,8 @@ module PIC {
                     if (normal[f].indexOf("address.") === -1) {
                         constituentArray.push(normal[f]);
                     } else {
-                        addressArray.push(normal[f]);
+                        // prefix no longer needed
+                        addressArray.push(normal[f].replace("address.", ""));
                     }
                 }
             }

@@ -821,11 +821,14 @@ module PIC {
             r.send();
         }
 
-        getData({filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined, docType = "constituent", sort = "AlphaSort.raw:asc"}) {
+        getData({filters, data, callback, source, size = this.elasticSize, exclude = "", from = 0, parameter = undefined, docType = "constituent", sort = "AlphaSort.raw:asc", after = []}) {
             var hasName = (this.buildFacetList().map( a => a.indexOf("DisplayName:") != -1 )).indexOf(true) != -1;
             // console.log(hasName);
             if (hasName) {
                 sort = "_score," + sort;
+            }
+            if (after.length) {
+                data["search_after"] = after
             }
             var url = this.baseUrl //+ "?docType=" + docType + "&sort=" + sort;
             // url = url + "&filter_path="+filters;
@@ -900,6 +903,10 @@ module PIC {
                         continue
                     }
                     if (type === "child" && name.indexOf("address") === -1) {
+                        // prefix needed in non-address fields with TermID
+                        field = name
+                    }
+                    if (type === "child" && name.indexOf("address") !== -1) {
                         // prefix no longer needed in ES 5.6 for field
                         field = facet[2]
                     }
@@ -2113,7 +2120,7 @@ module PIC {
             if (facetList.length === 0) {
                 this.displayBaseData();
             } else {
-                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort: "", source:"ConAddressID"});
+                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort: "_uid", source:"ConAddressID"});
             }
             this.updateTotals(-1);
         }
@@ -2147,7 +2154,7 @@ module PIC {
                 var data = this.elasticResults.data;
                 this.elasticResults.from += this.elasticSize;
                 var filters = this.elasticResults.filters;
-                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort: "", source:"ConAddressID", size:this.elasticSize, exclude:"", from:this.elasticResults.from});
+                this.getData({filters:filters, data:data, callback:this.getNextSet, docType: "address", sort:"_uid", source:"ConAddressID", size:this.elasticSize, exclude:"", from:0, after: ["address#"+results.hits.hits[results.hits.hits.length-1]._id]});
             } else {
                 var end = new Date().getTime();
                 var time = end - this.start;
